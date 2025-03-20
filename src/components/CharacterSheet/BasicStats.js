@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-const BasicStats = ({ onStatsChange }) => {
-  // Initial character stats
-  const [stats, setStats] = useState({
+const BasicStats = ({ onStatsChange, initialStats }) => {
+  // Use initialStats if provided, otherwise use defaults
+  const [stats, setStats] = useState(initialStats || {
     strength: 10,
     dexterity: 10,
     constitution: 10,
@@ -10,6 +10,13 @@ const BasicStats = ({ onStatsChange }) => {
     wisdom: 10,
     charisma: 10
   });
+  
+  // Update stats when initialStats changes (e.g., when selecting a different character)
+  useEffect(() => {
+    if (initialStats) {
+      setStats(initialStats);
+    }
+  }, [initialStats]);
   
   // Calculate modifier from ability score
   const calculateModifier = (score) => {

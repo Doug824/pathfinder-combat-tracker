@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const BuffTracker = ({ onBuffsChange }) => {
-  const [buffs, setBuffs] = useState([]);
+const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
+  const [buffs, setBuffs] = useState(initialBuffs || []);
+  
+  // Update buffs when initialBuffs changes (e.g., when selecting a different character)
+  useEffect(() => {
+    if (initialBuffs) {
+      setBuffs(initialBuffs);
+    }
+  }, [initialBuffs]);
+  
   const [newBuff, setNewBuff] = useState({
     name: '',
     duration: 1,
