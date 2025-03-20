@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import BasicStats from './components/CharacterSheet/BasicStats';
 import BuffTracker from './components/BuffTracker/BuffTracker';
 import CombatStatsCalculator from './components/CombatStats/CombatStatsCalculator';
 import CharacterManager from './components/CharacterManager';
 import useCharacterStorage from './hooks/useCharacterStorage';
+import ThemeToggle from './components/ThemeToggle';
 
 function App() {
   const {
@@ -16,11 +17,15 @@ function App() {
     deleteCharacter,
     selectCharacter,
     updateStats,
-    updateBuffs
+    updateBuffs,
+    updateGear
   } = useCharacterStorage();
   
+  // Theme state
+  const [darkMode, setDarkMode] = useState(false);
+  
   // Default stats and buffs for when no character is active
-  const [characterStats, setCharacterStats] = React.useState({
+  const [characterStats, setCharacterStats] = useState({
     strength: 10,
     dexterity: 10,
     constitution: 10,
@@ -29,13 +34,15 @@ function App() {
     charisma: 10
   });
   
-  const [activeBuffs, setActiveBuffs] = React.useState([]);
+  const [activeBuffs, setActiveBuffs] = useState([]);
+  const [activeGear, setActiveGear] = useState([]);
   
   // Update local state when active character changes
   useEffect(() => {
     if (activeCharacter) {
       setCharacterStats(activeCharacter.stats || characterStats);
       setActiveBuffs(activeCharacter.buffs || []);
+      setActiveGear(activeCharacter.gear || []);
     } else {
       // Reset to defaults if no character is active
       setCharacterStats({
@@ -47,8 +54,35 @@ function App() {
         charisma: 10
       });
       setActiveBuffs([]);
+      setActiveGear([]);
     }
   }, [activeCharacter]);
+  
+  // Toggle dark mode and store preference
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('darkMode');
+    if (savedTheme) {
+      setDarkMode(savedTheme === 'true');
+    } else {
+      // Check for system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(prefersDark);
+    }
+  }, []);
+  
+  // Apply theme class to body
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+  
+  const handleThemeToggle = () => {
+    setDarkMode(!darkMode);
+  };
   
   const handleStatsChange = (newStats) => {
     setCharacterStats(newStats);
@@ -64,10 +98,18 @@ function App() {
     }
   };
   
+  const handleGearChange = (newGear) => {
+    setActiveGear(newGear);
+    if (activeCharacter) {
+      updateGear(newGear);
+    }
+  };
+  
   return (
-    <div className="App">
+    <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <header className="App-header">
         <h1>Pathfinder Combat Tracker</h1>
+        <ThemeToggle darkMode={darkMode} onToggle={handleThemeToggle} />
       </header>
       
       <div className="character-section">
@@ -121,7 +163,8 @@ function App() {
             <div className="column">
               <CombatStatsCalculator 
                 baseStats={characterStats} 
-                buffs={activeBuffs} 
+                buffs={activeBuffs}
+                gear={activeGear} 
               />
             </div>
           </div>

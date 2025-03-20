@@ -128,6 +128,20 @@ const useCharacterStorage = () => {
     }
   };
   
+  // Update gear for active character
+  const updateGear = (newGear) => {
+    if (activeCharacter) {
+      const updatedCharacter = {
+        ...activeCharacter,
+        gear: newGear,
+        lastModified: new Date().toISOString()
+      };
+      
+      updateCharacter(updatedCharacter);
+    }
+  };
+  
+  // Return the state and functions
   return {
     characters,
     activeCharacterId,
@@ -137,7 +151,8 @@ const useCharacterStorage = () => {
     deleteCharacter,
     selectCharacter,
     updateStats,
-    updateBuffs
+    updateBuffs,
+    updateGear
   };
 };
 

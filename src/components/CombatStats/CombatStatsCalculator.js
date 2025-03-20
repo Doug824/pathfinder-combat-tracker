@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const CombatStatsCalculator = ({ baseStats, buffs }) => {
+const CombatStatsCalculator = ({ baseStats, buffs, gear = [] }) => {
   const [finalStats, setFinalStats] = useState({...baseStats});
   const [derived, setDerived] = useState({
     ac: 10,
@@ -14,34 +14,49 @@ const CombatStatsCalculator = ({ baseStats, buffs }) => {
   const getModifier = (score) => Math.floor((score - 10) / 2);
   
   useEffect(() => {
-    // Calculate stats with all buffs applied using Pathfinder stacking rules
+    // Calculate stats with all buffs and gear applied using Pathfinder stacking rules
     // Start with base stats
     const calculatedStats = {...baseStats};
     
-    // Group buffs by stat and bonus type
-    const groupedBuffs = {};
+    // Group buffs and gear by stat and bonus type
+    const groupedBonuses = {};
     Object.keys(calculatedStats).forEach(stat => {
-      groupedBuffs[stat] = {};
+      groupedBonuses[stat] = {};
       
       // Initialize each bonus type for this stat
       bonusTypes.forEach(type => {
-        groupedBuffs[stat][type] = [];
+        groupedBonuses[stat][type] = [];
       });
     });
     
     // Add BAB tracking
-    groupedBuffs['bab'] = {};
+    groupedBonuses['bab'] = {};
     bonusTypes.forEach(type => {
-      groupedBuffs['bab'][type] = [];
+      groupedBonuses['bab'][type] = [];
     });
     
     // Group all buffs by stat and bonus type
     buffs.forEach(buff => {
       Object.entries(buff.effects).forEach(([stat, value]) => {
-        if (value !== 0 && groupedBuffs[stat]) {
-          groupedBuffs[stat][buff.bonusType].push({
+        if (value !== 0 && groupedBonuses[stat]) {
+          groupedBonuses[stat][buff.bonusType].push({
             value: value,
-            name: buff.name
+            name: buff.name,
+            source: 'buff'
+          });
+        }
+      });
+    });
+    
+    // Group all gear by stat and bonus type
+    gear.forEach(item => {
+      Object.entries(item.effects).forEach(([stat, value]) => {
+        if (value !== 0 && groupedBonuses[stat]) {
+          groupedBonuses[stat][item.bonusType].push({
+            value: value,
+            name: item.name,
+            source: 'gear',
+            slot: item.slot
           });
         }
       });
@@ -50,7 +65,7 @@ const CombatStatsCalculator = ({ baseStats, buffs }) => {
     // Apply stacking rules to each stat
     Object.keys(calculatedStats).forEach(stat => {
       // For each stat, process each bonus type
-      Object.entries(groupedBuffs[stat]).forEach(([bonusType, bonuses]) => {
+      Object.entries(groupedBonuses[stat]).forEach(([bonusType, bonuses]) => {
         if (bonuses.length > 0) {
           if (bonusType === 'dodge') {
             // Dodge bonuses stack
@@ -72,7 +87,7 @@ const CombatStatsCalculator = ({ baseStats, buffs }) => {
     setFinalStats(calculatedStats);
     
     // Calculate derived stats
-    const baseAttackBonus = calculateBAB(buffs);
+    const baseAttackBonus = calculateBAB(buffs, gear);
     
     setDerived({
       ac: 10 + getModifier(calculatedStats.dexterity),
@@ -81,10 +96,10 @@ const CombatStatsCalculator = ({ baseStats, buffs }) => {
       willSave: getModifier(calculatedStats.wisdom),
       baseAttackBonus: baseAttackBonus
     });
-  }, [baseStats, buffs]);
+  }, [baseStats, buffs, gear]);
   
-  // Calculate BAB from buffs
-  const calculateBAB = (buffs) => {
+  // Calculate BAB from buffs and gear
+  const calculateBAB = (buffs, gear) => {
     let bab = 0;
     
     // Group BAB buffs by bonus type
@@ -98,7 +113,19 @@ const CombatStatsCalculator = ({ baseStats, buffs }) => {
       if (buff.effects.bab && buff.effects.bab !== 0) {
         babBuffs[buff.bonusType].push({
           value: buff.effects.bab,
-          name: buff.name
+          name: buff.name,
+          source: 'buff'
+        });
+      }
+    });
+    
+    // Find gear that specifically affects BAB
+    gear.forEach(item => {
+      if (item.effects.bab && item.effects.bab !== 0) {
+        babBuffs[item.bonusType].push({
+          value: item.effects.bab,
+          name: item.name,
+          source: 'gear'
         });
       }
     });
@@ -137,7 +164,7 @@ const CombatStatsCalculator = ({ baseStats, buffs }) => {
       <h2>Combat Statistics</h2>
       
       <div className="final-attributes">
-        <h3>Final Attributes (with buffs)</h3>
+        <h3>Final Attributes (with buffs & gear)</h3>
         {Object.entries(finalStats).map(([stat, value]) => (
           <div key={stat} className="stat-display">
             <span className="stat-name">{stat.charAt(0).toUpperCase() + stat.slice(1)}:</span>
