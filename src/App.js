@@ -33,7 +33,6 @@ function App() {
       <div className="main-content">
         <div className="column">
           <BasicStats 
-            initialStats={characterStats} 
             onStatsChange={handleStatsChange} 
           />
         </div>
