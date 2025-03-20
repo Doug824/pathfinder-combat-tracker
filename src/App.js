@@ -1,23 +1,56 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import BasicStats from './components/CharacterSheet/BasicStats';
+import BuffTracker from './components/BuffTracker/BuffTracker';
+import CombatStatsCalculator from './components/CombatStats/CombatStatsCalculator';
 
 function App() {
+  const [characterStats, setCharacterStats] = useState({
+    strength: 10,
+    dexterity: 10,
+    constitution: 10,
+    intelligence: 10,
+    wisdom: 10,
+    charisma: 10
+  });
+  
+  const [activeBuffs, setActiveBuffs] = useState([]);
+  
+  const handleStatsChange = (newStats) => {
+    setCharacterStats(newStats);
+  };
+  
+  const handleBuffsChange = (newBuffs) => {
+    setActiveBuffs(newBuffs);
+  };
+  
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Pathfinder Combat Tracker</h1>
       </header>
+      
+      <div className="main-content">
+        <div className="column">
+          <BasicStats 
+            initialStats={characterStats} 
+            onStatsChange={handleStatsChange} 
+          />
+        </div>
+        
+        <div className="column">
+          <BuffTracker 
+            onBuffsChange={handleBuffsChange} 
+          />
+        </div>
+        
+        <div className="column">
+          <CombatStatsCalculator 
+            baseStats={characterStats} 
+            buffs={activeBuffs} 
+          />
+        </div>
+      </div>
     </div>
   );
 }
