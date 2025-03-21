@@ -324,18 +324,36 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
             </div>
             
             <h4>Stat Bonuses</h4>
-            <div className="form-row gear-stats-row">
-              {Object.keys(newGearItem.effects).map(stat => (
-                <div key={stat} className="form-group gear-stat-input">
-                  <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects[stat]}
-                    onChange={(e) => handleGearEffectChange(stat, e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-              ))}
+            <div className="gear-stats-container">
+              {/* First row: strength, dexterity, constitution */}
+              <div className="form-row gear-stats-row">
+                {['strength', 'dexterity', 'constitution'].map(stat => (
+                  <div key={stat} className="form-group gear-stat-input">
+                    <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
+                    <input 
+                      type="number" 
+                      value={newGearItem.effects[stat]}
+                      onChange={(e) => handleGearEffectChange(stat, e.target.value)}
+                      className="form-control"
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              {/* Second row: intelligence, wisdom, charisma */}
+              <div className="form-row gear-stats-row">
+                {['intelligence', 'wisdom', 'charisma'].map(stat => (
+                  <div key={stat} className="form-group gear-stat-input">
+                    <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
+                    <input 
+                      type="number" 
+                      value={newGearItem.effects[stat]}
+                      onChange={(e) => handleGearEffectChange(stat, e.target.value)}
+                      className="form-control"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
             
             <button 

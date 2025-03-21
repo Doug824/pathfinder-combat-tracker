@@ -153,11 +153,17 @@ body {
   padding: 5px;
 }
 
+.gear-stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
 .gear-stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-bottom: 15px;
 }
 
 .new-gear-form {
