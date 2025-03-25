@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { calculateFinalStats, calculateDerivedStats } from '../utils/bonusCalculator';
 
 const CombatStatsCalculator = ({ baseStats, buffs, gear = [] }) => {
   const [finalStats, setFinalStats] = useState({...baseStats});
+  const [bonusDetails, setBonusDetails] = useState({});
   const [derived, setDerived] = useState({
     ac: 10,
     fortitudeSave: 0,
@@ -14,150 +16,15 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [] }) => {
   const getModifier = (score) => Math.floor((score - 10) / 2);
   
   useEffect(() => {
-    // Calculate stats with all buffs and gear applied using Pathfinder stacking rules
-    // Start with base stats
-    const calculatedStats = {...baseStats};
-    
-    // Group buffs and gear by stat and bonus type
-    const groupedBonuses = {};
-    Object.keys(calculatedStats).forEach(stat => {
-      groupedBonuses[stat] = {};
-      
-      // Initialize each bonus type for this stat
-      bonusTypes.forEach(type => {
-        groupedBonuses[stat][type] = [];
-      });
-    });
-    
-    // Add BAB tracking
-    groupedBonuses['bab'] = {};
-    bonusTypes.forEach(type => {
-      groupedBonuses['bab'][type] = [];
-    });
-    
-    // Group all buffs by stat and bonus type
-    buffs.forEach(buff => {
-      Object.entries(buff.effects).forEach(([stat, value]) => {
-        if (value !== 0 && groupedBonuses[stat]) {
-          groupedBonuses[stat][buff.bonusType].push({
-            value: value,
-            name: buff.name,
-            source: 'buff'
-          });
-        }
-      });
-    });
-    
-    // Group all gear by stat and bonus type
-    gear.forEach(item => {
-      Object.entries(item.effects).forEach(([stat, value]) => {
-        if (value !== 0 && groupedBonuses[stat]) {
-          groupedBonuses[stat][item.bonusType].push({
-            value: value,
-            name: item.name,
-            source: 'gear',
-            slot: item.slot
-          });
-        }
-      });
-    });
-    
-    // Apply stacking rules to each stat
-    Object.keys(calculatedStats).forEach(stat => {
-      // For each stat, process each bonus type
-      Object.entries(groupedBonuses[stat]).forEach(([bonusType, bonuses]) => {
-        if (bonuses.length > 0) {
-          if (bonusType === 'dodge') {
-            // Dodge bonuses stack
-            const totalDodge = bonuses.reduce((sum, bonus) => sum + bonus.value, 0);
-            calculatedStats[stat] += totalDodge;
-          } else {
-            // For all other types, only apply the highest bonus
-            const highestBonus = bonuses.reduce((max, bonus) => 
-              max.value > bonus.value ? max : bonus, { value: 0 });
-            
-            if (highestBonus.value !== 0) {
-              calculatedStats[stat] += highestBonus.value;
-            }
-          }
-        }
-      });
-    });
-    
+    // Use the utility to calculate final stats
+    const { finalStats: calculatedStats, bonusDetails: details } = calculateFinalStats(baseStats, buffs, gear);
     setFinalStats(calculatedStats);
+    setBonusDetails(details);
     
     // Calculate derived stats
-    const baseAttackBonus = calculateBAB(buffs, gear);
-    
-    setDerived({
-      ac: 10 + getModifier(calculatedStats.dexterity),
-      fortitudeSave: getModifier(calculatedStats.constitution),
-      reflexSave: getModifier(calculatedStats.dexterity),
-      willSave: getModifier(calculatedStats.wisdom),
-      baseAttackBonus: baseAttackBonus
-    });
+    const derivedStats = calculateDerivedStats(calculatedStats);
+    setDerived(derivedStats);
   }, [baseStats, buffs, gear]);
-  
-  // Calculate BAB from buffs and gear
-  const calculateBAB = (buffs, gear) => {
-    let bab = 0;
-    
-    // Group BAB buffs by bonus type
-    const babBuffs = {};
-    bonusTypes.forEach(type => {
-      babBuffs[type] = [];
-    });
-    
-    // Find buffs that specifically affect BAB
-    buffs.forEach(buff => {
-      if (buff.effects.bab && buff.effects.bab !== 0) {
-        babBuffs[buff.bonusType].push({
-          value: buff.effects.bab,
-          name: buff.name,
-          source: 'buff'
-        });
-      }
-    });
-    
-    // Find gear that specifically affects BAB
-    gear.forEach(item => {
-      if (item.effects.bab && item.effects.bab !== 0) {
-        babBuffs[item.bonusType].push({
-          value: item.effects.bab,
-          name: item.name,
-          source: 'gear'
-        });
-      }
-    });
-    
-    // Apply stacking rules for BAB
-    Object.entries(babBuffs).forEach(([bonusType, bonuses]) => {
-      if (bonuses.length > 0) {
-        if (bonusType === 'dodge') {
-          // Dodge bonuses stack
-          const totalDodge = bonuses.reduce((sum, bonus) => sum + bonus.value, 0);
-          bab += totalDodge;
-        } else {
-          // For all other types, only apply the highest bonus
-          const highestBonus = bonuses.reduce((max, bonus) => 
-            max.value > bonus.value ? max : bonus, { value: 0 });
-          
-          if (highestBonus.value !== 0) {
-            bab += highestBonus.value;
-          }
-        }
-      }
-    });
-    
-    return bab;
-  };
-  
-  // List of bonus types for reference
-  const bonusTypes = [
-    'enhancement', 'luck', 'sacred', 'profane', 'alchemical', 'armor',
-    'competence', 'circumstance', 'deflection', 'dodge', 'inherent',
-    'insight', 'morale', 'natural', 'shield', 'size', 'trait', 'untyped', 'bab'
-  ];
 
   return (
     <div className="combat-stats">
@@ -165,36 +32,106 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [] }) => {
       
       <div className="final-attributes">
         <h3>Final Attributes (with buffs & gear)</h3>
-        {Object.entries(finalStats).map(([stat, value]) => (
-          <div key={stat} className="stat-display">
-            <span className="stat-name">{stat.charAt(0).toUpperCase() + stat.slice(1)}:</span>
-            <span className="stat-value">{value}</span>
-            <span className="modifier">(Mod: {getModifier(value) >= 0 ? '+' : ''}{getModifier(value)})</span>
-          </div>
-        ))}
+        {Object.entries(finalStats).map(([stat, value]) => {
+          // Skip bab as it's shown in derived stats
+          if (stat === 'bab') return null;
+          
+          const statBonuses = bonusDetails[stat] || [];
+          const totalBonus = statBonuses.reduce((sum, bonus) => sum + bonus.value, 0);
+          
+          return (
+            <div key={stat} className="stat-display">
+              <div className="stat-header">
+                <span className="stat-name">{stat.charAt(0).toUpperCase() + stat.slice(1)}:</span>
+                <span className="stat-value">{value}</span>
+                <span className="modifier">(Mod: {getModifier(value) >= 0 ? '+' : ''}{getModifier(value)})</span>
+              </div>
+              
+              {statBonuses.length > 0 && (
+                <div className="stat-bonuses">
+                  <span className="total-bonus">
+                    From bonuses: {totalBonus > 0 ? '+' : ''}{totalBonus}
+                  </span>
+                  <div className="bonus-sources">
+                    {statBonuses.map((bonus, idx) => (
+                      <div key={idx} className="bonus-source">
+                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
       
       <div className="derived-stats">
         <h3>Combat Values</h3>
         <div className="stat-display">
-          <span className="stat-name">Armor Class:</span>
-          <span className="stat-value">{derived.ac}</span>
+          <div className="stat-header">
+            <span className="stat-name">Armor Class:</span>
+            <span className="stat-value">{derived.ac}</span>
+          </div>
+          {bonusDetails.ac && bonusDetails.ac.length > 0 && (
+            <div className="stat-bonuses">
+              <div className="bonus-sources">
+                {bonusDetails.ac.map((bonus, idx) => (
+                  <div key={idx} className="bonus-source">
+                    {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+        
         <div className="stat-display">
-          <span className="stat-name">Fortitude Save:</span>
-          <span className="stat-value">{derived.fortitudeSave >= 0 ? '+' : ''}{derived.fortitudeSave}</span>
+          <div className="stat-header">
+            <span className="stat-name">Fortitude Save:</span>
+            <span className="stat-value">{derived.fortitudeSave >= 0 ? '+' : ''}{derived.fortitudeSave}</span>
+          </div>
+          <div className="save-details">
+            <span>Constitution modifier</span>
+          </div>
         </div>
+        
         <div className="stat-display">
-          <span className="stat-name">Reflex Save:</span>
-          <span className="stat-value">{derived.reflexSave >= 0 ? '+' : ''}{derived.reflexSave}</span>
+          <div className="stat-header">
+            <span className="stat-name">Reflex Save:</span>
+            <span className="stat-value">{derived.reflexSave >= 0 ? '+' : ''}{derived.reflexSave}</span>
+          </div>
+          <div className="save-details">
+            <span>Dexterity modifier</span>
+          </div>
         </div>
+        
         <div className="stat-display">
-          <span className="stat-name">Will Save:</span>
-          <span className="stat-value">{derived.willSave >= 0 ? '+' : ''}{derived.willSave}</span>
+          <div className="stat-header">
+            <span className="stat-name">Will Save:</span>
+            <span className="stat-value">{derived.willSave >= 0 ? '+' : ''}{derived.willSave}</span>
+          </div>
+          <div className="save-details">
+            <span>Wisdom modifier</span>
+          </div>
         </div>
+        
         <div className="stat-display">
-          <span className="stat-name">Base Attack Bonus:</span>
-          <span className="stat-value">{derived.baseAttackBonus >= 0 ? '+' : ''}{derived.baseAttackBonus}</span>
+          <div className="stat-header">
+            <span className="stat-name">Base Attack Bonus:</span>
+            <span className="stat-value">{derived.baseAttackBonus >= 0 ? '+' : ''}{derived.baseAttackBonus}</span>
+          </div>
+          {bonusDetails.bab && bonusDetails.bab.length > 0 && (
+            <div className="stat-bonuses">
+              <div className="bonus-sources">
+                {bonusDetails.bab.map((bonus, idx) => (
+                  <div key={idx} className="bonus-source">
+                    {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

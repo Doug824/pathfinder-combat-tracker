@@ -25,7 +25,16 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
     name: '',
     slot: 'head',
     bonusType: 'enhancement',
-    effects: { strength: 0, dexterity: 0, constitution: 0, intelligence: 0, wisdom: 0, charisma: 0 }
+    effects: { 
+      strength: 0, 
+      dexterity: 0, 
+      constitution: 0, 
+      intelligence: 0, 
+      wisdom: 0, 
+      charisma: 0,
+      bab: 0,
+      ac: 0
+    }
   });
   
   // Equipment slots based on Pathfinder rules
@@ -110,7 +119,16 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
       name: '',
       slot: 'head',
       bonusType: 'enhancement',
-      effects: { strength: 0, dexterity: 0, constitution: 0, intelligence: 0, wisdom: 0, charisma: 0 }
+      effects: { 
+        strength: 0, 
+        dexterity: 0, 
+        constitution: 0, 
+        intelligence: 0, 
+        wisdom: 0, 
+        charisma: 0,
+        bab: 0,
+        ac: 0
+      }
     });
   };
   
@@ -353,6 +371,28 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
                     />
                   </div>
                 ))}
+              </div>
+              
+              {/* Third row: BAB and AC */}
+              <div className="form-row gear-stats-row combat-row">
+                <div className="form-group gear-stat-input">
+                  <label>BAB</label>
+                  <input 
+                    type="number" 
+                    value={newGearItem.effects.bab}
+                    onChange={(e) => handleGearEffectChange('bab', e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-group gear-stat-input">
+                  <label>Armor Class</label>
+                  <input 
+                    type="number" 
+                    value={newGearItem.effects.ac}
+                    onChange={(e) => handleGearEffectChange('ac', e.target.value)}
+                    className="form-control"
+                  />
+                </div>
               </div>
             </div>
             

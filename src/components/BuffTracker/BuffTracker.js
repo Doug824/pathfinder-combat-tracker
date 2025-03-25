@@ -15,7 +15,16 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
     duration: 1,
     durationType: 'rounds',
     bonusType: 'enhancement', // Default bonus type
-    effects: { strength: 0, dexterity: 0, constitution: 0, intelligence: 0, wisdom: 0, charisma: 0 }
+    effects: { 
+      strength: 0, 
+      dexterity: 0, 
+      constitution: 0, 
+      intelligence: 0, 
+      wisdom: 0, 
+      charisma: 0,
+      bab: 0,
+      ac: 0
+    }
   });
   
   // Duration type options for the dropdown
@@ -45,8 +54,7 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
     { value: 'shield', label: 'Shield' },
     { value: 'size', label: 'Size' },
     { value: 'trait', label: 'Trait' },
-    { value: 'untyped', label: 'Untyped' },
-    { value: 'bab', label: 'Base Attack Bonus' }
+    { value: 'untyped', label: 'Untyped' }
   ];
   
   const handleAddBuff = () => {
@@ -70,7 +78,16 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
       duration: 1,
       durationType: 'rounds',
       bonusType: 'enhancement',
-      effects: { strength: 0, dexterity: 0, constitution: 0, intelligence: 0, wisdom: 0, charisma: 0 }
+      effects: { 
+        strength: 0, 
+        dexterity: 0, 
+        constitution: 0, 
+        intelligence: 0, 
+        wisdom: 0, 
+        charisma: 0,
+        bab: 0,
+        ac: 0
+      }
     });
   };
   
@@ -184,10 +201,22 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
         </div>
         
         <div className="stat-effects">
-          <h4>Stat Bonuses/Penalties</h4>
-          {Object.keys(newBuff.effects).map(stat => (
+          <h4>Attribute Bonuses/Penalties</h4>
+          {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
             <div key={stat} className="stat-effect-row">
               <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}:</label>
+              <input 
+                type="number" 
+                value={newBuff.effects[stat]}
+                onChange={(e) => handleEffectChange(stat, e.target.value)}
+              />
+            </div>
+          ))}
+          
+          <h4>Combat Bonuses/Penalties</h4>
+          {['bab', 'ac'].map(stat => (
+            <div key={stat} className="stat-effect-row">
+              <label>{stat.toUpperCase()}:</label>
               <input 
                 type="number" 
                 value={newBuff.effects[stat]}
