@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { calculateFinalStats, calculateDerivedStats } from '../utils/bonusCalculator';
+import { calculateFinalStats, calculateDerivedStats } from '../../utils/bonusCalculator';
 
 const CombatStatsCalculator = ({ baseStats, buffs, gear = [] }) => {
   const [finalStats, setFinalStats] = useState({...baseStats});

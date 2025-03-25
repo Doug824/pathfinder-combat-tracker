@@ -145,3 +145,5 @@ export const bonusTypes = [
       baseAttackBonus: finalStats.bab || 0
     };
   };
+
+  export default calculateFinalStats;
