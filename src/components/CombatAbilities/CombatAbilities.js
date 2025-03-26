@@ -26,7 +26,20 @@ const CombatAbilities = ({
     inputMax: null, // Maximum value for the input
     inputMin: 0, // Minimum value for the input
     inputStep: 1, // Step value for the input
-    effects: { strength: 0, dexterity: 0, constitution: 0, intelligence: 0, wisdom: 0, charisma: 0, bab: 0, ac: 0, damage: 0 }
+    effects: { 
+      strength: 0, 
+      dexterity: 0, 
+      constitution: 0, 
+      intelligence: 0, 
+      wisdom: 0, 
+      charisma: 0, 
+      attackBonus: 0, 
+      ac: 0, 
+      fortitude: 0,
+      reflex: 0,
+      will: 0,
+      damage: 0 
+    }
   });
   
   // State for ability activation inputs
@@ -44,6 +57,7 @@ const CombatAbilities = ({
   ];
   
   // Helper function to determine if field should be shown for the input type
+  // eslint-disable-next-line no-unused-vars
   const showForInputType = (fieldName) => {
     if (!newAbility.variableInput) return false;
     
@@ -81,7 +95,20 @@ const CombatAbilities = ({
       inputMax: null,
       inputMin: 0,
       inputStep: 1,
-      effects: { strength: 0, dexterity: 0, constitution: 0, intelligence: 0, wisdom: 0, charisma: 0, bab: 0, ac: 0, damage: 0 }
+      effects: { 
+        strength: 0, 
+        dexterity: 0, 
+        constitution: 0, 
+        intelligence: 0, 
+        wisdom: 0, 
+        charisma: 0, 
+        attackBonus: 0, 
+        ac: 0, 
+        fortitude: 0,
+        reflex: 0,
+        will: 0,
+        damage: 0 
+      }
     });
   };
   
@@ -140,13 +167,6 @@ const CombatAbilities = ({
       ...prev,
       [abilityId]: numValue
     }));
-    
-    // Recalculate effects based on the input value
-    const ability = combatAbilities.find(a => a.id === abilityId);
-    if (ability && ability.variableInput) {
-      // This would need logic specific to abilities like Power Attack
-      // where the effect scales with the input value
-    }
   };
   
   // Calculate the current effects of an ability
@@ -160,7 +180,7 @@ const CombatAbilities = ({
       if (ability.name.toLowerCase().includes('power attack')) {
         return {
           ...ability.effects,
-          bab: -inputValue,
+          attackBonus: -inputValue,
           damage: inputValue * 2
         };
       }
@@ -233,7 +253,7 @@ const CombatAbilities = ({
                           id={`ability-input-${ability.id}`}
                           type="number"
                           min={ability.inputMin || 0}
-                          max={ability.inputMax || (finalStats.bab || 20)}
+                          max={ability.inputMax || (finalStats.baseAttackBonus || 20)}
                           step={ability.inputStep || 1}
                           value={abilityInputs[ability.id] || 0}
                           onChange={(e) => handleAbilityInputChange(ability.id, e.target.value)}
@@ -369,7 +389,7 @@ const CombatAbilities = ({
         )}
         
         <div className="ability-effects-form">
-          <h4>Ability Effects</h4>
+          <h4>Attribute Effects</h4>
           
           <div className="form-row effects-row">
             <div className="form-group">
@@ -435,13 +455,14 @@ const CombatAbilities = ({
             </div>
           </div>
           
+          <h4>Combat Effects</h4>
           <div className="form-row effects-row">
             <div className="form-group">
-              <label>BAB</label>
+              <label>Attack</label>
               <input
                 type="number"
-                value={newAbility.effects.bab}
-                onChange={(e) => handleEffectChange('bab', e.target.value)}
+                value={newAbility.effects.attackBonus}
+                onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
                 className="form-control"
               />
             </div>
@@ -462,6 +483,39 @@ const CombatAbilities = ({
                 type="number"
                 value={newAbility.effects.damage}
                 onChange={(e) => handleEffectChange('damage', e.target.value)}
+                className="form-control"
+              />
+            </div>
+          </div>
+          
+          <h4>Saving Throw Effects</h4>
+          <div className="form-row effects-row">
+            <div className="form-group">
+              <label>Fortitude</label>
+              <input
+                type="number"
+                value={newAbility.effects.fortitude}
+                onChange={(e) => handleEffectChange('fortitude', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Reflex</label>
+              <input
+                type="number"
+                value={newAbility.effects.reflex}
+                onChange={(e) => handleEffectChange('reflex', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Will</label>
+              <input
+                type="number"
+                value={newAbility.effects.will}
+                onChange={(e) => handleEffectChange('will', e.target.value)}
                 className="form-control"
               />
             </div>

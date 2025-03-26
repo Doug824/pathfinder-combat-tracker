@@ -42,6 +42,7 @@ const CombatTracker = ({
               baseStats={stats} 
               buffs={buffs}
               gear={gear} 
+              character={character}
             />
           )}
           

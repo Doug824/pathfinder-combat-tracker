@@ -22,7 +22,10 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
       intelligence: 0, 
       wisdom: 0, 
       charisma: 0,
-      bab: 0,
+      attackBonus: 0,
+      fortitude: 0,
+      reflex: 0,
+      will: 0,
       ac: 0
     }
   });
@@ -85,7 +88,10 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
         intelligence: 0, 
         wisdom: 0, 
         charisma: 0,
-        bab: 0,
+        attackBonus: 0,
+        fortitude: 0,
+        reflex: 0,
+        will: 0,
         ac: 0
       }
     });
@@ -214,16 +220,59 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
           ))}
           
           <h4>Combat Bonuses/Penalties</h4>
-          {['bab', 'ac'].map(stat => (
-            <div key={stat} className="stat-effect-row">
-              <label>{stat.toUpperCase()}:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects[stat]}
-                onChange={(e) => handleEffectChange(stat, e.target.value)}
-              />
-            </div>
-          ))}
+          <div className="stat-effect-row">
+            <label>Attack Bonus:</label>
+            <input 
+              type="number" 
+              value={newBuff.effects.attackBonus}
+              onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
+            />
+          </div>
+          
+          <div className="stat-effect-row">
+            <label>AC:</label>
+            <input 
+              type="number" 
+              value={newBuff.effects.attackBonus}
+              onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
+            />
+          </div>
+
+          <h4>Combat Bonuses/Penalties</h4>
+          <div className="stat-effect-row">
+            <label>Attack Bonus:</label>
+            <input 
+              type="number" 
+              value={newBuff.effects.ac}
+              onChange={(e) => handleEffectChange('ac', e.target.value)}
+            />
+          </div>
+          
+          <h4>Saving Throw Bonuses/Penalties</h4>
+          <div className="stat-effect-row">
+            <label>Fortitude:</label>
+            <input 
+              type="number" 
+              value={newBuff.effects.fortitude}
+              onChange={(e) => handleEffectChange('fortitude', e.target.value)}
+            />
+          </div>
+          <div className="stat-effect-row">
+            <label>Reflex:</label>
+            <input 
+              type="number" 
+              value={newBuff.effects.reflex}
+              onChange={(e) => handleEffectChange('reflex', e.target.value)}
+            />
+          </div>
+          <div className="stat-effect-row">
+            <label>Will:</label>
+            <input 
+              type="number" 
+              value={newBuff.effects.will}
+              onChange={(e) => handleEffectChange('will', e.target.value)}
+            />
+          </div>
         </div>
         
         <button onClick={handleAddBuff} className="add-buff-button">Add Buff</button>

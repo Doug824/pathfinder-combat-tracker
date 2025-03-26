@@ -2,7 +2,7 @@
 export const bonusTypes = [
   'enhancement', 'luck', 'sacred', 'profane', 'alchemical', 'armor',
   'competence', 'circumstance', 'deflection', 'dodge', 'inherent',
-  'insight', 'morale', 'natural', 'shield', 'size', 'trait', 'untyped', 'bab'
+  'insight', 'morale', 'natural', 'shield', 'size', 'trait', 'untyped'
 ];
 
 /**
@@ -22,7 +22,7 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
   const allStats = [
     'strength', 'dexterity', 'constitution', 
     'intelligence', 'wisdom', 'charisma',
-    'bab', 'ac'
+    'attackBonus', 'ac', 'fortitude', 'reflex', 'will'
   ];
   
   // Initialize tracking for each stat
@@ -31,8 +31,9 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
     
     // Initialize stats that may not exist in baseStats
     if (calculatedStats[stat] === undefined) {
-      if (stat === 'bab' || stat === 'ac') {
-        calculatedStats[stat] = 0;
+      if (stat === 'attackBonus' || stat === 'ac' || 
+          stat === 'fortitude' || stat === 'reflex' || stat === 'will') {
+        calculatedStats[stat] = 0; 
       } else {
         calculatedStats[stat] = 10; // Default for ability scores
       }
@@ -119,11 +120,18 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
  * Calculate derived combat stats based on final attribute values
  * 
  * @param {Object} finalStats - Character stats with all bonuses applied
+ * @param {Object} character - Character object with base values
  * @returns {Object} derived combat stats
  */
-export const calculateDerivedStats = (finalStats) => {
+export const calculateDerivedStats = (finalStats, character = {}) => {
   // Calculate modifiers
   const getModifier = (score) => Math.floor((score - 10) / 2);
+  
+  // Get base values from character
+  const baseAttackBonus = character.baseAttackBonus || 0;
+  const baseFortitude = character.baseFortitude || 0;
+  const baseReflex = character.baseReflex || 0;
+  const baseWill = character.baseWill || 0;
   
   // Start with base AC of 10
   let ac = 10;
@@ -140,11 +148,16 @@ export const calculateDerivedStats = (finalStats) => {
   
   return {
     ac: ac,
-    fortitudeSave: getModifier(finalStats.constitution || 10),
-    reflexSave: getModifier(finalStats.dexterity || 10),
-    willSave: getModifier(finalStats.wisdom || 10),
-    baseAttackBonus: finalStats.bab || 0
+    fortitudeSave: baseFortitude + getModifier(finalStats.constitution || 10) + (finalStats.fortitude || 0),
+    reflexSave: baseReflex + getModifier(finalStats.dexterity || 10) + (finalStats.reflex || 0),
+    willSave: baseWill + getModifier(finalStats.wisdom || 10) + (finalStats.will || 0),
+    attackBonus: baseAttackBonus + (finalStats.attackBonus || 0)
   };
 };
 
-  export default calculateFinalStats;
+const bonusCalculators = {
+  calculateFinalStats,
+  calculateDerivedStats
+};
+
+export default bonusCalculators;

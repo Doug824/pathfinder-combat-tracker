@@ -8,6 +8,13 @@ import ThemeToggle from './components/ThemeToggle';
 import useCharacterStorage from './hooks/useCharacterStorage';
 
 function App() {
+  // Add debugging logs to check component imports
+  console.log('CharacterManager:', typeof CharacterManager);
+  console.log('CharacterSetup:', typeof CharacterSetup);
+  console.log('CombatTracker:', typeof CombatTracker);
+  console.log('Navigation:', typeof Navigation);
+  console.log('ThemeToggle:', typeof ThemeToggle);
+
   const {
     characters,
     activeCharacterId,
@@ -63,6 +70,7 @@ function App() {
       setActiveGear([]);
       setCombatAbilities([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCharacter]);
   
   // Toggle dark mode and store preference
@@ -126,8 +134,16 @@ function App() {
     }
   };
   
+  // Make this a dedicated function to ensure it works properly
+  const handlePageChange = (pageName) => {
+    console.log("Changing page to:", pageName);
+    setCurrentPage(pageName);
+  };
+  
   // Render current page based on state
   const renderCurrentPage = () => {
+    console.log("Current page:", currentPage);
+    
     switch (currentPage) {
       case 'setup':
         return (
@@ -174,7 +190,7 @@ function App() {
         <div className="header-controls">
           <Navigation 
             currentPage={currentPage} 
-            setCurrentPage={setCurrentPage} 
+            setCurrentPage={handlePageChange} 
             activeCharacter={activeCharacter}
           />
           <ThemeToggle darkMode={darkMode} onToggle={handleThemeToggle} />

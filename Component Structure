@@ -1,9 +1,17 @@
 src/
 ├── components/
 │   ├── BuffTracker/
+│   │   └── BuffTracker.js
 │   ├── CharacterSheet/
+│   │   └── BasicStats.js
 │   ├── CombatStats/
+│   │   └── CombatStatsCalculator.js
 │   ├── CombatAbilities/
+│   │   └── CombatAbilities.js
+│   ├── CharacterManager.js
+│   ├── CharacterManagement/
+│   │   ├── CharacterForm.js
+│   │   └── CharacterList.js
 │   ├── Navigation.js
 │   └── ThemeToggle.js
 ├── pages/
