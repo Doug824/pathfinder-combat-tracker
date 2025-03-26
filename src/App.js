@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import BasicStats from './components/CharacterSheet/BasicStats';
-import BuffTracker from './components/BuffTracker/BuffTracker';
-import CombatStatsCalculator from './components/CombatStats/CombatStatsCalculator';
 import CharacterManager from './components/CharacterManager';
-import useCharacterStorage from './hooks/useCharacterStorage';
+import CharacterSetup from './pages/CharacterSetup';
+import CombatTracker from './pages/CombatTracker';
+import Navigation from './components/Navigation';
 import ThemeToggle from './components/ThemeToggle';
+import useCharacterStorage from './hooks/useCharacterStorage';
 
 function App() {
   const {
@@ -18,13 +18,17 @@ function App() {
     selectCharacter,
     updateStats,
     updateBuffs,
-    updateGear
+    updateGear,
+    updateCombatAbilities
   } = useCharacterStorage();
+  
+  // State for current page
+  const [currentPage, setCurrentPage] = useState('manager');
   
   // Theme state
   const [darkMode, setDarkMode] = useState(false);
   
-  // Default stats and buffs for when no character is active
+  // Default stats, buffs, and gear for when no character is active
   const [characterStats, setCharacterStats] = useState({
     strength: 10,
     dexterity: 10,
@@ -36,6 +40,7 @@ function App() {
   
   const [activeBuffs, setActiveBuffs] = useState([]);
   const [activeGear, setActiveGear] = useState([]);
+  const [combatAbilities, setCombatAbilities] = useState([]);
   
   // Update local state when active character changes
   useEffect(() => {
@@ -43,6 +48,7 @@ function App() {
       setCharacterStats(activeCharacter.stats || characterStats);
       setActiveBuffs(activeCharacter.buffs || []);
       setActiveGear(activeCharacter.gear || []);
+      setCombatAbilities(activeCharacter.combatAbilities || []);
     } else {
       // Reset to defaults if no character is active
       setCharacterStats({
@@ -55,6 +61,7 @@ function App() {
       });
       setActiveBuffs([]);
       setActiveGear([]);
+      setCombatAbilities([]);
     }
   }, [activeCharacter]);
   
@@ -80,6 +87,13 @@ function App() {
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
   
+  // Navigate to character setup when a new character is created
+  useEffect(() => {
+    if (activeCharacterId && currentPage === 'manager') {
+      setCurrentPage('setup');
+    }
+  }, [activeCharacterId, currentPage]);
+
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
   };
@@ -105,15 +119,42 @@ function App() {
     }
   };
   
-  return (
-    <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <header className="App-header">
-        <h1>Pathfinder Combat Tracker</h1>
-        <ThemeToggle darkMode={darkMode} onToggle={handleThemeToggle} />
-      </header>
-      
-      <div className="character-section">
-        <div className="sidebar">
+  const handleCombatAbilitiesChange = (newAbilities) => {
+    setCombatAbilities(newAbilities);
+    if (activeCharacter) {
+      updateCombatAbilities(newAbilities);
+    }
+  };
+  
+  // Render current page based on state
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'setup':
+        return (
+          <CharacterSetup 
+            character={activeCharacter}
+            onUpdateCharacter={updateCharacter}
+            onStatsChange={handleStatsChange}
+            onGearChange={handleGearChange}
+            stats={characterStats}
+            gear={activeGear}
+          />
+        );
+      case 'combat':
+        return (
+          <CombatTracker
+            character={activeCharacter}
+            stats={characterStats}
+            buffs={activeBuffs}
+            gear={activeGear}
+            combatAbilities={combatAbilities}
+            onBuffsChange={handleBuffsChange}
+            onCombatAbilitiesChange={handleCombatAbilitiesChange}
+          />
+        );
+      case 'manager':
+      default:
+        return (
           <CharacterManager
             characters={characters}
             activeCharacterId={activeCharacterId}
@@ -122,54 +163,47 @@ function App() {
             onUpdateCharacter={updateCharacter}
             onDeleteCharacter={deleteCharacter}
           />
+        );
+    }
+  };
+  
+  return (
+    <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+      <header className="App-header">
+        <h1>Pathfinder Combat Tracker</h1>
+        <div className="header-controls">
+          <Navigation 
+            currentPage={currentPage} 
+            setCurrentPage={setCurrentPage} 
+            activeCharacter={activeCharacter}
+          />
+          <ThemeToggle darkMode={darkMode} onToggle={handleThemeToggle} />
         </div>
-        
-        <div className="main-content">
-          {activeCharacter && (
-            <div className="active-character-info">
-              <h2>
-                {activeCharacter.name}
-                {activeCharacter.level && activeCharacter.characterClass && (
-                  <span className="character-subtitle">
-                    Level {activeCharacter.level} {activeCharacter.characterClass}
-                  </span>
-                )}
-              </h2>
-              
-              {activeCharacter.race && activeCharacter.alignment && (
-                <div className="character-meta">
-                  <span>{activeCharacter.race}</span>
-                  <span>{activeCharacter.alignment}</span>
-                </div>
+      </header>
+      
+      <main className="app-content">
+        {activeCharacter && currentPage !== 'manager' && (
+          <div className="active-character-info">
+            <h2>
+              {activeCharacter.name}
+              {activeCharacter.level && activeCharacter.characterClass && (
+                <span className="character-subtitle">
+                  Level {activeCharacter.level} {activeCharacter.characterClass}
+                </span>
               )}
-            </div>
-          )}
-          
-          <div className="character-stats-container">
-            <div className="column">
-              <BasicStats 
-                onStatsChange={handleStatsChange}
-                initialStats={characterStats} 
-              />
-            </div>
+            </h2>
             
-            <div className="column">
-              <BuffTracker 
-                onBuffsChange={handleBuffsChange}
-                initialBuffs={activeBuffs}
-              />
-            </div>
-            
-            <div className="column">
-              <CombatStatsCalculator 
-                baseStats={characterStats} 
-                buffs={activeBuffs}
-                gear={activeGear} 
-              />
-            </div>
+            {activeCharacter.race && activeCharacter.alignment && (
+              <div className="character-meta">
+                <span>{activeCharacter.race}</span>
+                <span>{activeCharacter.alignment}</span>
+              </div>
+            )}
           </div>
-        </div>
-      </div>
+        )}
+        
+        {renderCurrentPage()}
+      </main>
     </div>
   );
 }

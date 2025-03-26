@@ -1,12 +1,17 @@
-Copysrc/
+src/
 ├── components/
-│   ├── CharacterSheet/
 │   ├── BuffTracker/
+│   ├── CharacterSheet/
 │   ├── CombatStats/
-│   ├── InitiativeTracker/
-│   └── SpellTracker/
-├── contexts/
-│   └── CharacterContext.js
+│   ├── CombatAbilities/
+│   ├── Navigation.js
+│   └── ThemeToggle.js
+├── pages/
+│   ├── CharacterSetup.js
+│   └── CombatTracker.js
 ├── utils/
-│   └── calculators.js
-└── App.js
+│   └── bonusCalculator.js
+├── hooks/
+│   └── useCharacterStorage.js
+├── App.js
+└── App.css

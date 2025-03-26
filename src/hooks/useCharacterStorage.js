@@ -50,7 +50,18 @@ const useCharacterStorage = () => {
       ...characterData,
       id: Date.now().toString(),
       created: new Date().toISOString(),
-      lastModified: new Date().toISOString()
+      lastModified: new Date().toISOString(),
+      stats: characterData.stats || {
+        strength: 10,
+        dexterity: 10,
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 10,
+        charisma: 10
+      },
+      buffs: characterData.buffs || [],
+      gear: characterData.gear || [],
+      combatAbilities: characterData.combatAbilities || []
     };
     
     setCharacters(prev => [...prev, newCharacter]);
@@ -141,7 +152,19 @@ const useCharacterStorage = () => {
     }
   };
   
-  // Return the state and functions
+  // Update combat abilities for active character
+  const updateCombatAbilities = (newAbilities) => {
+    if (activeCharacter) {
+      const updatedCharacter = {
+        ...activeCharacter,
+        combatAbilities: newAbilities,
+        lastModified: new Date().toISOString()
+      };
+      
+      updateCharacter(updatedCharacter);
+    }
+  };
+  
   return {
     characters,
     activeCharacterId,
@@ -152,7 +175,8 @@ const useCharacterStorage = () => {
     selectCharacter,
     updateStats,
     updateBuffs,
-    updateGear
+    updateGear,
+    updateCombatAbilities
   };
 };
 
