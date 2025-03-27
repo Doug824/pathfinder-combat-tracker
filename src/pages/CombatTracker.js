@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import BuffTracker from '../components/BuffTracker/BuffTracker';
 import CombatStatsCalculator from '../components/CombatStats/CombatStatsCalculator';
 import CombatAbilities from '../components/CombatAbilities/CombatAbilities';
+import Playsheet from '../components/Playsheet';
 
 const CombatTracker = ({
   character,
@@ -10,12 +11,15 @@ const CombatTracker = ({
   gear,
   combatAbilities,
   onBuffsChange,
-  onCombatAbilitiesChange
+  onCombatAbilitiesChange,
+  onUpdateWeapons,
+  onUpdateCombatSettings
 }) => {
   // State for tracking active tabs
-  const [activeTab, setActiveTab] = useState('stats');
+  const [activeTab, setActiveTab] = useState('playsheet');
   
   const tabs = [
+    { id: 'playsheet', label: 'Playsheet' },
     { id: 'stats', label: 'Combat Stats' },
     { id: 'buffs', label: 'Active Buffs' },
     { id: 'abilities', label: 'Combat Abilities' }
@@ -37,6 +41,19 @@ const CombatTracker = ({
         </div>
         
         <div className="tab-content">
+          {activeTab === 'playsheet' && (
+            <Playsheet
+              character={character}
+              stats={stats}
+              buffs={buffs}
+              gear={gear}
+              combatAbilities={combatAbilities}
+              onCombatAbilitiesChange={onCombatAbilitiesChange}
+              onUpdateWeapons={onUpdateWeapons}
+              onUpdateCombatSettings={onUpdateCombatSettings}
+            />
+          )}
+          
           {activeTab === 'stats' && (
             <CombatStatsCalculator 
               baseStats={stats} 
@@ -60,6 +77,7 @@ const CombatTracker = ({
               baseStats={stats}
               buffs={buffs}
               gear={gear}
+              character={character}
             />
           )}
         </div>

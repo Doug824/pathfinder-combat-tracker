@@ -6,7 +6,8 @@ const CombatAbilities = ({
   onCombatAbilitiesChange, 
   baseStats, 
   buffs, 
-  gear 
+  gear,
+  character
 }) => {
   // Calculate base values including gear and permanent buffs
   const { finalStats } = calculateFinalStats(
@@ -21,11 +22,13 @@ const CombatAbilities = ({
     description: '',
     type: 'standard', // standard, swift, move, full-round, etc.
     isActive: false,
+    bonusType: 'untyped', // Add this line to ensure bonusType is set
     variableInput: false, // Whether this ability needs a value input when activated
     inputLabel: '', // Label for the input field (e.g., "Power Attack Penalty")
     inputMax: null, // Maximum value for the input
     inputMin: 0, // Minimum value for the input
     inputStep: 1, // Step value for the input
+    inputValue: 0, // Current value of the input
     effects: { 
       strength: 0, 
       dexterity: 0, 
@@ -38,35 +41,229 @@ const CombatAbilities = ({
       fortitude: 0,
       reflex: 0,
       will: 0,
-      damage: 0 
+      damage: 0,
+      cmb: 0,
+      cmd: 0
     }
   });
   
-  // State for ability activation inputs
-  const [abilityInputs, setAbilityInputs] = useState({});
-  
-  // Action types for combat abilities
-  const actionTypes = [
-    { value: 'standard', label: 'Standard Action' },
-    { value: 'move', label: 'Move Action' },
-    { value: 'swift', label: 'Swift Action' },
-    { value: 'immediate', label: 'Immediate Action' },
-    { value: 'full-round', label: 'Full-Round Action' },
-    { value: 'free', label: 'Free Action' },
-    { value: 'passive', label: 'Passive/Always On' }
-  ];
-  
-  // Helper function to determine if field should be shown for the input type
-  // eslint-disable-next-line no-unused-vars
-  const showForInputType = (fieldName) => {
-    if (!newAbility.variableInput) return false;
+  // Calculate variable effects based on input value and ability name/type
+  const calculateVariableEffects = (ability, inputValue) => {
+    if (!ability.variableInput) return ability.effects;
     
-    if (fieldName === 'inputLabel') return true;
-    if (fieldName === 'inputMax') return true;
-    if (fieldName === 'inputMin') return true;
-    if (fieldName === 'inputStep') return true;
+    // Default effects
+    let updatedEffects = { ...ability.effects };
     
-    return false;
+    // Handle Improved Power Attack (sacrifice attack for damage)
+    if (ability.name === 'Improved Power Attack') {
+      updatedEffects = {
+        ...updatedEffects,
+        attackBonus: -inputValue,
+        damage: inputValue * 2
+      };
+    }
+    // Handle Greater Power Attack (sacrifice damage for attack)
+    else if (ability.name === 'Greater Power Attack') {
+      updatedEffects = {
+        ...updatedEffects,
+        attackBonus: inputValue,
+        damage: -inputValue
+      };
+    }
+    // Handle Combat Expertise (sacrifice attack for AC)
+    else if (ability.name === 'Combat Expertise') {
+      updatedEffects = {
+        ...updatedEffects,
+        attackBonus: -inputValue,
+        ac: inputValue
+      };
+    }
+    // Handle Deadly Aim (sacrifice attack for damage, like Power Attack for ranged)
+    else if (ability.name === 'Deadly Aim') {
+      updatedEffects = {
+        ...updatedEffects,
+        attackBonus: -inputValue,
+        damage: inputValue * 2
+      };
+    }
+    // Generic handler for other variable abilities
+    else {
+      // Default to Power Attack behavior for backward compatibility
+      updatedEffects = {
+        ...updatedEffects,
+        attackBonus: -inputValue,
+        damage: inputValue * 2
+      };
+    }
+    
+    return updatedEffects;
+  };
+  
+  // Function to check if abilities are mutually exclusive
+  const checkMutuallyExclusiveAbilities = (abilities, abilityId, isActive) => {
+    // Define groups of mutually exclusive abilities
+    const exclusiveGroups = [
+      ['Improved Power Attack', 'Greater Power Attack'], // These abilities cannot be used together
+      ['Combat Expertise', 'Deadly Aim', 'Improved Power Attack', 'Greater Power Attack'] // Complex exclusion group
+      // Additional groups can be added here
+    ];
+    
+    // If we're trying to activate an ability, check for conflicts
+    if (isActive) {
+      // Find the ability we're trying to activate
+      const targetAbility = abilities.find(a => a.id === abilityId);
+      if (!targetAbility) return abilities; // Safety check
+      
+      // Check if this ability belongs to any exclusive group
+      for (let group of exclusiveGroups) {
+        if (group.includes(targetAbility.name)) {
+          // This ability is part of an exclusive group
+          // We need to deactivate any other active abilities in this group
+          return abilities.map(ability => {
+            if (ability.id !== abilityId && group.includes(ability.name) && ability.isActive) {
+              // This is a different ability in the same exclusive group and it's active
+              // Deactivate it
+              return { ...ability, isActive: false };
+            }
+            return ability;
+          });
+        }
+      }
+    }
+    
+    // If no conflicts or we're deactivating, return abilities unchanged
+    return abilities;
+  };
+  
+  // Handle adding predefined abilities
+  const handleAddPredefinedAbilities = () => {
+    // Get current base attack bonus
+    const bab = (finalStats.baseAttackBonus || character?.baseAttackBonus || 5);
+    
+    // Create predefined abilities
+    const predefinedAbilities = [
+      {
+        name: 'Improved Power Attack',
+        description: 'Sacrifice attack bonus up to your BAB to gain double that amount as damage bonus.',
+        type: 'passive',
+        bonusType: 'untyped',
+        isActive: false,
+        variableInput: true,
+        inputLabel: 'Attack Penalty',
+        inputMax: bab,
+        inputMin: 1,
+        inputStep: 1,
+        inputValue: 1,
+        effects: {
+          attackBonus: -1,
+          damage: 2
+        }
+      },
+      {
+        name: 'Greater Power Attack',
+        description: 'Sacrifice damage bonus up to your BAB to gain that amount as attack bonus.',
+        type: 'passive',
+        bonusType: 'untyped',
+        isActive: false,
+        variableInput: true,
+        inputLabel: 'Damage Penalty',
+        inputMax: bab,
+        inputMin: 1,
+        inputStep: 1,
+        inputValue: 1,
+        effects: {
+          attackBonus: 1,
+          damage: -1
+        }
+      },
+      {
+        name: 'Combat Expertise',
+        description: 'Trade attack bonus for AC bonus at a 1-to-1 ratio.',
+        type: 'passive',
+        bonusType: 'dodge',
+        isActive: false,
+        variableInput: true,
+        inputLabel: 'Exchange Value',
+        inputMax: bab,
+        inputMin: 1,
+        inputStep: 1,
+        inputValue: 1,
+        effects: {
+          attackBonus: -1,
+          ac: 1
+        }
+      },
+      {
+        name: 'Deadly Aim',
+        description: 'For ranged attacks: sacrifice accuracy for damage.',
+        type: 'passive',
+        bonusType: 'untyped',
+        isActive: false,
+        variableInput: true,
+        inputLabel: 'Attack Penalty',
+        inputMax: bab,
+        inputMin: 1,
+        inputStep: 1,
+        inputValue: 1,
+        effects: {
+          attackBonus: -1,
+          damage: 2
+        }
+      },
+      {
+        name: 'Fighting Defensively',
+        description: 'Take -4 penalty on all attacks to gain +2 dodge bonus to AC.',
+        type: 'passive',
+        bonusType: 'dodge',
+        isActive: false,
+        variableInput: false,
+        effects: {
+          attackBonus: -4,
+          ac: 2
+        }
+      },
+      {
+        name: 'Rage',
+        description: '+4 STR, +4 CON, +2 Will saves, -2 AC',
+        type: 'standard',
+        bonusType: 'morale',
+        isActive: false,
+        variableInput: false,
+        effects: {
+          strength: 4,
+          constitution: 4,
+          will: 2,
+          ac: -2
+        }
+      },
+      {
+        name: 'Bless',
+        description: '+1 morale bonus on attack rolls and saves vs. fear',
+        type: 'standard',
+        bonusType: 'morale',
+        isActive: false,
+        variableInput: false,
+        effects: {
+          attackBonus: 1,
+          will: 1
+        }
+      }
+    ];
+    
+    // Add IDs to the predefined abilities
+    const abilitiesWithIds = predefinedAbilities.map(ability => ({
+      ...ability,
+      id: Date.now() + Math.random().toString(36).substr(2, 9) // Ensure unique IDs
+    }));
+    
+    // Add to existing abilities (avoiding duplicates by name)
+    const existingNames = combatAbilities.map(a => a.name);
+    const newAbilities = [
+      ...combatAbilities,
+      ...abilitiesWithIds.filter(a => !existingNames.includes(a.name))
+    ];
+    
+    onCombatAbilitiesChange(newAbilities);
   };
   
   // Handle adding a new combat ability
@@ -77,8 +274,15 @@ const CombatAbilities = ({
     const abilityToAdd = { 
       ...newAbility, 
       id: Date.now(),
-      isActive: false
+      isActive: false,
+      inputValue: newAbility.inputMin || 0,
+      bonusType: newAbility.bonusType || 'untyped'
     };
+    
+    // If it's a variable input ability, calculate its effects based on the starting value
+    if (abilityToAdd.variableInput) {
+      abilityToAdd.effects = calculateVariableEffects(abilityToAdd, abilityToAdd.inputValue);
+    }
     
     // Update abilities
     const updatedAbilities = [...combatAbilities, abilityToAdd];
@@ -90,11 +294,13 @@ const CombatAbilities = ({
       description: '',
       type: 'standard',
       isActive: false,
+      bonusType: 'untyped',
       variableInput: false,
       inputLabel: '',
       inputMax: null,
       inputMin: 0,
       inputStep: 1,
+      inputValue: 0,
       effects: { 
         strength: 0, 
         dexterity: 0, 
@@ -107,7 +313,9 @@ const CombatAbilities = ({
         fortitude: 0,
         reflex: 0,
         will: 0,
-        damage: 0 
+        damage: 0,
+        cmb: 0,
+        cmd: 0
       }
     });
   };
@@ -129,7 +337,8 @@ const CombatAbilities = ({
           inputLabel: '',
           inputMax: null,
           inputMin: 0,
-          inputStep: 1
+          inputStep: 1,
+          inputValue: 0
         };
       }
       
@@ -150,9 +359,23 @@ const CombatAbilities = ({
   
   // Handle activation/deactivation of an ability
   const handleToggleAbility = (abilityId, isActive) => {
-    const updatedAbilities = combatAbilities.map(ability => {
+    // Check for mutually exclusive abilities
+    let updatedAbilities = checkMutuallyExclusiveAbilities(combatAbilities, abilityId, isActive);
+    
+    // Now apply the toggle and effect calculation
+    updatedAbilities = updatedAbilities.map(ability => {
       if (ability.id === abilityId) {
-        return { ...ability, isActive };
+        // Calculate effects if this is a variable input ability being activated
+        let updatedEffects = ability.effects;
+        if (isActive && ability.variableInput) {
+          updatedEffects = calculateVariableEffects(ability, ability.inputValue || 0);
+        }
+        
+        return { 
+          ...ability, 
+          isActive,
+          effects: updatedEffects
+        };
       }
       return ability;
     });
@@ -163,33 +386,22 @@ const CombatAbilities = ({
   // Handle ability input change
   const handleAbilityInputChange = (abilityId, value) => {
     const numValue = parseInt(value) || 0;
-    setAbilityInputs(prev => ({
-      ...prev,
-      [abilityId]: numValue
-    }));
-  };
-  
-  // Calculate the current effects of an ability
-  const calculateAbilityEffects = (ability) => {
-    if (!ability.isActive) return ability.effects;
     
-    if (ability.variableInput) {
-      const inputValue = abilityInputs[ability.id] || 0;
-      
-      // Example: Power Attack - For every point of BAB sacrificed, gain twice that in damage
-      if (ability.name.toLowerCase().includes('power attack')) {
-        return {
-          ...ability.effects,
-          attackBonus: -inputValue,
-          damage: inputValue * 2
+    const updatedAbilities = combatAbilities.map(ability => {
+      if (ability.id === abilityId) {
+        // Calculate the new effects based on the input value
+        const updatedEffects = calculateVariableEffects(ability, numValue);
+        
+        return { 
+          ...ability, 
+          inputValue: numValue,
+          effects: updatedEffects
         };
       }
-      
-      // Default for other variable abilities - just return effects as is
-      return ability.effects;
-    }
+      return ability;
+    });
     
-    return ability.effects;
+    onCombatAbilitiesChange(updatedAbilities);
   };
   
   // Get whether an ability can be used (might depend on other factors like remaining uses per day)
@@ -202,14 +414,36 @@ const CombatAbilities = ({
     <div className="combat-abilities">
       <h2>Combat Abilities</h2>
       
+      <button 
+        type="button"
+        onClick={handleAddPredefinedAbilities}
+        className="add-predefined-abilities-button"
+        style={{
+          marginTop: '10px',
+          marginBottom: '20px',
+          background: 'var(--highlight-color)',
+          color: 'white',
+          padding: '10px 15px',
+          borderRadius: '4px',
+          border: 'none',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          display: 'block',
+          width: '100%'
+        }}
+      >
+        Add Common Combat Abilities
+      </button>
+      
       <div className="active-abilities">
         {combatAbilities.length === 0 ? (
-          <p>No combat abilities defined. Add abilities below.</p>
+          <p>No combat abilities defined. Add abilities below or use the "Add Common Combat Abilities" button.</p>
         ) : (
           <div className="abilities-list">
             {combatAbilities.map(ability => {
               const canUse = getCanUseAbility(ability);
-              const effects = calculateAbilityEffects(ability);
+              const effects = ability.isActive && ability.variableInput ? 
+                calculateVariableEffects(ability, ability.inputValue || 0) : ability.effects;
               
               return (
                 <div key={ability.id} className={`ability-card ${ability.isActive ? 'active' : ''}`}>
@@ -224,7 +458,8 @@ const CombatAbilities = ({
                   </div>
                   
                   <div className="ability-meta">
-                    <span className="ability-type">{actionTypes.find(t => t.value === ability.type)?.label}</span>
+                    <span className="ability-type">{ability.type.charAt(0).toUpperCase() + ability.type.slice(1)} Action</span>
+                    <span className="ability-bonus-type">Bonus Type: {ability.bonusType.charAt(0).toUpperCase() + ability.bonusType.slice(1)}</span>
                   </div>
                   
                   {ability.description && (
@@ -255,7 +490,7 @@ const CombatAbilities = ({
                           min={ability.inputMin || 0}
                           max={ability.inputMax || (finalStats.baseAttackBonus || 20)}
                           step={ability.inputStep || 1}
-                          value={abilityInputs[ability.id] || 0}
+                          value={ability.inputValue || 0}
                           onChange={(e) => handleAbilityInputChange(ability.id, e.target.value)}
                           disabled={!ability.isActive}
                         />
@@ -303,11 +538,35 @@ const CombatAbilities = ({
               onChange={(e) => handleAbilityChange('type', e.target.value)}
               className="form-control"
             >
-              {actionTypes.map(type => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
+              <option value="standard">Standard Action</option>
+              <option value="move">Move Action</option>
+              <option value="swift">Swift Action</option>
+              <option value="immediate">Immediate Action</option>
+              <option value="full-round">Full-Round Action</option>
+              <option value="free">Free Action</option>
+              <option value="passive">Passive/Always On</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label>Bonus Type</label>
+            <select
+              value={newAbility.bonusType}
+              onChange={(e) => handleAbilityChange('bonusType', e.target.value)}
+              className="form-control"
+            >
+              <option value="untyped">Untyped</option>
+              <option value="enhancement">Enhancement</option>
+              <option value="morale">Morale</option>
+              <option value="competence">Competence</option>
+              <option value="luck">Luck</option>
+              <option value="sacred">Sacred</option>
+              <option value="profane">Profane</option>
+              <option value="dodge">Dodge</option>
+              <option value="circumstance">Circumstance</option>
+              <option value="insight">Insight</option>
+              <option value="resistance">Resistance</option>
+              <option value="size">Size</option>
             </select>
           </div>
         </div>
@@ -483,6 +742,28 @@ const CombatAbilities = ({
                 type="number"
                 value={newAbility.effects.damage}
                 onChange={(e) => handleEffectChange('damage', e.target.value)}
+                className="form-control"
+              />
+            </div>
+          </div>
+          
+          <div className="form-row effects-row">
+            <div className="form-group">
+              <label>CMB</label>
+              <input
+                type="number"
+                value={newAbility.effects.cmb}
+                onChange={(e) => handleEffectChange('cmb', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>CMD</label>
+              <input
+                type="number"
+                value={newAbility.effects.cmd}
+                onChange={(e) => handleEffectChange('cmd', e.target.value)}
                 className="form-control"
               />
             </div>

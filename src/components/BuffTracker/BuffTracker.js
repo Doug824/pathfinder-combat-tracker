@@ -44,6 +44,7 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
     { value: 'luck', label: 'Luck' },
     { value: 'sacred', label: 'Sacred' },
     { value: 'profane', label: 'Profane' },
+    { value: 'resistance', label: 'Resistance' },
     { value: 'alchemical', label: 'Alchemical' },
     { value: 'armor', label: 'Armor' },
     { value: 'competence', label: 'Competence' },

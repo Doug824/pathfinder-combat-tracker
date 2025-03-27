@@ -1,12 +1,12 @@
-// List of all possible bonus types based on Pathfinder rules
+// List of all possible bonus types
 export const bonusTypes = [
   'enhancement', 'luck', 'sacred', 'profane', 'alchemical', 'armor',
   'competence', 'circumstance', 'deflection', 'dodge', 'inherent',
-  'insight', 'morale', 'natural', 'shield', 'size', 'trait', 'untyped'
+  'insight', 'morale', 'natural', 'resistance', 'shield', 'size', 'trait', 'untyped'
 ];
 
 /**
- * Calculate final stats with all buffs and gear applied using Pathfinder stacking rules
+ * Calculate final stats with all buffs and gear applied
  * 
  * @param {Object} baseStats - Base character stats
  * @param {Array} buffs - Array of active buffs
@@ -22,7 +22,8 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
   const allStats = [
     'strength', 'dexterity', 'constitution', 
     'intelligence', 'wisdom', 'charisma',
-    'attackBonus', 'ac', 'fortitude', 'reflex', 'will'
+    'attackBonus', 'ac', 'fortitude', 'reflex', 'will',
+    'cmb', 'cmd', 'damage'
   ];
   
   // Initialize tracking for each stat
@@ -32,7 +33,8 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
     // Initialize stats that may not exist in baseStats
     if (calculatedStats[stat] === undefined) {
       if (stat === 'attackBonus' || stat === 'ac' || 
-          stat === 'fortitude' || stat === 'reflex' || stat === 'will') {
+          stat === 'fortitude' || stat === 'reflex' || stat === 'will' ||
+          stat === 'cmb' || stat === 'cmd' || stat === 'damage') {
         calculatedStats[stat] = 0; 
       } else {
         calculatedStats[stat] = 10; // Default for ability scores
@@ -53,11 +55,14 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
   
   // Group all buffs by stat and bonus type
   buffs.forEach(buff => {
+    // Make sure buff has a bonusType, default to 'untyped' if not
+    const bonusType = buff.bonusType || 'untyped';
+    
     Object.entries(buff.effects || {}).forEach(([stat, value]) => {
       if (value !== 0 && groupedBonuses[stat]) {
-        groupedBonuses[stat][buff.bonusType].push({
+        groupedBonuses[stat][bonusType].push({
           value: value,
-          name: buff.name,
+          name: buff.name || 'Unknown',
           source: 'buff'
         });
       }
@@ -66,11 +71,14 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
   
   // Group all gear by stat and bonus type
   gear.forEach(item => {
+    // Make sure item has a bonusType, default to 'untyped' if not
+    const bonusType = item.bonusType || 'untyped';
+    
     Object.entries(item.effects || {}).forEach(([stat, value]) => {
       if (value !== 0 && groupedBonuses[stat]) {
-        groupedBonuses[stat][item.bonusType].push({
+        groupedBonuses[stat][bonusType].push({
           value: value,
-          name: item.name,
+          name: item.name || 'Unknown',
           source: 'gear',
           slot: item.slot
         });
@@ -79,7 +87,7 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
   });
   
   // Apply stacking rules to each stat
-  Object.keys(calculatedStats).forEach(stat => {
+  Object.keys(groupedBonuses).forEach(stat => {
     // For each stat, process each bonus type
     Object.entries(groupedBonuses[stat] || {}).forEach(([bonusType, bonuses]) => {
       if (bonuses.length > 0) {

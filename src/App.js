@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './App.css';
 import CharacterManager from './components/CharacterManager';
 import CharacterSetup from './pages/CharacterSetup';
@@ -8,13 +8,9 @@ import ThemeToggle from './components/ThemeToggle';
 import useCharacterStorage from './hooks/useCharacterStorage';
 
 function App() {
-  // Add debugging logs to check component imports
-  console.log('CharacterManager:', typeof CharacterManager);
-  console.log('CharacterSetup:', typeof CharacterSetup);
-  console.log('CombatTracker:', typeof CombatTracker);
-  console.log('Navigation:', typeof Navigation);
-  console.log('ThemeToggle:', typeof ThemeToggle);
-
+  // For debugging
+  console.log("App rendering");
+  
   const {
     characters,
     activeCharacterId,
@@ -26,16 +22,18 @@ function App() {
     updateStats,
     updateBuffs,
     updateGear,
-    updateCombatAbilities
+    updateCombatAbilities,
+    updateWeapons,
+    updateCombatSettings
   } = useCharacterStorage();
   
   // State for current page
   const [currentPage, setCurrentPage] = useState('manager');
   
-  // Theme state
-  const [darkMode, setDarkMode] = useState(false);
+  // Theme state - initialize to true for dark mode default
+  const [darkMode, setDarkMode] = useState(true);
   
-  // Default stats, buffs, and gear for when no character is active
+  // Default stats for when no character is active
   const [characterStats, setCharacterStats] = useState({
     strength: 10,
     dexterity: 10,
@@ -49,10 +47,26 @@ function App() {
   const [activeGear, setActiveGear] = useState([]);
   const [combatAbilities, setCombatAbilities] = useState([]);
   
+  useEffect(() => {
+    // Force to manager page on initial load if no character is selected
+    if (currentPage !== 'manager' && !activeCharacterId) {
+      setCurrentPage('manager');
+    }
+  }, [currentPage, activeCharacterId]);
+  
   // Update local state when active character changes
   useEffect(() => {
+    console.log("Active character changed:", activeCharacter);
     if (activeCharacter) {
-      setCharacterStats(activeCharacter.stats || characterStats);
+      // Safely set statistics with defaults
+      setCharacterStats({
+        strength: parseInt(activeCharacter.stats?.strength) || 10,
+        dexterity: parseInt(activeCharacter.stats?.dexterity) || 10,
+        constitution: parseInt(activeCharacter.stats?.constitution) || 10,
+        intelligence: parseInt(activeCharacter.stats?.intelligence) || 10,
+        wisdom: parseInt(activeCharacter.stats?.wisdom) || 10,
+        charisma: parseInt(activeCharacter.stats?.charisma) || 10
+      });
       setActiveBuffs(activeCharacter.buffs || []);
       setActiveGear(activeCharacter.gear || []);
       setCombatAbilities(activeCharacter.combatAbilities || []);
@@ -70,7 +84,6 @@ function App() {
       setActiveGear([]);
       setCombatAbilities([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCharacter]);
   
   // Toggle dark mode and store preference
@@ -79,9 +92,10 @@ function App() {
     if (savedTheme) {
       setDarkMode(savedTheme === 'true');
     } else {
-      // Check for system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setDarkMode(prefersDark);
+      // Default to dark mode
+      setDarkMode(true);
+      // Save the preference
+      localStorage.setItem('darkMode', 'true');
     }
   }, []);
   
@@ -92,28 +106,55 @@ function App() {
     } else {
       document.body.classList.remove('dark-mode');
     }
-    localStorage.setItem('darkMode', darkMode);
+    localStorage.setItem('darkMode', darkMode.toString());
   }, [darkMode]);
+  
+  // Make page change handler a stable callback
+  const handlePageChange = useCallback((pageName) => {
+    console.log("Changing page to:", pageName);
+    setCurrentPage(pageName);
+  }, []);
   
   // Navigate to character setup when a new character is created
   useEffect(() => {
     if (activeCharacterId && currentPage === 'manager') {
-      setCurrentPage('setup');
+      console.log("New character selected, navigating to setup");
+      handlePageChange('setup');
     }
-  }, [activeCharacterId, currentPage]);
+  }, [activeCharacterId, currentPage, handlePageChange]);
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
   };
   
+  // Improved stats change handler
   const handleStatsChange = (newStats) => {
-    setCharacterStats(newStats);
+    console.log("Stats changed:", newStats);
+    
+    // Ensure all stats are integers
+    const parsedStats = {
+      strength: parseInt(newStats.strength) || 10,
+      dexterity: parseInt(newStats.dexterity) || 10,
+      constitution: parseInt(newStats.constitution) || 10,
+      intelligence: parseInt(newStats.intelligence) || 10,
+      wisdom: parseInt(newStats.wisdom) || 10,
+      charisma: parseInt(newStats.charisma) || 10
+    };
+    
+    // Update local state
+    setCharacterStats(parsedStats);
+    
+    // Immediately update the character if it exists
     if (activeCharacter) {
-      updateStats(newStats);
+      console.log("Updating stats for active character:", activeCharacter.name);
+      updateStats(parsedStats);
+    } else {
+      console.warn("No active character to update stats for");
     }
   };
   
   const handleBuffsChange = (newBuffs) => {
+    console.log("Buffs changed");
     setActiveBuffs(newBuffs);
     if (activeCharacter) {
       updateBuffs(newBuffs);
@@ -121,6 +162,7 @@ function App() {
   };
   
   const handleGearChange = (newGear) => {
+    console.log("Gear changed");
     setActiveGear(newGear);
     if (activeCharacter) {
       updateGear(newGear);
@@ -128,60 +170,28 @@ function App() {
   };
   
   const handleCombatAbilitiesChange = (newAbilities) => {
+    console.log("Combat abilities changed");
     setCombatAbilities(newAbilities);
     if (activeCharacter) {
       updateCombatAbilities(newAbilities);
     }
   };
   
-  // Make this a dedicated function to ensure it works properly
-  const handlePageChange = (pageName) => {
-    console.log("Changing page to:", pageName);
-    setCurrentPage(pageName);
-  };
-  
-  // Render current page based on state
-  const renderCurrentPage = () => {
-    console.log("Current page:", currentPage);
-    
-    switch (currentPage) {
-      case 'setup':
-        return (
-          <CharacterSetup 
-            character={activeCharacter}
-            onUpdateCharacter={updateCharacter}
-            onStatsChange={handleStatsChange}
-            onGearChange={handleGearChange}
-            stats={characterStats}
-            gear={activeGear}
-          />
-        );
-      case 'combat':
-        return (
-          <CombatTracker
-            character={activeCharacter}
-            stats={characterStats}
-            buffs={activeBuffs}
-            gear={activeGear}
-            combatAbilities={combatAbilities}
-            onBuffsChange={handleBuffsChange}
-            onCombatAbilitiesChange={handleCombatAbilitiesChange}
-          />
-        );
-      case 'manager':
-      default:
-        return (
-          <CharacterManager
-            characters={characters}
-            activeCharacterId={activeCharacterId}
-            onSelectCharacter={selectCharacter}
-            onCreateCharacter={createCharacter}
-            onUpdateCharacter={updateCharacter}
-            onDeleteCharacter={deleteCharacter}
-          />
-        );
+  const handleUpdateWeapons = (primaryWeapon, offhandWeapon) => {
+    console.log("Weapons updated");
+    if (activeCharacter) {
+      updateWeapons(primaryWeapon, offhandWeapon);
     }
   };
+  
+  const handleUpdateCombatSettings = (settings) => {
+    console.log("Combat settings updated", settings);
+    if (activeCharacter) {
+      updateCombatSettings(settings);
+    }
+  };
+  
+  console.log("Current page:", currentPage);
   
   return (
     <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
@@ -218,7 +228,53 @@ function App() {
           </div>
         )}
         
-        {renderCurrentPage()}
+        {/* Always render something based on currentPage */}
+        {currentPage === 'manager' && (
+          <CharacterManager
+            characters={characters}
+            activeCharacterId={activeCharacterId}
+            onSelectCharacter={selectCharacter}
+            onCreateCharacter={createCharacter}
+            onUpdateCharacter={updateCharacter}
+            onDeleteCharacter={deleteCharacter}
+          />
+        )}
+        
+        {currentPage === 'setup' && activeCharacter && (
+          <CharacterSetup 
+            character={activeCharacter}
+            onUpdateCharacter={updateCharacter}
+            onStatsChange={handleStatsChange}
+            onGearChange={handleGearChange}
+            stats={characterStats}
+            gear={activeGear}
+          />
+        )}
+        
+        {currentPage === 'combat' && activeCharacter && (
+          <CombatTracker
+            character={activeCharacter}
+            stats={characterStats}
+            buffs={activeBuffs}
+            gear={activeGear}
+            combatAbilities={combatAbilities}
+            onBuffsChange={handleBuffsChange}
+            onCombatAbilitiesChange={handleCombatAbilitiesChange}
+            onUpdateWeapons={handleUpdateWeapons}
+            onUpdateCombatSettings={handleUpdateCombatSettings}
+          />
+        )}
+        
+        {/* Fallback if somehow nothing matches */}
+        {!(['manager', 'setup', 'combat'].includes(currentPage)) && (
+          <div className="error-message">
+            <h2>Navigation Error</h2>
+            <p>Invalid page: {currentPage}</p>
+            <button onClick={() => setCurrentPage('manager')}>
+              Return to Character Manager
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );

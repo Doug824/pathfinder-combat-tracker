@@ -15,70 +15,8 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
       intelligence: 10,
       wisdom: 10,
       charisma: 10
-    },
-    buffs: character?.buffs || [],
-    gear: character?.gear || [] // Add gear array to character data
-  });
-  
-  // State for new gear item form
-  const [newGearItem, setNewGearItem] = useState({
-    name: '',
-    slot: 'head',
-    bonusType: 'enhancement',
-    effects: { 
-      strength: 0, 
-      dexterity: 0, 
-      constitution: 0, 
-      intelligence: 0, 
-      wisdom: 0, 
-      charisma: 0,
-      bab: 0,
-      ac: 0
     }
   });
-  
-  // Equipment slots based on Pathfinder rules
-  const equipmentSlots = [
-    { value: 'head', label: 'Head' },
-    { value: 'headband', label: 'Headband' },
-    { value: 'eyes', label: 'Eyes' },
-    { value: 'shoulders', label: 'Shoulders' },
-    { value: 'neck', label: 'Neck' },
-    { value: 'chest', label: 'Chest' },
-    { value: 'body', label: 'Body' },
-    { value: 'armor', label: 'Armor' },
-    { value: 'belt', label: 'Belt' },
-    { value: 'wrists', label: 'Wrists' },
-    { value: 'hands', label: 'Hands' },
-    { value: 'ring1', label: 'Ring 1' },
-    { value: 'ring2', label: 'Ring 2' },
-    { value: 'feet', label: 'Feet' },
-    { value: 'weapon', label: 'Weapon' },
-    { value: 'shield', label: 'Shield' },
-    { value: 'other', label: 'Other' }
-  ];
-  
-  // Bonus types - same as in BuffTracker
-  const bonusTypes = [
-    { value: 'enhancement', label: 'Enhancement' },
-    { value: 'luck', label: 'Luck' },
-    { value: 'sacred', label: 'Sacred' },
-    { value: 'profane', label: 'Profane' },
-    { value: 'alchemical', label: 'Alchemical' },
-    { value: 'armor', label: 'Armor' },
-    { value: 'competence', label: 'Competence' },
-    { value: 'circumstance', label: 'Circumstance' },
-    { value: 'deflection', label: 'Deflection' },
-    { value: 'dodge', label: 'Dodge' },
-    { value: 'inherent', label: 'Inherent' },
-    { value: 'insight', label: 'Insight' },
-    { value: 'morale', label: 'Morale' },
-    { value: 'natural', label: 'Natural Armor' },
-    { value: 'shield', label: 'Shield' },
-    { value: 'size', label: 'Size' },
-    { value: 'trait', label: 'Trait' },
-    { value: 'untyped', label: 'Untyped' }
-  ];
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,74 +27,40 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
   };
   
   const handleStatChange = (stat, value) => {
+    const numValue = parseInt(value) || 10;
+    
     setCharacterData(prev => ({
       ...prev,
       stats: {
         ...prev.stats,
-        [stat]: parseInt(value) || 0
-      }
-    }));
-  };
-  
-  const handleAddGear = () => {
-    if (newGearItem.name.trim() === '') return;
-    
-    // Create a copy of the gear item with a unique ID
-    const gearToAdd = { 
-      ...newGearItem, 
-      id: Date.now() 
-    };
-    
-    // Update character data with new gear
-    const updatedGear = [...characterData.gear, gearToAdd];
-    setCharacterData(prev => ({
-      ...prev,
-      gear: updatedGear
-    }));
-    
-    // Reset form
-    setNewGearItem({
-      name: '',
-      slot: 'head',
-      bonusType: 'enhancement',
-      effects: { 
-        strength: 0, 
-        dexterity: 0, 
-        constitution: 0, 
-        intelligence: 0, 
-        wisdom: 0, 
-        charisma: 0,
-        bab: 0,
-        ac: 0
-      }
-    });
-  };
-  
-  const handleRemoveGear = (gearId) => {
-    const updatedGear = characterData.gear.filter(item => item.id !== gearId);
-    setCharacterData(prev => ({
-      ...prev,
-      gear: updatedGear
-    }));
-  };
-  
-  const handleGearChange = (field, value) => {
-    setNewGearItem(prev => ({ ...prev, [field]: value }));
-  };
-  
-  const handleGearEffectChange = (stat, value) => {
-    setNewGearItem(prev => ({
-      ...prev,
-      effects: {
-        ...prev.effects,
-        [stat]: parseInt(value) || 0
+        [stat]: numValue
       }
     }));
   };
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSaveCharacter(characterData);
+    
+    // Log the data being sent to make sure stats are included
+    console.log("Submitting character data:", characterData);
+    
+    // Create a clean copy with proper types for all values and ensure stats are included
+    const dataToSave = {
+      ...characterData,
+      level: parseInt(characterData.level) || 1,
+      // Explicitly include stats to make sure they're not lost
+      stats: {
+        strength: parseInt(characterData.stats.strength) || 10,
+        dexterity: parseInt(characterData.stats.dexterity) || 10,
+        constitution: parseInt(characterData.stats.constitution) || 10,
+        intelligence: parseInt(characterData.stats.intelligence) || 10,
+        wisdom: parseInt(characterData.stats.wisdom) || 10,
+        charisma: parseInt(characterData.stats.charisma) || 10
+      }
+    };
+    
+    // Call the save function with the cleaned data
+    onSaveCharacter(dataToSave);
   };
   
   return (
@@ -254,156 +158,6 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
               />
             </div>
           ))}
-        </div>
-        
-        {/* Gear Section */}
-        <h3>Equipment & Gear</h3>
-        <div className="gear-section">
-          <div className="active-gear">
-            {characterData.gear.length === 0 ? (
-              <p>No gear equipped. Add gear items below.</p>
-            ) : (
-              <div className="gear-list">
-                {characterData.gear.map(item => (
-                  <div key={item.id} className="gear-card">
-                    <div className="gear-card-header">
-                      <h4>{item.name}</h4>
-                      <button 
-                        type="button" 
-                        className="remove-gear-btn"
-                        onClick={() => handleRemoveGear(item.id)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <div className="gear-meta">
-                      <span>Slot: {equipmentSlots.find(slot => slot.value === item.slot)?.label}</span>
-                      <span>Type: {item.bonusType.charAt(0).toUpperCase() + item.bonusType.slice(1)}</span>
-                    </div>
-                    <div className="gear-effects">
-                      {Object.entries(item.effects)
-                        .filter(([_, value]) => value !== 0)
-                        .map(([stat, value]) => (
-                          <span key={stat} className="gear-stat">
-                            {stat.charAt(0).toUpperCase() + stat.slice(1)}: {value > 0 ? '+' : ''}{value}
-                          </span>
-                        ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="new-gear-form">
-            <h4>Add New Gear</h4>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Item Name</label>
-                <input 
-                  type="text" 
-                  value={newGearItem.name}
-                  onChange={(e) => handleGearChange('name', e.target.value)}
-                  className="form-control"
-                />
-              </div>
-            </div>
-            
-            <div className="form-row">
-              <div className="form-group">
-                <label>Equipment Slot</label>
-                <select
-                  value={newGearItem.slot}
-                  onChange={(e) => handleGearChange('slot', e.target.value)}
-                  className="form-control"
-                >
-                  {equipmentSlots.map(slot => (
-                    <option key={slot.value} value={slot.value}>
-                      {slot.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="form-group">
-                <label>Bonus Type</label>
-                <select
-                  value={newGearItem.bonusType}
-                  onChange={(e) => handleGearChange('bonusType', e.target.value)}
-                  className="form-control"
-                >
-                  {bonusTypes.map(type => (
-                    <option key={type.value} value={type.value}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            
-            <h4>Stat Bonuses</h4>
-            <div className="gear-stats-container">
-              {/* First row: strength, dexterity, constitution */}
-              <div className="form-row gear-stats-row">
-                {['strength', 'dexterity', 'constitution'].map(stat => (
-                  <div key={stat} className="form-group gear-stat-input">
-                    <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
-                    <input 
-                      type="number" 
-                      value={newGearItem.effects[stat]}
-                      onChange={(e) => handleGearEffectChange(stat, e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                ))}
-              </div>
-              
-              {/* Second row: intelligence, wisdom, charisma */}
-              <div className="form-row gear-stats-row">
-                {['intelligence', 'wisdom', 'charisma'].map(stat => (
-                  <div key={stat} className="form-group gear-stat-input">
-                    <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
-                    <input 
-                      type="number" 
-                      value={newGearItem.effects[stat]}
-                      onChange={(e) => handleGearEffectChange(stat, e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                ))}
-              </div>
-              
-              {/* Third row: BAB and AC */}
-              <div className="form-row gear-stats-row combat-row">
-                <div className="form-group gear-stat-input">
-                  <label>BAB</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects.bab}
-                    onChange={(e) => handleGearEffectChange('bab', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-                <div className="form-group gear-stat-input">
-                  <label>Armor Class</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects.ac}
-                    onChange={(e) => handleGearEffectChange('ac', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <button 
-              type="button" 
-              onClick={handleAddGear} 
-              className="add-gear-button"
-            >
-              Add Item
-            </button>
-          </div>
         </div>
         
         <div className="form-actions">

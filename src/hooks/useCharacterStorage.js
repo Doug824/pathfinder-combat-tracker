@@ -7,161 +7,349 @@ const useCharacterStorage = () => {
   
   // Load characters from localStorage on initial mount
   useEffect(() => {
-    const storedCharacters = localStorage.getItem('pathfinderCharacters');
-    const activeId = localStorage.getItem('activeCharacterId');
-    
-    if (storedCharacters) {
-      const parsedCharacters = JSON.parse(storedCharacters);
-      setCharacters(parsedCharacters);
+    try {
+      const storedCharacters = localStorage.getItem('pathfinderCharacters');
+      const activeId = localStorage.getItem('activeCharacterId');
       
-      // If there's an active character ID in storage, use it
-      if (activeId && parsedCharacters.some(char => char.id === activeId)) {
-        setActiveCharacterId(activeId);
-        setActiveCharacter(parsedCharacters.find(char => char.id === activeId));
-      } else if (parsedCharacters.length > 0) {
-        // Otherwise, use the first character if available
-        setActiveCharacterId(parsedCharacters[0].id);
-        setActiveCharacter(parsedCharacters[0]);
+      if (storedCharacters) {
+        const parsedCharacters = JSON.parse(storedCharacters);
+        setCharacters(parsedCharacters);
+        
+        // If there's an active character ID in storage, use it
+        if (activeId && parsedCharacters.some(char => char.id === activeId)) {
+          setActiveCharacterId(activeId);
+          setActiveCharacter(parsedCharacters.find(char => char.id === activeId));
+        } else if (parsedCharacters.length > 0) {
+          // Otherwise, use the first character if available
+          setActiveCharacterId(parsedCharacters[0].id);
+          setActiveCharacter(parsedCharacters[0]);
+        }
       }
+    } catch (error) {
+      console.error("Error loading characters from localStorage:", error);
     }
   }, []);
   
   // Save characters to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('pathfinderCharacters', JSON.stringify(characters));
+    try {
+      localStorage.setItem('pathfinderCharacters', JSON.stringify(characters));
+      console.log("Saved characters to localStorage:", characters);
+    } catch (error) {
+      console.error("Error saving characters to localStorage:", error);
+    }
   }, [characters]);
   
   // Save active character ID to localStorage whenever it changes
   useEffect(() => {
-    if (activeCharacterId) {
-      localStorage.setItem('activeCharacterId', activeCharacterId);
-      
-      // Update the active character object
-      setActiveCharacter(characters.find(char => char.id === activeCharacterId) || null);
-    } else {
-      localStorage.removeItem('activeCharacterId');
-      setActiveCharacter(null);
+    try {
+      if (activeCharacterId) {
+        localStorage.setItem('activeCharacterId', activeCharacterId);
+        
+        // Update the active character object
+        const foundCharacter = characters.find(char => char.id === activeCharacterId);
+        setActiveCharacter(foundCharacter || null);
+        console.log("Active character set to:", foundCharacter);
+      } else {
+        localStorage.removeItem('activeCharacterId');
+        setActiveCharacter(null);
+      }
+    } catch (error) {
+      console.error("Error updating active character:", error);
     }
   }, [activeCharacterId, characters]);
   
   // Create a new character
   const createCharacter = (characterData) => {
-    const newCharacter = {
-      ...characterData,
-      id: Date.now().toString(),
-      created: new Date().toISOString(),
-      lastModified: new Date().toISOString(),
-      stats: characterData.stats || {
+    try {
+      console.log("Creating character with data:", characterData);
+      
+      // Make sure stats object exists and has all required properties
+      const statsWithDefaults = {
         strength: 10,
         dexterity: 10,
         constitution: 10,
         intelligence: 10,
         wisdom: 10,
-        charisma: 10
-      },
-      buffs: characterData.buffs || [],
-      gear: characterData.gear || [],
-      combatAbilities: characterData.combatAbilities || []
-    };
-    
-    setCharacters(prev => [...prev, newCharacter]);
-    setActiveCharacterId(newCharacter.id);
-    
-    return newCharacter;
+        charisma: 10,
+        ...(characterData.stats || {}) // Merge with provided stats
+      };
+      
+      // Ensure all stats are numbers
+      Object.keys(statsWithDefaults).forEach(key => {
+        statsWithDefaults[key] = parseInt(statsWithDefaults[key]) || 10;
+      });
+      
+      // Create character with the merged stats
+      const newCharacter = {
+        id: Date.now().toString(),
+        name: characterData.name || 'New Character',
+        level: parseInt(characterData.level) || 1,
+        characterClass: characterData.characterClass || '',
+        race: characterData.race || '',
+        alignment: characterData.alignment || '',
+        stats: statsWithDefaults, // Use the merged stats
+        buffs: [],
+        gear: [],
+        combatAbilities: [],
+        baseAttackBonus: 0,
+        baseFortitude: 0,
+        baseReflex: 0,
+        baseWill: 0,
+        // Add weapon and combat settings default values
+        primaryWeapon: {
+          name: 'Primary Weapon',
+          attackBonus: 0,
+          damageBonus: 0
+        },
+        offhandWeapon: {
+          name: 'Off-Hand Weapon',
+          attackBonus: 0,
+          damageBonus: 0
+        },
+        twoWeaponFighting: false,
+        offhandAttacksCount: 1,
+        attackAbilityMod: 'strength',
+        damageAbilityMod: 'strength',
+        offhandAttackAbilityMod: 'strength',
+        offhandDamageAbilityMod: 'strength',
+        created: new Date().toISOString(),
+        lastModified: new Date().toISOString()
+      };
+      
+      console.log("Final character being created:", newCharacter);
+      
+      const updatedCharacters = [...characters, newCharacter];
+      setCharacters(updatedCharacters);
+      setActiveCharacterId(newCharacter.id);
+      
+      return newCharacter;
+    } catch (error) {
+      console.error("Error creating character:", error);
+      return null;
+    }
   };
   
   // Update an existing character
   const updateCharacter = (characterData) => {
-    if (!characterData.id) return null;
-    
-    const updatedCharacter = {
-      ...characterData,
-      lastModified: new Date().toISOString()
-    };
-    
-    setCharacters(prev => 
-      prev.map(char => char.id === updatedCharacter.id ? updatedCharacter : char)
-    );
-    
-    // If this is the active character, update the active character object
-    if (activeCharacterId === updatedCharacter.id) {
-      setActiveCharacter(updatedCharacter);
+    try {
+      if (!characterData.id) return null;
+      
+      // Ensure stats are properly handled
+      let updatedStats = characterData.stats || {};
+      
+      // If stats are present, ensure they are all numbers
+      if (updatedStats) {
+        Object.keys(updatedStats).forEach(key => {
+          updatedStats[key] = parseInt(updatedStats[key]) || 10;
+        });
+      }
+      
+      const updatedCharacter = {
+        ...characterData,
+        stats: updatedStats,
+        lastModified: new Date().toISOString()
+      };
+      
+      const updatedCharacters = characters.map(char => 
+        char.id === updatedCharacter.id ? updatedCharacter : char
+      );
+      
+      setCharacters(updatedCharacters);
+      console.log("Updated character:", updatedCharacter);
+      
+      // If this is the active character, update the active character object
+      if (activeCharacterId === updatedCharacter.id) {
+        setActiveCharacter(updatedCharacter);
+      }
+      
+      return updatedCharacter;
+    } catch (error) {
+      console.error("Error updating character:", error);
+      return null;
     }
-    
-    return updatedCharacter;
   };
   
   // Delete a character
   const deleteCharacter = (characterId) => {
-    setCharacters(prev => prev.filter(char => char.id !== characterId));
-    
-    // If the deleted character was active, select a new active character
-    if (activeCharacterId === characterId) {
-      const remainingCharacters = characters.filter(char => char.id !== characterId);
-      if (remainingCharacters.length > 0) {
-        setActiveCharacterId(remainingCharacters[0].id);
-      } else {
-        setActiveCharacterId(null);
+    try {
+      const updatedCharacters = characters.filter(char => char.id !== characterId);
+      setCharacters(updatedCharacters);
+      
+      // If the deleted character was active, select a new active character
+      if (activeCharacterId === characterId) {
+        if (updatedCharacters.length > 0) {
+          setActiveCharacterId(updatedCharacters[0].id);
+        } else {
+          setActiveCharacterId(null);
+        }
       }
+      
+      console.log("Deleted character:", characterId);
+    } catch (error) {
+      console.error("Error deleting character:", error);
     }
   };
   
   // Select a character as active
   const selectCharacter = (characterId) => {
-    if (characters.some(char => char.id === characterId)) {
-      setActiveCharacterId(characterId);
+    try {
+      if (characters.some(char => char.id === characterId)) {
+        setActiveCharacterId(characterId);
+        console.log("Selected character:", characterId);
+      }
+    } catch (error) {
+      console.error("Error selecting character:", error);
     }
   };
   
   // Update stats for active character
   const updateStats = (newStats) => {
-    if (activeCharacter) {
-      const updatedCharacter = {
-        ...activeCharacter,
-        stats: newStats,
-        lastModified: new Date().toISOString()
-      };
-      
-      updateCharacter(updatedCharacter);
+    try {
+      if (activeCharacter) {
+        // Ensure stats are numbers
+        const processedStats = { ...newStats };
+        Object.keys(processedStats).forEach(key => {
+          processedStats[key] = parseInt(processedStats[key]) || 10;
+        });
+        
+        const updatedCharacter = {
+          ...activeCharacter,
+          stats: processedStats,
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated character stats:", processedStats);
+      }
+    } catch (error) {
+      console.error("Error updating stats:", error);
     }
   };
   
   // Update buffs for active character
   const updateBuffs = (newBuffs) => {
-    if (activeCharacter) {
-      const updatedCharacter = {
-        ...activeCharacter,
-        buffs: newBuffs,
-        lastModified: new Date().toISOString()
-      };
-      
-      updateCharacter(updatedCharacter);
+    try {
+      if (activeCharacter) {
+        const updatedCharacter = {
+          ...activeCharacter,
+          buffs: newBuffs,
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated character buffs");
+      }
+    } catch (error) {
+      console.error("Error updating buffs:", error);
     }
   };
   
   // Update gear for active character
   const updateGear = (newGear) => {
-    if (activeCharacter) {
-      const updatedCharacter = {
-        ...activeCharacter,
-        gear: newGear,
-        lastModified: new Date().toISOString()
-      };
-      
-      updateCharacter(updatedCharacter);
+    try {
+      if (activeCharacter) {
+        const updatedCharacter = {
+          ...activeCharacter,
+          gear: newGear,
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated character gear");
+      }
+    } catch (error) {
+      console.error("Error updating gear:", error);
     }
   };
   
   // Update combat abilities for active character
   const updateCombatAbilities = (newAbilities) => {
-    if (activeCharacter) {
-      const updatedCharacter = {
-        ...activeCharacter,
-        combatAbilities: newAbilities,
-        lastModified: new Date().toISOString()
-      };
-      
-      updateCharacter(updatedCharacter);
+    try {
+      if (activeCharacter) {
+        const updatedCharacter = {
+          ...activeCharacter,
+          combatAbilities: newAbilities,
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated combat abilities");
+      }
+    } catch (error) {
+      console.error("Error updating combat abilities:", error);
+    }
+  };
+  
+  // Function to update weapons
+  const updateWeapons = (primaryWeapon, offhandWeapon) => {
+    try {
+      if (activeCharacter) {
+        // Create clean versions of the weapon data
+        const cleanPrimary = {
+          name: primaryWeapon.name || 'Primary Weapon',
+          attackBonus: parseInt(primaryWeapon.attackBonus) || 0,
+          damageBonus: parseInt(primaryWeapon.damageBonus) || 0
+        };
+        
+        const cleanOffhand = {
+          name: offhandWeapon.name || 'Off-Hand Weapon',
+          attackBonus: parseInt(offhandWeapon.attackBonus) || 0,
+          damageBonus: parseInt(offhandWeapon.damageBonus) || 0
+        };
+        
+        const updatedCharacter = {
+          ...activeCharacter,
+          primaryWeapon: cleanPrimary,
+          offhandWeapon: cleanOffhand,
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated weapon configuration", { primary: cleanPrimary, offhand: cleanOffhand });
+      }
+    } catch (error) {
+      console.error("Error updating weapons:", error);
+    }
+  };
+  
+  // Function to update combat settings
+  const updateCombatSettings = (settings) => {
+    try {
+      if (activeCharacter) {
+        // Normalize settings
+        const normalizedSettings = {};
+        
+        // Process specific settings if present
+        if ('twoWeaponFighting' in settings) {
+          normalizedSettings.twoWeaponFighting = Boolean(settings.twoWeaponFighting);
+        }
+        
+        if ('offhandAttacksCount' in settings) {
+          normalizedSettings.offhandAttacksCount = Math.max(1, Math.min(parseInt(settings.offhandAttacksCount) || 1, 3));
+        }
+        
+        // Handle ability modifier selections
+        const abilityModOptions = ['attackAbilityMod', 'damageAbilityMod', 'offhandAttackAbilityMod', 'offhandDamageAbilityMod'];
+        
+        for (const modOption of abilityModOptions) {
+          if (modOption in settings && typeof settings[modOption] === 'string') {
+            normalizedSettings[modOption] = settings[modOption];
+          }
+        }
+        
+        // Apply the settings
+        const updatedCharacter = {
+          ...activeCharacter,
+          ...normalizedSettings,
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated combat settings:", normalizedSettings);
+      }
+    } catch (error) {
+      console.error("Error updating combat settings:", error);
     }
   };
   
@@ -176,7 +364,9 @@ const useCharacterStorage = () => {
     updateStats,
     updateBuffs,
     updateGear,
-    updateCombatAbilities
+    updateCombatAbilities,
+    updateWeapons,
+    updateCombatSettings
   };
 };
 
