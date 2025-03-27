@@ -29,6 +29,10 @@ const CombatAbilities = ({
     inputMin: 0, // Minimum value for the input
     inputStep: 1, // Step value for the input
     inputValue: 0, // Current value of the input
+    // Secondary input fields for abilities that need two inputs (like Fighting Defensively)
+    hasSecondaryInput: false, 
+    secondaryInputLabel: '',
+    secondaryInputValue: 0,
     effects: { 
       strength: 0, 
       dexterity: 0, 
@@ -51,24 +55,25 @@ const CombatAbilities = ({
   const calculateVariableEffects = (ability, inputValue) => {
     if (!ability.variableInput) return ability.effects;
     
-    // Default effects
     let updatedEffects = { ...ability.effects };
     
     // Handle Improved Power Attack (sacrifice attack for damage)
     if (ability.name === 'Improved Power Attack') {
       updatedEffects = {
         ...updatedEffects,
-        attackBonus: -inputValue,
-        damage: inputValue * 2
+        attackBonus: -inputValue,  // NEGATIVE
+        damage: inputValue * 2     // POSITIVE
       };
+      console.log(`Improved Power Attack effects: Attack ${-inputValue}, Damage +${inputValue * 2}`);
     }
     // Handle Greater Power Attack (sacrifice damage for attack)
     else if (ability.name === 'Greater Power Attack') {
       updatedEffects = {
         ...updatedEffects,
-        attackBonus: inputValue,
-        damage: -inputValue
+        attackBonus: inputValue,   // POSITIVE
+        damage: -inputValue        // NEGATIVE
       };
+      console.log(`Greater Power Attack effects: Attack +${inputValue}, Damage ${-inputValue}`);
     }
     // Handle Combat Expertise (sacrifice attack for AC)
     else if (ability.name === 'Combat Expertise') {
@@ -76,6 +81,15 @@ const CombatAbilities = ({
         ...updatedEffects,
         attackBonus: -inputValue,
         ac: inputValue
+      };
+    }
+    // Handle Fighting Defensively (configurable sacrifice of attack for AC)
+    else if (ability.name === 'Fighting Defensively') {
+      const acBonus = ability.secondaryInputValue || 2;
+      updatedEffects = {
+        ...updatedEffects,
+        attackBonus: -inputValue,
+        ac: acBonus
       };
     }
     // Handle Deadly Aim (sacrifice attack for damage, like Power Attack for ranged)
@@ -155,8 +169,8 @@ const CombatAbilities = ({
         inputStep: 1,
         inputValue: 1,
         effects: {
-          attackBonus: -1,
-          damage: 2
+          attackBonus: -1,  // NEGATIVE: reduces attack
+          damage: 2         // POSITIVE: increases damage
         }
       },
       {
@@ -172,8 +186,8 @@ const CombatAbilities = ({
         inputStep: 1,
         inputValue: 1,
         effects: {
-          attackBonus: 1,
-          damage: -1
+          attackBonus: 1,   // POSITIVE: increases attack
+          damage: -1        // NEGATIVE: reduces damage
         }
       },
       {
@@ -212,11 +226,19 @@ const CombatAbilities = ({
       },
       {
         name: 'Fighting Defensively',
-        description: 'Take -4 penalty on all attacks to gain +2 dodge bonus to AC.',
+        description: 'Configure penalty to attacks and dodge bonus to AC.',
         type: 'passive',
         bonusType: 'dodge',
         isActive: false,
-        variableInput: false,
+        variableInput: true,
+        inputLabel: 'Attack Penalty',
+        secondaryInputLabel: 'AC Bonus',
+        inputMax: 10,
+        inputMin: 1,
+        inputStep: 1,
+        inputValue: 4,
+        secondaryInputValue: 2,
+        hasSecondaryInput: true,
         effects: {
           attackBonus: -4,
           ac: 2
@@ -233,6 +255,20 @@ const CombatAbilities = ({
           strength: 4,
           constitution: 4,
           will: 2,
+          ac: -2
+        }
+      },
+      {
+        name: 'Greater Rage',
+        description: '+6 STR, +6 CON, +3 Will saves, -2 AC',
+        type: 'standard',
+        bonusType: 'morale',
+        isActive: false,
+        variableInput: false,
+        effects: {
+          strength: 6,
+          constitution: 6,
+          will: 3,
           ac: -2
         }
       },
@@ -301,6 +337,9 @@ const CombatAbilities = ({
       inputMin: 0,
       inputStep: 1,
       inputValue: 0,
+      hasSecondaryInput: false,
+      secondaryInputLabel: '',
+      secondaryInputValue: 0,
       effects: { 
         strength: 0, 
         dexterity: 0, 
@@ -338,7 +377,20 @@ const CombatAbilities = ({
           inputMax: null,
           inputMin: 0,
           inputStep: 1,
-          inputValue: 0
+          inputValue: 0,
+          hasSecondaryInput: false,
+          secondaryInputLabel: '',
+          secondaryInputValue: 0
+        };
+      }
+      
+      // If turning off secondary input, reset its fields
+      if (field === 'hasSecondaryInput' && value === false) {
+        return {
+          ...prev,
+          [field]: value,
+          secondaryInputLabel: '',
+          secondaryInputValue: 0
         };
       }
       
@@ -360,43 +412,129 @@ const CombatAbilities = ({
   // Handle activation/deactivation of an ability
   const handleToggleAbility = (abilityId, isActive) => {
     // Check for mutually exclusive abilities
+    // This function prevents activating abilities that can't be used together
+    // For example, you can't use both Improved Power Attack and Greater Power Attack at the same time
     let updatedAbilities = checkMutuallyExclusiveAbilities(combatAbilities, abilityId, isActive);
     
     // Now apply the toggle and effect calculation
     updatedAbilities = updatedAbilities.map(ability => {
       if (ability.id === abilityId) {
-        // Calculate effects if this is a variable input ability being activated
-        let updatedEffects = ability.effects;
-        if (isActive && ability.variableInput) {
-          updatedEffects = calculateVariableEffects(ability, ability.inputValue || 0);
+        // Start with the current effects
+        let updatedEffects = { ...ability.effects };
+        
+        if (isActive) {
+          // We're activating the ability
+          
+          if (ability.variableInput) {
+            // For abilities with variable inputs like Power Attack
+            if (ability.hasSecondaryInput && ability.name === 'Fighting Defensively') {
+              // Special handling for Fighting Defensively which has two inputs
+              updatedEffects = {
+                ...ability.effects,
+                attackBonus: -(ability.inputValue || 4),
+                ac: ability.secondaryInputValue || 2
+              };
+            } else if (ability.name === 'Improved Power Attack') {
+              // Improved Power Attack: subtract from attack, add to damage
+              updatedEffects = {
+                ...ability.effects,
+                attackBonus: -ability.inputValue,  // NEGATIVE: penalty to attack
+                damage: ability.inputValue * 2     // POSITIVE: bonus to damage (twice the penalty)
+              };
+            } else if (ability.name === 'Greater Power Attack') {
+              // Greater Power Attack: add to attack, subtract from damage
+              updatedEffects = {
+                ...ability.effects,
+                attackBonus: ability.inputValue,   // POSITIVE: bonus to attack
+                damage: -ability.inputValue        // NEGATIVE: penalty to damage
+              };
+            } else if (ability.name === 'Combat Expertise') {
+              // Combat Expertise: trade attack for AC
+              updatedEffects = {
+                ...ability.effects,
+                attackBonus: -ability.inputValue,  // NEGATIVE: penalty to attack
+                ac: ability.inputValue             // POSITIVE: bonus to AC
+              };
+            } else if (ability.name === 'Deadly Aim') {
+              // Deadly Aim: ranged version of Power Attack
+              updatedEffects = {
+                ...ability.effects,
+                attackBonus: -ability.inputValue,  // NEGATIVE: penalty to attack
+                damage: ability.inputValue * 2     // POSITIVE: bonus to damage (twice the penalty)
+              };
+            } else {
+              // Standard calculation for other variable abilities
+              updatedEffects = calculateVariableEffects(ability, ability.inputValue || 0);
+            }
+          }
+          
+          // For fixed abilities like Rage, ensure AC penalty is applied
+          if (ability.name === 'Rage' || ability.name === 'Greater Rage') {
+            updatedEffects = {
+              ...updatedEffects,
+              ac: -2 // Ensure AC penalty is set
+            };
+          }
         }
         
+        // Return the updated ability with new active state and effects
         return { 
           ...ability, 
           isActive,
           effects: updatedEffects
         };
       }
+      
+      // Return unchanged for all other abilities
       return ability;
     });
     
+    // Pass the updated abilities array back to the parent component
     onCombatAbilitiesChange(updatedAbilities);
   };
   
   // Handle ability input change
-  const handleAbilityInputChange = (abilityId, value) => {
+  const handleAbilityInputChange = (abilityId, value, isSecondary = false) => {
     const numValue = parseInt(value) || 0;
     
     const updatedAbilities = combatAbilities.map(ability => {
       if (ability.id === abilityId) {
-        // Calculate the new effects based on the input value
-        const updatedEffects = calculateVariableEffects(ability, numValue);
-        
-        return { 
-          ...ability, 
-          inputValue: numValue,
-          effects: updatedEffects
-        };
+        // Special case for secondary inputs (like Fighting Defensively)
+        if (isSecondary) {
+          // This is a secondary input value (like AC bonus for Fighting Defensively)
+          let updatedAbility = {
+            ...ability,
+            secondaryInputValue: numValue
+          };
+          
+          // Special handling based on ability name
+          if (ability.name === 'Improved Power Attack') {
+            updatedAbility.effects = {
+              ...ability.effects,
+              attackBonus: -numValue,  // NEGATIVE
+              damage: numValue * 2     // POSITIVE
+            };
+          } else if (ability.name === 'Greater Power Attack') {
+            updatedAbility.effects = {
+              ...ability.effects,
+              attackBonus: numValue,   // POSITIVE
+              damage: -numValue        // NEGATIVE
+            };
+          } else if (ability.name === 'Fighting Defensively') {
+            updatedAbility.effects = {
+              ...ability.effects,
+              attackBonus: -(ability.inputValue || 4),
+              ac: numValue
+            };
+          } else if (ability.hasSecondaryInput) {
+            // Handle abilities with secondary inputs...
+          } else {
+            // For other abilities, use the standard calculation
+            updatedAbility.effects = calculateVariableEffects(ability, numValue);
+          }
+          
+          return updatedAbility;
+        }
       }
       return ability;
     });
@@ -494,6 +632,26 @@ const CombatAbilities = ({
                           onChange={(e) => handleAbilityInputChange(ability.id, e.target.value)}
                           disabled={!ability.isActive}
                         />
+                        
+                        {/* Secondary input for abilities that need it, like Fighting Defensively */}
+                        {ability.hasSecondaryInput && (
+                          <div style={{ marginTop: '5px' }}>
+                            <label htmlFor={`ability-secondary-input-${ability.id}`}>
+                              {ability.secondaryInputLabel || 'Secondary Value:'}
+                            </label>
+                            <input
+                              id={`ability-secondary-input-${ability.id}`}
+                              type="number"
+                              min={1}
+                              max={10}
+                              step={1}
+                              value={ability.secondaryInputValue || 2}
+                              onChange={(e) => handleAbilityInputChange(ability.id, e.target.value, true)}
+                              disabled={!ability.isActive}
+                              style={{ marginLeft: '5px' }}
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
                     
@@ -644,6 +802,44 @@ const CombatAbilities = ({
                 />
               </div>
             </div>
+            
+            <div className="form-row">
+              <div className="form-group variable-input-toggle">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={newAbility.hasSecondaryInput}
+                    onChange={(e) => handleAbilityChange('hasSecondaryInput', e.target.checked)}
+                  />
+                  Has Secondary Input (e.g., for Fighting Defensively)
+                </label>
+              </div>
+            </div>
+            
+            {newAbility.hasSecondaryInput && (
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Secondary Input Label</label>
+                  <input
+                    type="text"
+                    value={newAbility.secondaryInputLabel}
+                    onChange={(e) => handleAbilityChange('secondaryInputLabel', e.target.value)}
+                    className="form-control"
+                    placeholder="e.g., AC Bonus"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Default Value</label>
+                  <input
+                    type="number"
+                    value={newAbility.secondaryInputValue}
+                    onChange={(e) => handleAbilityChange('secondaryInputValue', parseInt(e.target.value) || 0)}
+                    className="form-control"
+                    min="0"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
         

@@ -70,6 +70,7 @@ const CharacterSetup = ({
     { value: 'sacred', label: 'Sacred' },
     { value: 'profane', label: 'Profane' },
     { value: 'alchemical', label: 'Alchemical' },
+    { value: 'resistance', label:  'Resistance' },
     { value: 'armor', label: 'Armor' },
     { value: 'competence', label: 'Competence' },
     { value: 'circumstance', label: 'Circumstance' },

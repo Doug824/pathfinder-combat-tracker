@@ -60,11 +60,17 @@ const useCharacterStorage = () => {
   }, [activeCharacterId, characters]);
   
   // Create a new character
+  
   const createCharacter = (characterData) => {
     try {
-      console.log("Creating character with data:", characterData);
+      // Log the incoming data to debug
+      console.log("Creating character with provided data:", characterData);
       
-      // Make sure stats object exists and has all required properties
+      // Explicitly extract stats to make sure we're using the right object
+      const providedStats = characterData.stats || {};
+      console.log("Provided stats:", providedStats);
+      
+      // Create stats object with defaults for any missing properties
       const statsWithDefaults = {
         strength: 10,
         dexterity: 10,
@@ -72,15 +78,17 @@ const useCharacterStorage = () => {
         intelligence: 10,
         wisdom: 10,
         charisma: 10,
-        ...(characterData.stats || {}) // Merge with provided stats
+        ...providedStats
       };
       
-      // Ensure all stats are numbers
+      // Convert all stats to numbers
       Object.keys(statsWithDefaults).forEach(key => {
         statsWithDefaults[key] = parseInt(statsWithDefaults[key]) || 10;
       });
       
-      // Create character with the merged stats
+      console.log("Final stats after processing:", statsWithDefaults);
+      
+      // Create the character object with all necessary defaults
       const newCharacter = {
         id: Date.now().toString(),
         name: characterData.name || 'New Character',
@@ -88,7 +96,8 @@ const useCharacterStorage = () => {
         characterClass: characterData.characterClass || '',
         race: characterData.race || '',
         alignment: characterData.alignment || '',
-        stats: statsWithDefaults, // Use the merged stats
+        // Use our carefully processed stats object
+        stats: statsWithDefaults,
         buffs: [],
         gear: [],
         combatAbilities: [],
@@ -96,7 +105,7 @@ const useCharacterStorage = () => {
         baseFortitude: 0,
         baseReflex: 0,
         baseWill: 0,
-        // Add weapon and combat settings default values
+        // Default weapon configurations
         primaryWeapon: {
           name: 'Primary Weapon',
           attackBonus: 0,
@@ -107,6 +116,7 @@ const useCharacterStorage = () => {
           attackBonus: 0,
           damageBonus: 0
         },
+        // Default combat settings
         twoWeaponFighting: false,
         offhandAttacksCount: 1,
         attackAbilityMod: 'strength',
@@ -119,6 +129,7 @@ const useCharacterStorage = () => {
       
       console.log("Final character being created:", newCharacter);
       
+      // Add to character list and set as active
       const updatedCharacters = [...characters, newCharacter];
       setCharacters(updatedCharacters);
       setActiveCharacterId(newCharacter.id);

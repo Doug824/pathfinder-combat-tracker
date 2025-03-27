@@ -30,6 +30,9 @@ function App() {
   // State for current page
   const [currentPage, setCurrentPage] = useState('manager');
   
+  // Flag to track manual navigation to manager
+  const [manuallyNavigatedToManager, setManuallyNavigatedToManager] = useState(false);
+  
   // Theme state - initialize to true for dark mode default
   const [darkMode, setDarkMode] = useState(true);
   
@@ -47,12 +50,35 @@ function App() {
   const [activeGear, setActiveGear] = useState([]);
   const [combatAbilities, setCombatAbilities] = useState([]);
   
-  useEffect(() => {
-    // Force to manager page on initial load if no character is selected
-    if (currentPage !== 'manager' && !activeCharacterId) {
-      setCurrentPage('manager');
+  // Modified page change handler to track manual navigation
+  const handlePageChange = useCallback((pageName) => {
+    console.log("Changing page to:", pageName);
+    
+    // Track when user manually navigates to manager
+    if (pageName === 'manager') {
+      setManuallyNavigatedToManager(true);
+    } else {
+      setManuallyNavigatedToManager(false);
     }
-  }, [currentPage, activeCharacterId]);
+    
+    setCurrentPage(pageName);
+  }, []);
+  
+  // SIMPLIFIED NAVIGATION LOGIC
+  // Only one effect that handles auto-navigation to setup
+  useEffect(() => {
+    // Only auto-navigate if:
+    // 1. We have an active character
+    // 2. We're on the manager page
+    // 3. We didn't get here by clicking the manager button
+    if (activeCharacterId && currentPage === 'manager' && !manuallyNavigatedToManager) {
+      console.log("Auto-navigating to setup from manager");
+      const timer = setTimeout(() => {
+        setCurrentPage('setup');
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [activeCharacterId, currentPage, manuallyNavigatedToManager, setCurrentPage]);
   
   // Update local state when active character changes
   useEffect(() => {
@@ -108,20 +134,6 @@ function App() {
     }
     localStorage.setItem('darkMode', darkMode.toString());
   }, [darkMode]);
-  
-  // Make page change handler a stable callback
-  const handlePageChange = useCallback((pageName) => {
-    console.log("Changing page to:", pageName);
-    setCurrentPage(pageName);
-  }, []);
-  
-  // Navigate to character setup when a new character is created
-  useEffect(() => {
-    if (activeCharacterId && currentPage === 'manager') {
-      console.log("New character selected, navigating to setup");
-      handlePageChange('setup');
-    }
-  }, [activeCharacterId, currentPage, handlePageChange]);
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);

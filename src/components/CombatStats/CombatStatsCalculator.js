@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { calculateFinalStats } from '../../utils/bonusCalculator';
 
-// const finalStats = calculateFinalStats();
-// const derivedStats = calculateDerivedStats();
-const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {} }) => {
+const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, combatAbilities = [] }) => {
   const [finalStats, setFinalStats] = useState({...baseStats});
   const [bonusDetails, setBonusDetails] = useState({});
   const [derived, setDerived] = useState({
@@ -14,14 +12,18 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {} }) 
     attackBonus: 0
   });
   
+  
   // Calculate modifiers
   const getModifier = (score) => Math.floor((score - 10) / 2);
   
   useEffect(() => {
+    // Get active abilities
+    const activeAbilities = combatAbilities.filter(ability => ability.isActive);
+    
     // Use the utility to calculate final stats
     const { finalStats: calculatedStats, bonusDetails: details } = calculateFinalStats(
       baseStats, 
-      buffs, 
+      [...buffs, ...activeAbilities], // Include active abilities in calculation
       gear
     );
     setFinalStats(calculatedStats);
@@ -47,7 +49,7 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {} }) 
       willSave: baseWill + getModifier(calculatedStats.wisdom) + willBonus,
       attackBonus: baseAttackBonus + attackBonus
     });
-  }, [baseStats, buffs, gear, character]);
+  }, [baseStats, buffs, gear, character, combatAbilities]);
 
   return (
     <div className="combat-stats">

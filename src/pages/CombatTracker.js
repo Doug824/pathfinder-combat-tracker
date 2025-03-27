@@ -60,6 +60,7 @@ const CombatTracker = ({
               buffs={buffs}
               gear={gear} 
               character={character}
+              combatAbilities={combatAbilities} // Added combatAbilities here
             />
           )}
           

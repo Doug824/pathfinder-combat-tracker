@@ -9,7 +9,15 @@ const Navigation = ({ currentPage, setCurrentPage, activeCharacter }) => {
 
   const handleNavClick = (pageId) => {
     console.log("Navigation clicked:", pageId);
-    setCurrentPage(pageId);
+    // Add a small delay for 'manager' to ensure state updates properly
+    if (pageId === 'manager') {
+      // This prevents the page from immediately changing back
+      setTimeout(() => {
+        setCurrentPage(pageId);
+      }, 10);
+    } else {
+      setCurrentPage(pageId);
+    }
   };
 
   return (
