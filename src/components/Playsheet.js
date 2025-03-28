@@ -58,41 +58,83 @@ const Playsheet = ({
   // Calculate all stats with currently active abilities
   useEffect(() => {
     // Get active abilities with correct effects
-    const activeAbilities = combatAbilities.filter(ability => ability.isActive)
-      .filter(ability => ability.isActive)
-      .map(ability => {
-        // Special handling for Power Attack variants
-        if (ability.variableInput) {
-          if (ability.name === 'Improved Power Attack') {
-            return {
-              ...ability,
-              effects: {
-                ...ability.effects,
-                attackBonus: -ability.inputValue,
-                damage: ability.inputValue * 2
-              }
-            };
-          } else if (ability.name === 'Greater Power Attack') {
-            return {
-              ...ability,
-              effects: {
-                ...ability.effects,
-                attackBonus: ability.inputValue,
-                damage: -ability.inputValue
-              }
-            };
-          }
-        }
-        console.log("Active abilities with effects:", activeAbilities.map(a => ({
-          name: a.name,
-          effects: a.effects,
-          inputValue: a.inputValue
-        })));
-        return ability;
-      });
+    const activeAbilities = combatAbilities.filter(ability => ability.isActive);
     
-    // Calculate stats including properly modified active abilities
-    const { finalStats, bonusDetails } = calculateFinalStats(stats, [...buffs, ...activeAbilities], gear);
+    // Create a mapping of ability effects to make debugging easier
+    const abilityEffects = activeAbilities.map(ability => ({
+      name: ability.name,
+      effects: ability.effects,
+      inputValue: ability.inputValue,
+      variableInput: ability.variableInput
+    }));
+    
+    console.log("Active abilities with effects:", abilityEffects);
+    
+    // This is crucial - we need to ensure the active abilities have the right effects
+    // Process any variable input abilities to make sure their effects are up-to-date
+    const processedAbilities = activeAbilities.map(ability => {
+      if (ability.variableInput && ability.isActive) {
+        const inputValue = ability.inputValue || 1;
+        
+        if (ability.name === 'Improved Power Attack') {
+          // Force the correct values for effect calculation
+          return {
+            ...ability,
+            effects: {
+              ...ability.effects,
+              attackBonus: -inputValue,    // NEGATIVE
+              damage: inputValue * 2       // POSITIVE
+            }
+          };
+        } else if (ability.name === 'Greater Power Attack') {
+          // Force the correct values for effect calculation
+          return {
+            ...ability,
+            effects: {
+              ...ability.effects,
+              attackBonus: inputValue,     // POSITIVE
+              damage: -inputValue          // NEGATIVE
+            }
+          };
+        } else if (ability.name === 'Fighting Defensively') {
+          // Force the correct values for effect calculation
+          return {
+            ...ability,
+            effects: {
+              ...ability.effects,
+              attackBonus: -inputValue,
+              ac: ability.secondaryInputValue || 2
+            }
+          };
+        } else if (ability.name === 'Combat Expertise') {
+          return {
+            ...ability,
+            effects: {
+              ...ability.effects,
+              attackBonus: -inputValue,
+              ac: inputValue
+            }
+          };
+        } else if (ability.name === 'Deadly Aim') {
+          return {
+            ...ability,
+            effects: {
+              ...ability.effects,
+              attackBonus: -inputValue,
+              damage: inputValue * 2
+            }
+          };
+        }
+      }
+      return ability;
+    });
+    
+    // Calculate stats with the processed abilities
+    const { finalStats, bonusDetails } = calculateFinalStats(stats, [...buffs, ...processedAbilities], gear);
+    
+    // Log attack and damage bonuses to debug
+    console.log("Attack bonuses:", bonusDetails.attackBonus);
+    console.log("Damage bonuses:", bonusDetails.damage);
     
     // Get ability modifiers
     const strMod = Math.floor((finalStats.strength - 10) / 2);
@@ -124,26 +166,48 @@ const Playsheet = ({
     console.log("Attack bonuses from all sources:", bonusDetails.attackBonus);
     const damageBonuses = bonusDetails.damage?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
     console.log("Damage bonuses from all sources:", bonusDetails.damage);
-    
+
+    // Direct check for Power Attack abilities to ensure penalties are applied
+    let directAttackPenalty = 0;
+    let directDamagePenalty = 0;
+
+    // Look for active power attack abilities
+    for (const ability of processedAbilities) {
+      if (ability.isActive) {
+        // For Improved Power Attack, apply the attack penalty directly
+        if (ability.name === 'Improved Power Attack') {
+          const value = ability.inputValue || 1;
+          directAttackPenalty -= value; // Ensure the penalty is negative
+          console.log(`Applying direct Improved Power Attack penalty: Attack ${-value}`);
+        }
+        
+        // For Greater Power Attack, apply the damage penalty directly
+        else if (ability.name === 'Greater Power Attack') {
+          const value = ability.inputValue || 1;
+          directDamagePenalty -= value; // Ensure the penalty is negative
+          console.log(`Applying direct Greater Power Attack penalty: Damage ${-value}`);
+        }
+      }
+    }
+
     // Apply two-weapon fighting penalty if active
     const twfPenalty = twoWeaponFighting ? -2 : 0;
     
-    // Calculate primary weapon attack bonus
-    const totalAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty;
+    // Calculate primary weapon attack bonus - include direct penalty
+    const totalAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + directAttackPenalty;
     
-    // Calculate primary weapon damage modifier
-    const primaryDamageMod = selectedDamageMod + 
-                         (bonusDetails.damage?.reduce((sum, bonus) => sum + bonus.value, 0) || 0) + 
-                         primaryWeapon.damageBonus;
+    // Calculate primary weapon damage modifier - include direct penalty
+    const primaryDamageMod = selectedDamageMod + damageBonuses + primaryWeapon.damageBonus + directDamagePenalty;
     
+    console.log("Attack with direct penalty:", totalAttackBonus);
+    console.log("Damage with direct penalty:", primaryDamageMod);
+
     // Calculate offhand weapon attack bonus
-    const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty;
+    const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + directAttackPenalty;
     
     // Calculate offhand weapon damage modifier (typically half ability bonus)
     const offhandAbilityDamageMod = twoWeaponFighting ? Math.floor(selectedOffhandDamageMod / 2) : selectedOffhandDamageMod;
-    const totalOffhandDamageMod = offhandAbilityDamageMod + 
-                             (bonusDetails.damage?.reduce((sum, bonus) => sum + bonus.value, 0) || 0) + 
-                             offhandWeapon.damageBonus;
+    const totalOffhandDamageMod = offhandAbilityDamageMod + damageBonuses + offhandWeapon.damageBonus + directDamagePenalty;
     
     // Calculate AC values - ensure AC penalty is applied
     const baseAC = 10;
@@ -174,6 +238,9 @@ const Playsheet = ({
     const fort = baseFort + conMod + fortBonuses;
     const ref = baseRef + dexMod + refBonuses;
     const will = baseWill + wisMod + willBonuses;
+    
+    console.log("Final calculated attack bonus:", totalAttackBonus);
+    console.log("Final calculated damage mod:", primaryDamageMod);
     
     setCombatStats({
       baseAttackBonus: baseBAB,
@@ -333,10 +400,72 @@ const Playsheet = ({
   const toggleAbility = (abilityId) => {
     const updatedAbilities = combatAbilities.map(ability => {
       if (ability.id === abilityId) {
-        return { ...ability, isActive: !ability.isActive };
+        // Create a new object with isActive toggled
+        const isActive = !ability.isActive;
+        
+        // Initialize updated effects
+        let updatedEffects = { ...ability.effects };
+        
+        // If turning on the ability and it has variable input, make sure effects are right
+        if (isActive && ability.variableInput) {
+          const inputValue = ability.inputValue || 1;
+          
+          if (ability.name === 'Improved Power Attack') {
+            // Improved Power Attack: subtract from attack, add to damage
+            updatedEffects = {
+              ...updatedEffects,
+              attackBonus: -inputValue,  // NEGATIVE
+              damage: inputValue * 2     // POSITIVE
+            };
+            console.log(`Toggling Improved Power Attack: Attack ${-inputValue}, Damage +${inputValue * 2}`);
+          } else if (ability.name === 'Greater Power Attack') {
+            // Greater Power Attack: add to attack, subtract from damage
+            updatedEffects = {
+              ...updatedEffects,
+              attackBonus: inputValue,   // POSITIVE
+              damage: -inputValue        // NEGATIVE
+            };
+            console.log(`Toggling Greater Power Attack: Attack +${inputValue}, Damage ${-inputValue}`);
+          } else if (ability.name === 'Combat Expertise') {
+            // Combat Expertise: trade attack for AC
+            updatedEffects = {
+              ...updatedEffects,
+              attackBonus: -inputValue,  // NEGATIVE
+              ac: inputValue             // POSITIVE
+            };
+          } else if (ability.name === 'Fighting Defensively') {
+            // Fighting Defensively: penalty to attack, bonus to AC
+            updatedEffects = {
+              ...updatedEffects,
+              attackBonus: -inputValue,  // NEGATIVE
+              ac: ability.secondaryInputValue || 2  // POSITIVE
+            };
+          } else if (ability.name === 'Deadly Aim') {
+            // Deadly Aim: ranged version of Power Attack
+            updatedEffects = {
+              ...updatedEffects,
+              attackBonus: -inputValue,  // NEGATIVE
+              damage: inputValue * 2     // POSITIVE
+            };
+          }
+        }
+        
+        // If we're turning on a combat ability with fixed effects (like Rage),
+        // make sure the effects are properly initialized
+        
+        return { 
+          ...ability, 
+          isActive,
+          effects: updatedEffects
+        };
       }
       return ability;
     });
+    
+    // Log the changes being made to help with debugging
+    const targetAbility = updatedAbilities.find(a => a.id === abilityId);
+    console.log(`Toggled ability ${targetAbility.name} to ${targetAbility.isActive ? 'active' : 'inactive'}`);
+    console.log("Effects:", targetAbility.effects);
     
     onCombatAbilitiesChange(updatedAbilities);
   };
@@ -356,6 +485,7 @@ const Playsheet = ({
             attackBonus: -numValue,  // NEGATIVE to reduce attack
             damage: numValue * 2     // POSITIVE to increase damage
           };
+          console.log(`Updated Improved Power Attack: attackBonus=${-numValue}, damage=${numValue * 2}`);
         } 
         // Greater Power Attack: add to attack, subtract from damage
         else if (ability.name === 'Greater Power Attack') {
@@ -364,6 +494,7 @@ const Playsheet = ({
             attackBonus: numValue,   // POSITIVE to increase attack
             damage: -numValue        // NEGATIVE to reduce damage
           };
+          console.log(`Updated Greater Power Attack: attackBonus=${numValue}, damage=${-numValue}`);
         }
         // Other abilities...
         else if (ability.name === 'Combat Expertise') {
@@ -401,45 +532,41 @@ const Playsheet = ({
     onCombatAbilitiesChange(updatedAbilities);
   };
   
+  // Handle secondary input change (like AC bonus for Fighting Defensively)
+  const handleSecondaryInputChange = (abilityId, value) => {
+    const numValue = parseInt(value) || 0;
+    
+    const updatedAbilities = combatAbilities.map(ability => {
+      if (ability.id === abilityId) {
+        let updatedEffects = { ...ability.effects };
+        
+        // Special handling for Fighting Defensively
+        if (ability.name === 'Fighting Defensively') {
+          updatedEffects = {
+            ...updatedEffects,
+            attackBonus: -ability.inputValue,
+            ac: numValue  // Use the secondary input value for AC bonus
+          };
+          console.log(`Updated Fighting Defensively secondary input: attackBonus=${-ability.inputValue}, ac=${numValue}`);
+        }
+        
+        return {
+          ...ability,
+          secondaryInputValue: numValue,
+          effects: updatedEffects
+        };
+      }
+      return ability;
+    });
+    
+    onCombatAbilitiesChange(updatedAbilities);
+  };
+  
   // Format modifier for display (+X or -X)
   const formatModifier = (value) => {
     return value >= 0 ? `+${value}` : value;
   };
   
-  const calculateVariableEffects = (ability, inputValue) => {
-    if (!ability.variableInput) return ability.effects;
-    
-    let updatedEffects = { ...ability.effects };
-    
-    // Improved Power Attack: subtract from attack, add to damage
-    if (ability.name === 'Improved Power Attack') {
-      updatedEffects = {
-        ...updatedEffects,
-        attackBonus: -inputValue,  // NEGATIVE to reduce attack
-        damage: inputValue * 2     // POSITIVE to increase damage
-      };
-    }
-    // Greater Power Attack: add to attack, subtract from damage
-    else if (ability.name === 'Greater Power Attack') {
-      updatedEffects = {
-        ...updatedEffects,
-        attackBonus: inputValue,   // POSITIVE to increase attack
-        damage: -inputValue        // NEGATIVE to reduce damage
-      };
-    }
-    // Other abilities...
-    else if (ability.name === 'Combat Expertise') {
-      updatedEffects = {
-        ...updatedEffects,
-        attackBonus: -inputValue,
-        ac: inputValue
-      };
-    }
-    // Rest of your code for other abilities...
-    
-    return updatedEffects;
-  };
-
   return (
     <div className="playsheet">
       <h2>Combat Playsheet</h2>
@@ -748,6 +875,26 @@ const Playsheet = ({
                         onChange={(e) => handleAbilityInputChange(ability.id, e.target.value)}
                       />
                     </label>
+                    
+                    {/* Add secondary input for abilities like Fighting Defensively */}
+                    {ability.hasSecondaryInput && (
+                      <div style={{ marginTop: '5px' }}>
+                        <label htmlFor={`ability-secondary-input-${ability.id}`}>
+                          {ability.secondaryInputLabel || 'Secondary Value:'}
+                        </label>
+                        <input
+                          id={`ability-secondary-input-${ability.id}`}
+                          type="number"
+                          min={1}
+                          max={10}
+                          step={1}
+                          value={ability.secondaryInputValue || 2}
+                          onChange={(e) => handleSecondaryInputChange(ability.id, e.target.value)}
+                          disabled={!ability.isActive}
+                          style={{ marginLeft: '5px' }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
                 

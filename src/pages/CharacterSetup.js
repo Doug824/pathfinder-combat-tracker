@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BasicStats from '../components/CharacterSheet/BasicStats';
+import { getSizeDisplayName } from '../utils/sizeUtils'; // Import the utility function
 
 const CharacterSetup = ({ 
   character, 
@@ -16,6 +17,7 @@ const CharacterSetup = ({
     characterClass: character?.characterClass || '',
     race: character?.race || '',
     alignment: character?.alignment || '',
+    size: character?.size || 'medium',
     baseAttackBonus: character?.baseAttackBonus || 0,
     baseFortitude: character?.baseFortitude || 0,
     baseReflex: character?.baseReflex || 0,
@@ -61,6 +63,19 @@ const CharacterSetup = ({
     { value: 'weapon', label: 'Weapon' },
     { value: 'shield', label: 'Shield' },
     { value: 'other', label: 'Other' }
+  ];
+  
+  // Pathfinder size categories
+  const sizeOptions = [
+    { value: 'fine', label: 'Fine' },
+    { value: 'diminutive', label: 'Diminutive' },
+    { value: 'tiny', label: 'Tiny' },
+    { value: 'small', label: 'Small' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'large', label: 'Large' },
+    { value: 'huge', label: 'Huge' },
+    { value: 'gargantuan', label: 'Gargantuan' },
+    { value: 'colossal', label: 'Colossal' }
   ];
   
   // Bonus types - same as in BuffTracker
@@ -113,6 +128,7 @@ const CharacterSetup = ({
       level: character?.level || 1,
       characterClass: character?.characterClass || '',
       race: character?.race || '',
+      size: character?.size || 'medium',
       alignment: character?.alignment || '',
       baseAttackBonus: character?.baseAttackBonus || 0,
       baseFortitude: character?.baseFortitude || 0,
@@ -249,6 +265,23 @@ const CharacterSetup = ({
               </div>
               
               <div className="form-group">
+                <label htmlFor="size">Size</label>
+                <select
+                  id="size"
+                  name="size"
+                  value={characterData.size}
+                  onChange={handleChange}
+                  className="form-control"
+                >
+                  {sizeOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="form-group">
                 <label htmlFor="alignment">Alignment</label>
                 <select
                   id="alignment"
@@ -342,6 +375,10 @@ const CharacterSetup = ({
             <div className="detail-row">
               <span className="detail-label">Race:</span>
               <span className="detail-value">{character?.race || 'None'}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Size:</span>
+              <span className="detail-value">{getSizeDisplayName(character?.size) || 'Medium'}</span>
             </div>
             <div className="detail-row">
               <span className="detail-label">Alignment:</span>

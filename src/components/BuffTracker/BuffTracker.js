@@ -234,16 +234,6 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
             <label>AC:</label>
             <input 
               type="number" 
-              value={newBuff.effects.attackBonus}
-              onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
-            />
-          </div>
-
-          <h4>Combat Bonuses/Penalties</h4>
-          <div className="stat-effect-row">
-            <label>Attack Bonus:</label>
-            <input 
-              type="number" 
               value={newBuff.effects.ac}
               onChange={(e) => handleEffectChange('ac', e.target.value)}
             />

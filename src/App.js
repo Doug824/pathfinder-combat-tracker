@@ -5,12 +5,22 @@ import CharacterSetup from './pages/CharacterSetup';
 import CombatTracker from './pages/CombatTracker';
 import Navigation from './components/Navigation';
 import ThemeToggle from './components/ThemeToggle';
+import LoginPage from './pages/LoginPage';
 import useCharacterStorage from './hooks/useCharacterStorage';
+import useAuth from './hooks/useAuth';
 
 function App() {
-  // For debugging
-  console.log("App rendering");
+  // Authentication
+  const {
+    user,
+    loading,
+    register,
+    login,
+    logout,
+    isAuthenticated
+  } = useAuth();
   
+  // Character storage (now depends on the user)
   const {
     characters,
     activeCharacterId,
@@ -25,7 +35,7 @@ function App() {
     updateCombatAbilities,
     updateWeapons,
     updateCombatSettings
-  } = useCharacterStorage();
+  } = useCharacterStorage(user);
   
   // State for current page
   const [currentPage, setCurrentPage] = useState('manager');
@@ -203,19 +213,60 @@ function App() {
     }
   };
   
-  console.log("Current page:", currentPage);
+  // Handle user login
+  const handleLogin = (username, password) => {
+    return login(username, password);
+  };
   
+  // Handle user registration
+  const handleRegister = (username, password) => {
+    return register(username, password);
+  };
+  
+  // Handle user logout
+  const handleLogout = () => {
+    logout();
+    // Reset to manager page when logging out
+    setCurrentPage('manager');
+  };
+  
+  // Don't render anything while authentication state is loading
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+  
+  // If not authenticated, show login page
+  if (!isAuthenticated) {
+    return (
+      <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+        <LoginPage onLogin={handleLogin} onRegister={handleRegister} />
+      </div>
+    );
+  }
+  
+  // Main app when authenticated
   return (
     <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <header className="App-header">
-        <h1>Pathfinder Combat Tracker</h1>
+        <div className="app-title">
+          <h1>BuffStacker</h1>
+          <p className="app-tagline">The only app that can handle your Pathfinder nonsense.</p>
+        </div>
         <div className="header-controls">
           <Navigation 
             currentPage={currentPage} 
             setCurrentPage={handlePageChange} 
             activeCharacter={activeCharacter}
           />
-          <ThemeToggle darkMode={darkMode} onToggle={handleThemeToggle} />
+          <div className="user-section">
+            <div className="user-info">
+              <span className="username">{user.username}</span>
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+            </div>
+            <ThemeToggle darkMode={darkMode} onToggle={handleThemeToggle} />
+          </div>
         </div>
       </header>
       

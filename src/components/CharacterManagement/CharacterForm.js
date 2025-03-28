@@ -8,6 +8,7 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
     characterClass: character?.characterClass || '',
     race: character?.race || '',
     alignment: character?.alignment || '',
+    size: character?.size || 'medium', // Default to medium size
     stats: character?.stats || {
       strength: 10,
       dexterity: 10,
@@ -17,6 +18,19 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
       charisma: 10
     }
   });
+  
+  // Pathfinder size categories
+  const sizeOptions = [
+    { value: 'fine', label: 'Fine' },
+    { value: 'diminutive', label: 'Diminutive' },
+    { value: 'tiny', label: 'Tiny' },
+    { value: 'small', label: 'Small' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'large', label: 'Large' },
+    { value: 'huge', label: 'Huge' },
+    { value: 'gargantuan', label: 'Gargantuan' },
+    { value: 'colossal', label: 'Colossal' }
+  ];
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -121,6 +135,25 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
             />
           </div>
           
+          <div className="form-group">
+            <label htmlFor="size">Size</label>
+            <select
+              id="size"
+              name="size"
+              value={characterData.size}
+              onChange={handleChange}
+              className="form-control"
+            >
+              {sizeOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
+        <div className="form-row">
           <div className="form-group">
             <label htmlFor="alignment">Alignment</label>
             <select

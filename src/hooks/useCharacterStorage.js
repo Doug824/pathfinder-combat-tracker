@@ -1,15 +1,24 @@
 import { useState, useEffect } from 'react';
 
-const useCharacterStorage = () => {
+const useCharacterStorage = (user) => {
   const [characters, setCharacters] = useState([]);
   const [activeCharacterId, setActiveCharacterId] = useState(null);
   const [activeCharacter, setActiveCharacter] = useState(null);
   
-  // Load characters from localStorage on initial mount
+  // Storage keys based on user
+  const getCharactersKey = () => {
+    return user ? `pathfinderCharacters_${user.username}` : 'pathfinderCharacters_guest';
+  };
+  
+  const getActiveCharacterKey = () => {
+    return user ? `activeCharacterId_${user.username}` : 'activeCharacterId_guest';
+  };
+  
+  // Load characters from localStorage on initial mount or when user changes
   useEffect(() => {
     try {
-      const storedCharacters = localStorage.getItem('pathfinderCharacters');
-      const activeId = localStorage.getItem('activeCharacterId');
+      const storedCharacters = localStorage.getItem(getCharactersKey());
+      const activeId = localStorage.getItem(getActiveCharacterKey());
       
       if (storedCharacters) {
         const parsedCharacters = JSON.parse(storedCharacters);
@@ -23,44 +32,52 @@ const useCharacterStorage = () => {
           // Otherwise, use the first character if available
           setActiveCharacterId(parsedCharacters[0].id);
           setActiveCharacter(parsedCharacters[0]);
+        } else {
+          // No characters available
+          setActiveCharacterId(null);
+          setActiveCharacter(null);
         }
+      } else {
+        // No stored characters for this user
+        setCharacters([]);
+        setActiveCharacterId(null);
+        setActiveCharacter(null);
       }
     } catch (error) {
       console.error("Error loading characters from localStorage:", error);
     }
-  }, []);
+  }, [user]);
   
   // Save characters to localStorage whenever they change
   useEffect(() => {
     try {
-      localStorage.setItem('pathfinderCharacters', JSON.stringify(characters));
+      localStorage.setItem(getCharactersKey(), JSON.stringify(characters));
       console.log("Saved characters to localStorage:", characters);
     } catch (error) {
       console.error("Error saving characters to localStorage:", error);
     }
-  }, [characters]);
+  }, [characters, user]);
   
   // Save active character ID to localStorage whenever it changes
   useEffect(() => {
     try {
       if (activeCharacterId) {
-        localStorage.setItem('activeCharacterId', activeCharacterId);
+        localStorage.setItem(getActiveCharacterKey(), activeCharacterId);
         
         // Update the active character object
         const foundCharacter = characters.find(char => char.id === activeCharacterId);
         setActiveCharacter(foundCharacter || null);
         console.log("Active character set to:", foundCharacter);
       } else {
-        localStorage.removeItem('activeCharacterId');
+        localStorage.removeItem(getActiveCharacterKey());
         setActiveCharacter(null);
       }
     } catch (error) {
       console.error("Error updating active character:", error);
     }
-  }, [activeCharacterId, characters]);
+  }, [activeCharacterId, characters, user]);
   
   // Create a new character
-  
   const createCharacter = (characterData) => {
     try {
       // Log the incoming data to debug
@@ -95,6 +112,7 @@ const useCharacterStorage = () => {
         level: parseInt(characterData.level) || 1,
         characterClass: characterData.characterClass || '',
         race: characterData.race || '',
+        size: characterData.size || 'medium',
         alignment: characterData.alignment || '',
         // Use our carefully processed stats object
         stats: statsWithDefaults,
@@ -123,6 +141,8 @@ const useCharacterStorage = () => {
         damageAbilityMod: 'strength',
         offhandAttackAbilityMod: 'strength',
         offhandDamageAbilityMod: 'strength',
+        // Store owner information
+        owner: user ? user.username : 'guest',
         created: new Date().toISOString(),
         lastModified: new Date().toISOString()
       };
