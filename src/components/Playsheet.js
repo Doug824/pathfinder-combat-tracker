@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { calculateFinalStats } from '../utils/bonusCalculator';
+import './Playsheet.css'; // Import the new CSS file
 
 const Playsheet = ({
   character,
@@ -70,14 +71,12 @@ const Playsheet = ({
     
     console.log("Active abilities with effects:", abilityEffects);
     
-    // This is crucial - we need to ensure the active abilities have the right effects
     // Process any variable input abilities to make sure their effects are up-to-date
     const processedAbilities = activeAbilities.map(ability => {
       if (ability.variableInput && ability.isActive) {
         const inputValue = ability.inputValue || 1;
         
         if (ability.name === 'Improved Power Attack') {
-          // Force the correct values for effect calculation
           return {
             ...ability,
             effects: {
@@ -87,7 +86,6 @@ const Playsheet = ({
             }
           };
         } else if (ability.name === 'Greater Power Attack') {
-          // Force the correct values for effect calculation
           return {
             ...ability,
             effects: {
@@ -97,7 +95,6 @@ const Playsheet = ({
             }
           };
         } else if (ability.name === 'Fighting Defensively') {
-          // Force the correct values for effect calculation
           return {
             ...ability,
             effects: {
@@ -132,10 +129,6 @@ const Playsheet = ({
     // Calculate stats with the processed abilities
     const { finalStats, bonusDetails } = calculateFinalStats(stats, [...buffs, ...processedAbilities], gear);
     
-    // Log attack and damage bonuses to debug
-    console.log("Attack bonuses:", bonusDetails.attackBonus);
-    console.log("Damage bonuses:", bonusDetails.damage);
-    
     // Get ability modifiers
     const strMod = Math.floor((finalStats.strength - 10) / 2);
     const dexMod = Math.floor((finalStats.dexterity - 10) / 2);
@@ -163,9 +156,7 @@ const Playsheet = ({
     // Get base attack bonus and attack bonuses
     const baseBAB = character?.baseAttackBonus || 0;
     const attackBonuses = bonusDetails.attackBonus?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
-    console.log("Attack bonuses from all sources:", bonusDetails.attackBonus);
     const damageBonuses = bonusDetails.damage?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
-    console.log("Damage bonuses from all sources:", bonusDetails.damage);
 
     // Direct check for Power Attack abilities to ensure penalties are applied
     let directAttackPenalty = 0;
@@ -174,18 +165,13 @@ const Playsheet = ({
     // Look for active power attack abilities
     for (const ability of processedAbilities) {
       if (ability.isActive) {
-        // For Improved Power Attack, apply the attack penalty directly
         if (ability.name === 'Improved Power Attack') {
           const value = ability.inputValue || 1;
           directAttackPenalty -= value; // Ensure the penalty is negative
-          console.log(`Applying direct Improved Power Attack penalty: Attack ${-value}`);
         }
-        
-        // For Greater Power Attack, apply the damage penalty directly
         else if (ability.name === 'Greater Power Attack') {
           const value = ability.inputValue || 1;
           directDamagePenalty -= value; // Ensure the penalty is negative
-          console.log(`Applying direct Greater Power Attack penalty: Damage ${-value}`);
         }
       }
     }
@@ -198,9 +184,6 @@ const Playsheet = ({
     
     // Calculate primary weapon damage modifier - include direct penalty
     const primaryDamageMod = selectedDamageMod + damageBonuses + primaryWeapon.damageBonus + directDamagePenalty;
-    
-    console.log("Attack with direct penalty:", totalAttackBonus);
-    console.log("Damage with direct penalty:", primaryDamageMod);
 
     // Calculate offhand weapon attack bonus
     const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + directAttackPenalty;
@@ -211,7 +194,6 @@ const Playsheet = ({
     
     // Calculate AC values - ensure AC penalty is applied
     const baseAC = 10;
-    // Important! Don't filter out negative AC bonuses
     const acBonuses = bonusDetails.ac?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
     const normalAC = baseAC + dexMod + acBonuses;
   
@@ -238,9 +220,6 @@ const Playsheet = ({
     const fort = baseFort + conMod + fortBonuses;
     const ref = baseRef + dexMod + refBonuses;
     const will = baseWill + wisMod + willBonuses;
-    
-    console.log("Final calculated attack bonus:", totalAttackBonus);
-    console.log("Final calculated damage mod:", primaryDamageMod);
     
     setCombatStats({
       baseAttackBonus: baseBAB,
@@ -283,7 +262,7 @@ const Playsheet = ({
     while (remainingBAB >= 6) { // At 6+ BAB, gain an additional attack
       remainingBAB -= 5;
       const attackMod = totalAttackBonus - (baseBAB - remainingBAB);
-      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1)); // Can't go below 1 + bonuses
+      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
     }
     
     // Add haste attack if applicable
@@ -411,37 +390,30 @@ const Playsheet = ({
           const inputValue = ability.inputValue || 1;
           
           if (ability.name === 'Improved Power Attack') {
-            // Improved Power Attack: subtract from attack, add to damage
             updatedEffects = {
               ...updatedEffects,
               attackBonus: -inputValue,  // NEGATIVE
               damage: inputValue * 2     // POSITIVE
             };
-            console.log(`Toggling Improved Power Attack: Attack ${-inputValue}, Damage +${inputValue * 2}`);
           } else if (ability.name === 'Greater Power Attack') {
-            // Greater Power Attack: add to attack, subtract from damage
             updatedEffects = {
               ...updatedEffects,
               attackBonus: inputValue,   // POSITIVE
               damage: -inputValue        // NEGATIVE
             };
-            console.log(`Toggling Greater Power Attack: Attack +${inputValue}, Damage ${-inputValue}`);
           } else if (ability.name === 'Combat Expertise') {
-            // Combat Expertise: trade attack for AC
             updatedEffects = {
               ...updatedEffects,
               attackBonus: -inputValue,  // NEGATIVE
               ac: inputValue             // POSITIVE
             };
           } else if (ability.name === 'Fighting Defensively') {
-            // Fighting Defensively: penalty to attack, bonus to AC
             updatedEffects = {
               ...updatedEffects,
               attackBonus: -inputValue,  // NEGATIVE
               ac: ability.secondaryInputValue || 2  // POSITIVE
             };
           } else if (ability.name === 'Deadly Aim') {
-            // Deadly Aim: ranged version of Power Attack
             updatedEffects = {
               ...updatedEffects,
               attackBonus: -inputValue,  // NEGATIVE
@@ -449,9 +421,6 @@ const Playsheet = ({
             };
           }
         }
-        
-        // If we're turning on a combat ability with fixed effects (like Rage),
-        // make sure the effects are properly initialized
         
         return { 
           ...ability, 
@@ -461,11 +430,6 @@ const Playsheet = ({
       }
       return ability;
     });
-    
-    // Log the changes being made to help with debugging
-    const targetAbility = updatedAbilities.find(a => a.id === abilityId);
-    console.log(`Toggled ability ${targetAbility.name} to ${targetAbility.isActive ? 'active' : 'inactive'}`);
-    console.log("Effects:", targetAbility.effects);
     
     onCombatAbilitiesChange(updatedAbilities);
   };
@@ -478,25 +442,20 @@ const Playsheet = ({
       if (ability.id === abilityId) {
         let updatedEffects = { ...ability.effects };
         
-        // Improved Power Attack: subtract from attack, add to damage
         if (ability.name === 'Improved Power Attack') {
           updatedEffects = {
             ...updatedEffects,
             attackBonus: -numValue,  // NEGATIVE to reduce attack
             damage: numValue * 2     // POSITIVE to increase damage
           };
-          console.log(`Updated Improved Power Attack: attackBonus=${-numValue}, damage=${numValue * 2}`);
         } 
-        // Greater Power Attack: add to attack, subtract from damage
         else if (ability.name === 'Greater Power Attack') {
           updatedEffects = {
             ...updatedEffects,
             attackBonus: numValue,   // POSITIVE to increase attack
             damage: -numValue        // NEGATIVE to reduce damage
           };
-          console.log(`Updated Greater Power Attack: attackBonus=${numValue}, damage=${-numValue}`);
         }
-        // Other abilities...
         else if (ability.name === 'Combat Expertise') {
           updatedEffects = {
             ...updatedEffects,
@@ -544,10 +503,9 @@ const Playsheet = ({
         if (ability.name === 'Fighting Defensively') {
           updatedEffects = {
             ...updatedEffects,
-            attackBonus: -ability.inputValue,
+            attackBonus: -(ability.inputValue || 4),
             ac: numValue  // Use the secondary input value for AC bonus
           };
-          console.log(`Updated Fighting Defensively secondary input: attackBonus=${-ability.inputValue}, ac=${numValue}`);
         }
         
         return {
@@ -569,32 +527,124 @@ const Playsheet = ({
   
   return (
     <div className="playsheet">
-      <h2>Combat Playsheet</h2>
-      
-      <div className="playsheet-section attacks">
-        <h3>Attacks</h3>
-        <div className="playsheet-controls">
-          <label className="haste-toggle">
-            <input
-              type="checkbox"
-              checked={hasHaste}
-              onChange={() => setHasHaste(!hasHaste)}
-            />
-            Haste (Extra Attack)
-          </label>
+      {/* Left Column: Combat Stats */}
+      <div className="playsheet-left-column">
+        <div className="playsheet-section attacks">
+          <h3>Attacks</h3>
+          <div className="playsheet-controls">
+            <label className="haste-toggle">
+              <input
+                type="checkbox"
+                checked={hasHaste}
+                onChange={() => setHasHaste(!hasHaste)}
+              />
+              Haste (Extra Attack)
+            </label>
+            
+            <label className="twf-toggle">
+              <input
+                type="checkbox"
+                checked={twoWeaponFighting}
+                onChange={handleTwoWeaponFightingToggle}
+              />
+              Two-Weapon Fighting (-2 penalty)
+            </label>
+          </div>
           
-          <label className="twf-toggle">
-            <input
-              type="checkbox"
-              checked={twoWeaponFighting}
-              onChange={handleTwoWeaponFightingToggle}
-            />
-            Two-Weapon Fighting (-2 penalty)
-          </label>
+          {/* Primary Attacks Display */}
+          <div className="attack-list">
+            {attackModifiers.map((mod, index) => (
+              <div key={index} className="attack-row">
+                <span className="attack-name">
+                  {index === 0 ? 'Primary Attack' : 
+                   (hasHaste && index === attackModifiers.length - 1) ? 'Haste Attack' : 
+                   `Iterative Attack ${index}`}
+                </span>
+                <span className="attack-value">{formatModifier(mod)}</span>
+              </div>
+            ))}
+          </div>
+          
+          <div className="damage-mod">
+            <span className="damage-label">Damage Modifier:</span>
+            <span className="damage-value">{formatModifier(damageModifier)}</span>
+          </div>
+          
+          {/* Off-hand Attacks Display (only if two-weapon fighting is enabled) */}
+          {twoWeaponFighting && (
+            <>
+              <div className="offhand-attacks">
+                <h4>{offhandWeapon.name} Attacks</h4>
+                <div className="attack-list">
+                  {offhandAttackModifiers.map((mod, index) => (
+                    <div key={index} className="attack-row">
+                      <span className="attack-name">Off-hand Attack {index + 1}</span>
+                      <span className="attack-value">{formatModifier(mod)}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="damage-mod">
+                  <span className="damage-label">Off-hand Damage:</span>
+                  <span className="damage-value">{formatModifier(offhandDamageModifier)}</span>
+                </div>
+              </div>
+            </>
+          )}
+          
+          <div className="attack-summary">
+            Total Attacks: {attacksCount + (twoWeaponFighting ? offhandAttackModifiers.length : 0)}
+            {hasHaste && <span> (includes Haste)</span>}
+          </div>
         </div>
         
-        {/* Weapon Configuration */}
-        <div className="weapon-config">
+        <div className="playsheet-section defenses">
+          <h3>Armor Class</h3>
+          <div className="defense-row">
+            <span className="defense-name">Normal AC:</span>
+            <span className="defense-value">{combatStats.normalAC}</span>
+          </div>
+          <div className="defense-row">
+            <span className="defense-name">Touch AC:</span>
+            <span className="defense-value">{combatStats.touchAC}</span>
+          </div>
+          <div className="defense-row">
+            <span className="defense-name">Flat-Footed AC:</span>
+            <span className="defense-value">{combatStats.flatFootedAC}</span>
+          </div>
+          <div className="defense-row">
+            <span className="defense-name">Combat Maneuver Bonus:</span>
+            <span className="defense-value">{formatModifier(combatStats.cmb)}</span>
+          </div>
+          <div className="defense-row">
+            <span className="defense-name">Combat Maneuver Defense:</span>
+            <span className="defense-value">{combatStats.cmd}</span>
+          </div>
+        </div>
+        
+        <div className="playsheet-section saves">
+          <h3>Saving Throws</h3>
+          <div className="save-row">
+            <span className="save-name">Fortitude:</span>
+            <span className="save-value">{formatModifier(combatStats.fort)}</span>
+          </div>
+          <div className="save-row">
+            <span className="save-name">Reflex:</span>
+            <span className="save-value">{formatModifier(combatStats.ref)}</span>
+          </div>
+          <div className="save-row">
+            <span className="save-name">Will:</span>
+            <span className="save-value">{formatModifier(combatStats.will)}</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Right Column: Weapon Configuration */}
+      <div className="playsheet-right-column">
+        <div className="playsheet-section weapon-settings">
+          <h3>Weapon Configuration</h3>
+          
+          {/* Primary Weapon Settings */}
           <div className="primary-weapon">
             <h4>Primary Weapon</h4>
             <div className="weapon-form">
@@ -668,6 +718,7 @@ const Playsheet = ({
             </div>
           </div>
           
+          {/* Off-hand Weapon Settings (only visible when two-weapon fighting is enabled) */}
           {twoWeaponFighting && (
             <div className="offhand-weapon">
               <h4>Off-Hand Weapon</h4>
@@ -757,95 +808,9 @@ const Playsheet = ({
             </div>
           )}
         </div>
-        
-        {/* Primary Attacks Display */}
-        <div className="attack-section">
-          <h4>Primary Attacks ({primaryWeapon.name})</h4>
-          <div className="attack-list">
-            {attackModifiers.map((mod, index) => (
-              <div key={index} className="attack-row">
-                <span className="attack-name">
-                  {index === 0 ? 'Primary Attack' : 
-                   (hasHaste && index === attackModifiers.length - 1) ? 'Haste Attack' : 
-                   `Iterative Attack ${index}`}
-                </span>
-                <span className="attack-value">{formatModifier(mod)}</span>
-              </div>
-            ))}
-          </div>
-          
-          <div className="damage-mod">
-            <span className="damage-label">Damage Modifier:</span>
-            <span className="damage-value">{formatModifier(damageModifier)}</span>
-          </div>
-        </div>
-        
-        {/* Off-hand Attacks Display */}
-        {twoWeaponFighting && (
-          <div className="attack-section">
-            <h4>Off-hand Attacks ({offhandWeapon.name})</h4>
-            <div className="attack-list">
-              {offhandAttackModifiers.map((mod, index) => (
-                <div key={index} className="attack-row">
-                  <span className="attack-name">Off-hand Attack {index + 1}</span>
-                  <span className="attack-value">{formatModifier(mod)}</span>
-                </div>
-              ))}
-            </div>
-            
-            <div className="damage-mod">
-              <span className="damage-label">Damage Modifier:</span>
-              <span className="damage-value">{formatModifier(offhandDamageModifier)}</span>
-            </div>
-          </div>
-        )}
-        
-        <div className="attack-summary">
-          <span>Total Attacks: {attacksCount + (twoWeaponFighting ? offhandAttackModifiers.length : 0)}</span>
-          {hasHaste && <span> (includes Haste attack)</span>}
-        </div>
       </div>
       
-      <div className="playsheet-section defenses">
-        <h3>Armor Class</h3>
-        <div className="defense-row">
-          <span className="defense-name">Normal AC:</span>
-          <span className="defense-value">{combatStats.normalAC}</span>
-        </div>
-        <div className="defense-row">
-          <span className="defense-name">Touch AC:</span>
-          <span className="defense-value">{combatStats.touchAC}</span>
-        </div>
-        <div className="defense-row">
-          <span className="defense-name">Flat-Footed AC:</span>
-          <span className="defense-value">{combatStats.flatFootedAC}</span>
-        </div>
-        <div className="defense-row">
-          <span className="defense-name">Combat Maneuver Bonus:</span>
-          <span className="defense-value">{formatModifier(combatStats.cmb)}</span>
-        </div>
-        <div className="defense-row">
-          <span className="defense-name">Combat Maneuver Defense:</span>
-          <span className="defense-value">{combatStats.cmd}</span>
-        </div>
-      </div>
-      
-      <div className="playsheet-section saves">
-        <h3>Saving Throws</h3>
-        <div className="save-row">
-          <span className="save-name">Fortitude:</span>
-          <span className="save-value">{formatModifier(combatStats.fort)}</span>
-        </div>
-        <div className="save-row">
-          <span className="save-name">Reflex:</span>
-          <span className="save-value">{formatModifier(combatStats.ref)}</span>
-        </div>
-        <div className="save-row">
-          <span className="save-name">Will:</span>
-          <span className="save-value">{formatModifier(combatStats.will)}</span>
-        </div>
-      </div>
-      
+      {/* Combat Abilities - Full Width */}
       <div className="playsheet-section abilities">
         <h3>Combat Abilities</h3>
         {combatAbilities.length === 0 ? (
@@ -876,23 +841,22 @@ const Playsheet = ({
                       />
                     </label>
                     
-                    {/* Add secondary input for abilities like Fighting Defensively */}
+                    {/* Secondary input for abilities like Fighting Defensively */}
                     {ability.hasSecondaryInput && (
                       <div style={{ marginTop: '5px' }}>
                         <label htmlFor={`ability-secondary-input-${ability.id}`}>
                           {ability.secondaryInputLabel || 'Secondary Value:'}
+                          <input
+                            id={`ability-secondary-input-${ability.id}`}
+                            type="number"
+                            min={1}
+                            max={10}
+                            step={1}
+                            value={ability.secondaryInputValue || 2}
+                            onChange={(e) => handleSecondaryInputChange(ability.id, e.target.value)}
+                            disabled={!ability.isActive}
+                          />
                         </label>
-                        <input
-                          id={`ability-secondary-input-${ability.id}`}
-                          type="number"
-                          min={1}
-                          max={10}
-                          step={1}
-                          value={ability.secondaryInputValue || 2}
-                          onChange={(e) => handleSecondaryInputChange(ability.id, e.target.value)}
-                          disabled={!ability.isActive}
-                          style={{ marginLeft: '5px' }}
-                        />
                       </div>
                     )}
                   </div>

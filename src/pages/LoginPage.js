@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// Import logo image (make sure to add this to your project's assets folder)
+import logoImage from '../assets/buffalot-logo.png';
 
 const LoginPage = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -35,8 +37,9 @@ const LoginPage = ({ onLogin, onRegister }) => {
   return (
     <div className="login-container">
       <div className="login-header">
-        <h1>BuffStacker</h1>
-        <p className="login-tagline">The only app that can handle your Pathfinder nonsense.</p>
+        <img src={logoImage} alt="Buffalot Logo" className="login-logo" />
+        <h1>Buffalot</h1>
+        <p className="login-tagline">Because tracking stats shouldn't be a quest of its own.</p>
       </div>
       
       <div className="login-card">

@@ -8,6 +8,8 @@ import ThemeToggle from './components/ThemeToggle';
 import LoginPage from './pages/LoginPage';
 import useCharacterStorage from './hooks/useCharacterStorage';
 import useAuth from './hooks/useAuth';
+// Import logo image (you'll need to add this to your project)
+import logoImage from './assets/buffalot-logo.png';
 
 function App() {
   // Authentication
@@ -249,8 +251,9 @@ function App() {
     <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <header className="App-header">
         <div className="app-title">
-          <h1>BuffStacker</h1>
-          <p className="app-tagline">The only app that can handle your Pathfinder nonsense.</p>
+          <img src={logoImage} alt="Buffalot Logo" className="app-logo" />
+          <h1>Buffalot</h1>
+          <p className="app-tagline">Because tracking stats shouldn't be a quest of its own</p>
         </div>
         <div className="header-controls">
           <Navigation 
