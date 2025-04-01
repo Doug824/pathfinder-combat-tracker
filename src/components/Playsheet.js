@@ -41,6 +41,15 @@ const Playsheet = ({
     attackBonus: 0,
     damageBonus: 0
   });
+
+  // State for combat dice
+  const [diceCount, setDiceCount] = useState(1);
+  const [diceType, setDiceType] = useState(6);
+  const [diceResult, setDiceResult] = useState(null);
+  const [showAverage, setShowAverage] = useState(true);
+  const [diceGroups, setDiceGroups] = useState([
+    { id: Date.now(), count: 1, type: 6 }
+  ]);
   
   // State for combat stats
   const [combatStats, setCombatStats] = useState({
@@ -207,7 +216,30 @@ const Playsheet = ({
     
     // Calculate CMB and CMD
     const cmb = baseBAB + strMod + (bonusDetails.cmb?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
-    const cmd = 10 + baseBAB + strMod + dexMod + (bonusDetails.cmd?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
+
+    // Calculate dodge bonuses to CMD
+    let dodgeBonusToCmd = 0;
+
+    // Check for active abilities that provide dodge bonuses
+    for (const ability of processedAbilities) {
+      if (ability.isActive) {
+        // Combat Expertise provides dodge bonus to AC equal to the penalty to attack
+        if (ability.name === 'Combat Expertise' && ability.effects.ac > 0) {
+          dodgeBonusToCmd += ability.effects.ac;
+        }
+        // Fighting Defensively provides dodge bonus to AC
+        else if (ability.name === 'Fighting Defensively' && ability.effects.ac > 0) {
+          dodgeBonusToCmd += ability.effects.ac;
+        }
+      }
+    }
+
+// Add dodge bonuses from other sources (items, buffs, etc.)
+const otherDodgeBonuses = bonusDetails.ac?.filter(b => b.type === 'dodge').reduce((sum, bonus) => sum + bonus.value, 0) || 0;
+dodgeBonusToCmd += otherDodgeBonuses;
+
+// Calculate CMD with dodge bonuses
+const cmd = 10 + baseBAB + strMod + dexMod + dodgeBonusToCmd + (bonusDetails.cmd?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
     
     // Calculate saving throws
     const baseFort = character?.baseFortitude || 0;
@@ -525,6 +557,84 @@ const Playsheet = ({
     return value >= 0 ? `+${value}` : value;
   };
   
+  // Add a dice group
+const addDiceGroup = () => {
+  setDiceGroups([
+    ...diceGroups,
+    { id: Date.now(), count: 1, type: 6 }
+  ]);
+};
+
+// Remove a dice group
+const removeDiceGroup = (id) => {
+  if (diceGroups.length > 1) {
+    setDiceGroups(diceGroups.filter(group => group.id !== id));
+  }
+};
+
+// Update a dice group
+const updateDiceGroup = (id, field, value) => {
+  setDiceGroups(diceGroups.map(group => {
+    if (group.id === id) {
+      return {
+        ...group,
+        [field]: field === 'count' ? Math.max(1, parseInt(value) || 1) : parseInt(value)
+      };
+    }
+    return group;
+  }));
+};
+  // Calculate average result for dice
+  // Calculate average result for multiple dice groups
+const calculateAverageDice = () => {
+  let total = 0;
+  diceGroups.forEach(group => {
+    // Average of a die is (min + max) / 2
+    const averagePerDie = (1 + parseInt(group.type)) / 2;
+    total += group.count * averagePerDie;
+  });
+  return total + damageModifier;
+};
+
+// Roll multiple dice groups and get random result
+const rollDice = () => {
+  let total = 0;
+  const groupRolls = [];
+  
+  diceGroups.forEach(group => {
+    const rolls = [];
+    for (let i = 0; i < group.count; i++) {
+      const roll = Math.floor(Math.random() * group.type) + 1;
+      total += roll;
+      rolls.push(roll);
+    }
+    groupRolls.push({
+      formula: `${group.count}d${group.type}`,
+      rolls
+    });
+  });
+  
+  // Add damage modifier to the total
+  total += damageModifier;
+  
+  // Return both the total and rolls by dice group
+  return { total, groupRolls };
+};
+
+  // Handle button click to roll dice
+  // Handle button click to roll dice
+  const handleRollDice = () => {
+    const result = rollDice();
+    setDiceResult(result);
+    setShowAverage(false);
+  };
+
+  // Handle button click to show average
+  const handleShowAverage = () => {
+    setDiceResult(null);
+    setShowAverage(true);
+  };
+
   return (
     <div className="playsheet">
       {/* Left Column: Combat Stats */}
@@ -639,7 +749,7 @@ const Playsheet = ({
         </div>
       </div>
       
-      {/* Right Column: Weapon Configuration */}
+      {/* Right Column: Weapon Configuration and Dice Roller */}
       <div className="playsheet-right-column">
         <div className="playsheet-section weapon-settings">
           <h3>Weapon Configuration</h3>
@@ -808,8 +918,127 @@ const Playsheet = ({
             </div>
           )}
         </div>
+        
+        {/* Dice Roller Section */}
+        <div className="playsheet-section dice-roller">
+          <h3>Dice Roller</h3>
+          
+          <div className="dice-form">
+            {diceGroups.map((group, index) => (
+              <div key={group.id} className="dice-group">
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Number of Dice</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={group.count}
+                      onChange={(e) => updateDiceGroup(group.id, 'count', e.target.value)}
+                      className="form-control"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Dice Type</label>
+                    <select
+                      value={group.type}
+                      onChange={(e) => updateDiceGroup(group.id, 'type', e.target.value)}
+                      className="form-control"
+                    >
+                      <option value="4">d4</option>
+                      <option value="6">d6</option>
+                      <option value="8">d8</option>
+                      <option value="10">d10</option>
+                      <option value="12">d12</option>
+                      <option value="20">d20</option>
+                      <option value="100">d100</option>
+                    </select>
+                  </div>
+                  
+                  <div className="dice-group-actions">
+                    {diceGroups.length > 1 && (
+                      <button 
+                        type="button" 
+                        onClick={() => removeDiceGroup(group.id)}
+                        className="remove-dice-btn"
+                        aria-label="Remove dice group"
+                      >
+                        −
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            <button 
+              type="button"
+              onClick={addDiceGroup}
+              className="add-dice-btn"
+            >
+              + Add Dice
+            </button>
+            
+            <div className="dice-display">
+              <div className="dice-formula">
+                {diceGroups.map((group, index) => (
+                  <span key={group.id}>
+                    {index > 0 && ' + '}
+                    {group.count}d{group.type}
+                  </span>
+                ))} 
+                {damageModifier !== 0 && (
+                  <span>{damageModifier > 0 ? ' + ' : ' - '}{Math.abs(damageModifier)}</span>
+                )}
+              </div>
+              
+              {showAverage && (
+                <div className="dice-result">
+                  <span className="result-label">Average:</span>
+                  <span className="result-value">{calculateAverageDice().toFixed(1)}</span>
+                </div>
+              )}
+              
+              {diceResult && !showAverage && (
+                <div className="dice-result">
+                  <span className="result-label">Roll Result:</span>
+                  <span className="result-value">{diceResult.total}</span>
+                  <div className="individual-rolls">
+                    {diceResult.groupRolls.map((group, groupIndex) => (
+                      <div key={groupIndex} className="dice-group-result">
+                        <span className="dice-group-formula">{group.formula}:</span> 
+                        <span className="dice-group-values">{group.rolls.join(', ')}</span>
+                      </div>
+                    ))}
+                    {damageModifier !== 0 && (
+                      <div className="damage-modifier-result">
+                        <span>Damage Modifier: {damageModifier > 0 ? '+' : ''}{damageModifier}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="dice-actions">
+              <button 
+                onClick={handleRollDice} 
+                className="roll-button"
+              >
+                Roll Dice
+              </button>
+              
+              <button 
+                onClick={handleShowAverage} 
+                className="average-button"
+              >
+                Show Average
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      
       {/* Combat Abilities - Full Width */}
       <div className="playsheet-section abilities">
         <h3>Combat Abilities</h3>
