@@ -215,31 +215,61 @@ const Playsheet = ({
     const flatFootedAC = baseAC + (bonusDetails.ac?.filter(b => b.type !== 'dodge').reduce((sum, bonus) => sum + bonus.value, 0) || 0);
     
     // Calculate CMB and CMD
-    const cmb = baseBAB + strMod + (bonusDetails.cmb?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
+      const cmb = baseBAB + strMod + (bonusDetails.cmb?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
 
-    // Calculate dodge bonuses to CMD
-    let dodgeBonusToCmd = 0;
+      // Calculate dodge bonuses to CMD - track sources to avoid double-counting
+      let dodgeBonusToCmd = 0;
+      const dodgeSources = new Set(); // Track sources of dodge bonuses to avoid duplication
 
-    // Check for active abilities that provide dodge bonuses
-    for (const ability of processedAbilities) {
-      if (ability.isActive) {
-        // Combat Expertise provides dodge bonus to AC equal to the penalty to attack
-        if (ability.name === 'Combat Expertise' && ability.effects.ac > 0) {
-          dodgeBonusToCmd += ability.effects.ac;
-        }
-        // Fighting Defensively provides dodge bonus to AC
-        else if (ability.name === 'Fighting Defensively' && ability.effects.ac > 0) {
-          dodgeBonusToCmd += ability.effects.ac;
+      // Check for active abilities that provide dodge bonuses
+      for (const ability of processedAbilities) {
+        if (ability.isActive) {
+          // Only count if we haven't already counted a bonus from this source
+          const sourceName = ability.name;
+          if (!dodgeSources.has(sourceName)) {
+            // Combat Expertise provides dodge bonus to AC equal to the penalty to attack
+            if (ability.name === 'Combat Expertise' && ability.effects.ac > 0) {
+              dodgeBonusToCmd += ability.effects.ac;
+              dodgeSources.add(sourceName);
+              console.log(`Adding dodge bonus from ${sourceName}: +${ability.effects.ac} to CMD`);
+            }
+            // Fighting Defensively provides dodge bonus to AC
+            else if (ability.name === 'Fighting Defensively' && ability.effects.ac > 0) {
+              dodgeBonusToCmd += ability.effects.ac;
+              dodgeSources.add(sourceName);
+              console.log(`Adding dodge bonus from ${sourceName}: +${ability.effects.ac} to CMD`);
+            }
+          }
         }
       }
-    }
 
-// Add dodge bonuses from other sources (items, buffs, etc.)
-const otherDodgeBonuses = bonusDetails.ac?.filter(b => b.type === 'dodge').reduce((sum, bonus) => sum + bonus.value, 0) || 0;
-dodgeBonusToCmd += otherDodgeBonuses;
+      // Add dodge bonuses from other sources (items, buffs, etc.)
+      // First collect all non-ability dodge bonuses to avoid double-counting
+      const dodgeBonusesFromOtherSources = [];
+      bonusDetails.ac?.forEach(bonus => {
+        if (bonus.type === 'dodge') {
+          const sourceName = bonus.name;
+          if (!dodgeSources.has(sourceName)) {
+            dodgeBonusesFromOtherSources.push({
+              source: sourceName,
+              value: bonus.value
+            });
+            dodgeSources.add(sourceName);
+          }
+        }
+      });
 
-// Calculate CMD with dodge bonuses
-const cmd = 10 + baseBAB + strMod + dexMod + dodgeBonusToCmd + (bonusDetails.cmd?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
+      // Now add the unique dodge bonuses 
+      const otherDodgeBonuses = dodgeBonusesFromOtherSources.reduce((sum, bonus) => {
+        console.log(`Adding dodge bonus from ${bonus.source}: +${bonus.value} to CMD`);
+        return sum + bonus.value;
+      }, 0);
+      dodgeBonusToCmd += otherDodgeBonuses;
+
+      // Calculate CMD with dodge bonuses
+      const cmd = 10 + baseBAB + strMod + dexMod + dodgeBonusToCmd + (bonusDetails.cmd?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
+
+      console.log(`Total dodge bonus to CMD: +${dodgeBonusToCmd}`);
     
     // Calculate saving throws
     const baseFort = character?.baseFortitude || 0;
