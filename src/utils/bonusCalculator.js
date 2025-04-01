@@ -91,8 +91,8 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
     // For each stat, process each bonus type
     Object.entries(groupedBonuses[stat] || {}).forEach(([bonusType, bonuses]) => {
       if (bonuses.length > 0) {
-        if (bonusType === 'dodge') {
-          // Dodge bonuses stack
+        if (bonusType === 'dodge' || bonusType === 'untyped') {
+          // Dodge and untyped bonuses stack
           bonuses.forEach(bonus => {
             calculatedStats[stat] += bonus.value;
             bonusDetails[stat].push({

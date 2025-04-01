@@ -8,8 +8,8 @@ import ThemeToggle from './components/ThemeToggle';
 import LoginPage from './pages/LoginPage';
 import useCharacterStorage from './hooks/useCharacterStorage';
 import useAuth from './hooks/useAuth';
-// Import logo image (you'll need to add this to your project)
 import logoImage from './assets/buffalot-logo.png';
+import './components/enhanced-ui.css';
 
 function App() {
   // Authentication

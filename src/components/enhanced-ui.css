@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:wght@400;600&display=swap');
+
+h1, h2, h3, .app-title h1 {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
+}
+
+body, button, input, select {
+  font-family: 'Spectral', serif;
+}
+
+.attack-value, .defense-value, .save-value, .result-value {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(212, 160, 23, 0.5);
+}
+
+/* 2. Themed Borders and Containers */
+.playsheet-section, .setup-section, .tabs-container, .character-manager {
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  background-image: linear-gradient(to bottom, rgba(60,60,60,0.2), rgba(30,30,30,0.3));
+}
+
+.form-control, .dice-display, .weapon-form input, .weapon-form select {
+  background-color: var(--bg-primary);
+  background-image: url('data:image/png;base64,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');
+  background-blend-mode: overlay;
+  background-size: cover;
+  border: 1px solid #aa8855;
+}
+
+.playsheet-section h3 {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.playsheet-section h3:after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: radial-gradient(circle at 6px -3px, transparent 6px, var(--highlight-color) 6px);
+  background-size: 12px 12px;
+}
+
+/* 3. Interactive Elements */
+.roll-button, .add-dice-btn, .login-button, .new-character-btn, .save-button, .edit-button {
+  background: linear-gradient(to bottom, var(--button-bg), #a6281d);
+  border: 1px solid #8f2218;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px rgba(255,255,255,0.2);
+  transition: all 0.2s ease;
+}
+
+.roll-button:hover, .add-dice-btn:hover, .login-button:hover, .new-character-btn:hover, .save-button:hover, .edit-button:hover {
+  background: linear-gradient(to bottom, #d54a3c, var(--button-bg));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 1px rgba(255,255,255,0.3);
+}
+
+.roll-button:active, .add-dice-btn:active, .login-button:active, .new-character-btn:active, .save-button:active, .edit-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 1px rgba(255,255,255,0.1);
+}
+
+.average-button, .cancel-button {
+  background: linear-gradient(to bottom, var(--bg-tertiary), var(--bg-secondary));
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 1px rgba(255,255,255,0.1);
+  transition: all 0.2s ease;
+}
+
+.average-button:hover, .cancel-button:hover {
+  background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-tertiary));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px rgba(255,255,255,0.2);
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--highlight-color);
+  border-color: var(--highlight-color);
+}
+
+input[type="checkbox"]:checked:after {
+  content: "✓";
+  color: white;
+  position: absolute;
+  top: -2px;
+  left: 3px;
+}
+
+/* 4. Visual Flourishes and Iconography */
+body {
+  background-color: var(--bg-primary);
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXWBgYGHh4d5eXlzc3OLi4ubm5uVlZWPj4+NjY19fX2JiYl/f39ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5NnZ2c4zIguAAAAKUlEQVR4AWPgmgAYBQMwzDCFYJjkEhjG8SDhkUOY2xzDcAqJsQsJD5dQ1wYAfSKEEPLGBiwAAAAASUVORK5CYII=');
+  background-blend-mode: overlay;
+  background-attachment: fixed;
+}
+
+.app-title h1:before, .app-title h1:after, .login-header h1:before, .login-header h1:after {
+  content: "❖";
+  font-size: 0.8em;
+  color: var(--highlight-color);
+  margin: 0 10px;
+  vertical-align: middle;
+}
+
+.attack-name:before {
+  content: "⚔️";
+  margin-right: 8px;
+  font-size: 0.9em;
+}
+
+.defense-name:before {
+  content: "🛡️";
+  margin-right: 8px;
+  font-size: 0.9em;
+}
+
+.save-name:before {
+  content: "✨";
+  margin-right: 8px;
+  font-size: 0.9em;
+}
+
+.ability-name:before {
+  content: "✧";
+  color: var(--highlight-color);
+  margin-right: 8px;
+}
+
+/* 5. Card-Based Design with Depth */
+.ability-card, .ability-toggle-row, .gear-card, .character-card, .dice-group {
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ability-card:before, .gear-card:before, .character-card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right, var(--highlight-color), var(--bg-tertiary));
+}
+
+.ability-card:hover, .gear-card:hover, .character-card:hover, .ability-toggle-row:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.attack-value, .defense-value, .save-value {
+  position: relative;
+  overflow: hidden;
+}
+
+.attack-value:after, .defense-value:after, .save-value:after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 20%;
+  height: 200%;
+  background: rgba(255,255,255,0.2);
+  transform: rotate(30deg);
+  animation: glint 6s infinite;
+}
+
+/* @keyframes glint {
+  0% { left: -20%; }
+  100% { left: 100%; }
+} */
+
+/* 6. Themed Loading State */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+}
+
+.loading:after {
+  content: "⚔️";
+  font-size: 2rem;
+  animation: rotate 1.5s infinite ease;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Additional Refinements */
+.dice-formula {
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.result-value {
+  text-shadow: 0 0 10px rgba(var(--highlight-color), 0.5);
+}
+
+.attack-row, .defense-row, .save-row {
+  transition: transform 0.2s ease;
+}
+
+.attack-row:hover, .defense-row:hover, .save-row:hover {
+  transform: scale(1.02);
+}
+
+/* Login page enhancements */
+.login-card {
+  position: relative;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.login-card:before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(135deg, var(--highlight-color) 0%, transparent 70%);
+  z-index: -1;
+  border-radius: 12px;
+  opacity: 0.5;
+}
+
+/* App title fancy styling */
+.app-title {
+  position: relative;
+}
+
+.app-title:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--highlight-color), transparent);
+}
+
+/* Character card enhancements */
+.character-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.character-card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--highlight-color);
+}
+
+.character-card.active:before {
+  width: 8px;
+  background: linear-gradient(to bottom, var(--highlight-color), var(--active-color));
+}
+
+/* Navigation button enhancements */
+.nav-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-button:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--highlight-color);
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover:after {
+  width: 80%;
+  left: 10%;
+}
+
+.nav-item.active .nav-button:after {
+  width: 100%;
+  left: 0;
+}

@@ -1132,6 +1132,17 @@ const rollDice = () => {
                       ))}
                   </div>
                 )}
+                <label className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={ability.isActive}
+                    onChange={() => toggleAbility(ability.id)}
+                  />
+                  <span className="toggle-slider">
+                    <span className="toggle-label active">Active</span>
+                    <span className="toggle-label inactive">Inactive</span>
+                  </span>
+                </label>
               </div>
             ))}
           </div>

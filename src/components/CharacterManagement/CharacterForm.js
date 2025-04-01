@@ -102,7 +102,7 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
               id="level"
               name="level"
               min="1"
-              max="20"
+              max="30"
               value={characterData.level}
               onChange={handleChange}
               className="form-control"
