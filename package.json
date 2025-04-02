@@ -1,7 +1,7 @@
 {
   "name": "pathfinder-combat-tracker",
   "version": "0.1.0",
-  "homepage": "https://doug824.github.io/pathfinder-combat-tracker/",
+  "homepage": "https://github.com/Doug824/pathfinder-combat-tracker.git",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",
