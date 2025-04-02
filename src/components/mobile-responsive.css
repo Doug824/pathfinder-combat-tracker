@@ -359,7 +359,6 @@
     
     /* Fix for iOS input styling */
     input, select {
-      -webkit-appearance: none;
       border-radius: 4px;
     }
     
