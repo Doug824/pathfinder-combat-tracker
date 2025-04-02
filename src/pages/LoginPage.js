@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // Import logo image (make sure to add this to your project's assets folder)
-import logoImage from '../assets/buffalot-logo.png';
+import logoWithName from '../assets/HerosLedgerLogo-1.png';
 
 const LoginPage = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -37,8 +37,7 @@ const LoginPage = ({ onLogin, onRegister }) => {
   return (
     <div className="login-container">
       <div className="login-header">
-        <img src={logoImage} alt="Buffalot Logo" className="login-logo" />
-        <h1>Buffalot</h1>
+        <img src={logoWithName} alt="Hero's Ledger Logo" className="login-logo-large" />
         <p className="login-tagline">Because tracking stats shouldn't be a quest of its own.</p>
       </div>
       

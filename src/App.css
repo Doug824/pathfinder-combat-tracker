@@ -55,6 +55,13 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
+.login-logo-large {
+  width: 80%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  border-radius: 25px;
+}
+
 .app-title {
   display: flex;
   align-items: center;
@@ -62,8 +69,10 @@ body {
 }
 
 .app-logo {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 25px;
 }
 
 .app-title h1 {

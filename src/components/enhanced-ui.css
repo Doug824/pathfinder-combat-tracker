@@ -459,6 +459,7 @@ button:focus, input:focus, select:focus, textarea:focus {
   box-shadow: var(--focus-ring);
 }
 
+
 /* Buff card improvements */
 .buff-card {
   background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));

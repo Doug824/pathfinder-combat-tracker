@@ -9,25 +9,11 @@
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
   }
   
   .buff-library-header h2 {
     margin: 0;
     color: var(--highlight-color);
-    font-size: 1.8rem;
-    position: relative;
-  }
-  
-  .buff-library-header h2:after {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(to right, var(--highlight-color), transparent);
   }
   
   .buff-library-controls {
@@ -40,21 +26,6 @@
   .search-container {
     flex: 1;
     min-width: 200px;
-    position: relative;
-  }
-  
-  .search-container input {
-    padding-left: 35px;
-    width: 100%;
-  }
-  
-  .search-container:before {
-    content: "🔍";
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.6;
   }
   
   .category-filter {
@@ -62,63 +33,33 @@
   }
   
   .create-package-btn {
-    background: linear-gradient(to bottom, var(--highlight-color), #882018);
+    background: linear-gradient(to bottom, var(--button-bg), #a6281d);
     color: white;
     border: none;
     border-radius: 4px;
     padding: 8px 15px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   
   .create-package-btn:hover {
     background: linear-gradient(to bottom, #d54a3c, #b3392e);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }
   
-  /* Package Creation */
   .create-package-container {
-    background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
+    background: var(--bg-secondary);
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: var(--card-shadow);
     border-left: 3px solid var(--highlight-color);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .create-package-container:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100px;
-    height: 100px;
-    background: radial-gradient(circle at top right, rgba(var(--highlight-color), 0.1), transparent 70%);
-    pointer-events: none;
   }
   
   .create-package-container h3 {
     margin-top: 0;
     margin-bottom: 15px;
     color: var(--highlight-color);
-    font-size: 1.4rem;
-    position: relative;
-    display: inline-block;
-  }
-  
-  .create-package-container h3:after {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(to right, var(--highlight-color), transparent);
   }
   
   .package-form {
@@ -132,29 +73,23 @@
     overflow-y: auto;
     background: var(--bg-primary);
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px;
     border: 1px solid var(--border-color);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
   }
   
   .package-buffs-list h4 {
     margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    color: var(--highlight-color);
-    border-bottom: 1px dashed var(--border-color);
-    padding-bottom: 8px;
+    margin-bottom: 10px;
+    font-size: 1rem;
   }
   
   .package-buff-select {
-    padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-    margin-bottom: 5px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(var(--border-color), 0.2);
   }
   
-  .package-buff-select:hover {
-    background-color: rgba(var(--highlight-color), 0.05);
+  .package-buff-select:last-child {
+    border-bottom: none;
   }
   
   .package-buff-select label {
@@ -162,11 +97,6 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    width: 100%;
-  }
-  
-  .package-buff-select input[type="checkbox"] {
-    min-width: 18px;
   }
   
   .save-package-btn {
@@ -174,31 +104,26 @@
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 12px;
+    padding: 10px;
     cursor: pointer;
     font-weight: bold;
     transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   
   .save-package-btn:hover {
     background: linear-gradient(to bottom, #d54a3c, #a6281d);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }
   
   .save-package-btn:disabled {
     background: var(--inactive-color);
     cursor: not-allowed;
     transform: none;
-    box-shadow: none;
   }
   
-  /* Buff Sections */
-  .buff-packages, .saved-buffs {
-    margin-bottom: 30px;
+  /* Buff packages section */
+  .buff-packages {
+    margin-bottom: 20px;
   }
   
   .buff-packages h3,
@@ -206,141 +131,66 @@
     color: var(--highlight-color);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 8px;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    position: relative;
+    margin-bottom: 15px;
   }
   
-  .buff-packages h3:after,
-  .saved-buffs h3:after {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100px;
-    height: 3px;
-    background: var(--highlight-color);
-  }
-  
-  /* Enhanced Buff Grid */
+  /* Grid layout for buff cards - 2 per row on desktop */
   .buff-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
   }
   
-  /* Package cards */
-  .buff-package-card {
-    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
-    border-radius: 10px;
-    padding: 18px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    border-left: 4px solid var(--highlight-color);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .buff-package-card:before {
-    content: "📦";
-    position: absolute;
-    bottom: -10px;
-    right: -10px;
-    font-size: 60px;
-    opacity: 0.05;
-    transform: rotate(-5deg);
-  }
-  
-  .buff-package-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-  }
-  
-  .buff-package-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px dashed rgba(var(--border-color), 0.5);
-    padding-bottom: 10px;
-  }
-  
-  .buff-package-header h4 {
-    margin: 0;
-    font-size: 1.3rem;
-    color: var(--highlight-color);
-  }
-  
-  /* Individual saved buff cards */
+  /* Style buff cards to match active buffs */
+  .buff-package-card,
   .saved-buff-card {
-    background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
-    border-radius: 10px;
-    padding: 18px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: var(--card-shadow);
     border-left: 3px solid var(--border-color);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .saved-buff-card:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(to right, var(--border-color), transparent);
-    opacity: 0.3;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
   }
   
   .saved-buff-card.active {
     border-left-color: var(--active-color);
-    background: linear-gradient(to bottom, rgba(var(--active-color), 0.05), var(--bg-secondary));
-    box-shadow: 0 4px 15px rgba(var(--active-color), 0.2);
   }
   
-  .saved-buff-card.active:before {
-    background: linear-gradient(to right, var(--active-color), transparent);
-    opacity: 0.3;
+  .buff-package-card {
+    border-left-color: var(--highlight-color);
   }
   
-  .saved-buff-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  .saved-buff-card:hover,
+  .buff-package-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
   }
   
-  .buff-card-header {
+  .buff-card-header,
+  .buff-package-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   
-  .buff-card-header h4 {
+  .buff-card-header h4,
+  .buff-package-header h4 {
     margin: 0;
-    font-size: 1.2rem;
-    color: var(--highlight-color);
+    font-size: 1.1rem;
   }
   
   .delete-buff-btn {
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s;
   }
   
   .delete-buff-btn:hover {
     color: var(--error-color);
-    background-color: rgba(var(--error-color), 0.1);
   }
   
   .buff-meta {
@@ -348,81 +198,55 @@
     justify-content: space-between;
     font-size: 0.85rem;
     color: var(--text-secondary);
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(var(--border-color), 0.2);
+    margin-bottom: 8px;
   }
   
   .buff-description {
-    font-size: 0.95rem;
-    margin-bottom: 15px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
     color: var(--text-secondary);
-    font-style: italic;
-    line-height: 1.4;
   }
   
-  /* Buff effects display */
   .buff-effects {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 15px;
   }
   
   .buff-effect {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
-    padding: 5px 10px;
+    padding: 3px 8px;
     border-radius: 4px;
-    font-size: 0.9rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-    border-left: 2px solid var(--highlight-color);
-  }
-  
-  .buff-effect:hover {
-    transform: translateY(-2px);
+    font-size: 0.85rem;
   }
   
   .package-contents {
-    margin: 15px 0;
-    background-color: rgba(var(--bg-primary), 0.6);
-    padding: 10px;
-    border-radius: 6px;
+    margin: 10px 0;
   }
   
   .package-contents h5 {
-    margin: 0 0 8px 0;
-    font-size: 1rem;
-    color: var(--highlight-color);
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
   }
   
   .package-buffs {
     list-style-type: none;
     padding-left: 0;
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
   
   .package-buffs li {
-    padding: 5px 0;
+    padding: 3px 0;
     border-bottom: 1px solid rgba(var(--border-color), 0.1);
-    position: relative;
-    padding-left: 18px;
-  }
-  
-  .package-buffs li:before {
-    content: "✓";
-    position: absolute;
-    left: 0;
-    color: var(--active-color);
   }
   
   .package-buffs li:last-child {
     border-bottom: none;
   }
   
-  /* Button Styles */
   .buff-actions {
     display: flex;
     gap: 10px;
@@ -434,19 +258,16 @@
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 10px 12px;
+    padding: 8px 12px;
     cursor: pointer;
     flex: 1;
     transition: all 0.2s ease;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   
   .apply-buff-btn:hover,
   .apply-package-btn:hover {
     background: linear-gradient(to bottom, #5aac79, #4a7c59);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }
   
   .remove-buff-btn {
@@ -454,46 +275,36 @@
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 10px 12px;
+    padding: 8px 12px;
     cursor: pointer;
     flex: 1;
     transition: all 0.2s ease;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   
   .remove-buff-btn:hover {
     background: linear-gradient(to bottom, #e74c3c, #c0392b);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }
   
   .package-selection {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    background: rgba(var(--bg-tertiary), 0.3);
-    border-radius: 4px;
-    padding: 10px;
+    gap: 8px;
+    padding: 5px 0;
   }
   
   .no-buffs-message {
     text-align: center;
     color: var(--text-secondary);
     font-style: italic;
-    padding: 30px;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px dashed var(--border-color);
+    padding: 20px;
   }
   
-  /* Responsive styling */
+  /* Responsive adjustments */
   @media (max-width: 768px) {
     .buff-library-header {
       flex-direction: column;
       align-items: flex-start;
-      gap: 15px;
     }
     
     .buff-library-controls {

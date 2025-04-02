@@ -1,0 +1,231 @@
+.buff-tracker {
+    padding: 20px 0;
+  }
+  
+  .buff-tracker h2 {
+    margin: 0 0 20px 0;
+    color: var(--highlight-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+  }
+  
+  /* Two-column grid layout for active buffs */
+  .active-buffs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 25px;
+  }
+  
+  /* Empty state message */
+  .active-buffs > p {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px dashed var(--border-color);
+  }
+  
+  /* Buff card styling */
+  .buff-card {
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: var(--card-shadow);
+    border-left: 3px solid var(--highlight-color);
+    transition: all 0.2s ease;
+  }
+  
+  .buff-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  }
+  
+  .buff-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    color: var(--highlight-color);
+  }
+  
+  .buff-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  
+  .buff-effects {
+    margin-bottom: 12px;
+  }
+  
+  .buff-effects p {
+    margin: 5px 0;
+    padding: 3px 8px;
+    background-color: var(--bg-tertiary);
+    border-radius: 4px;
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 0.85rem;
+  }
+  
+  .buff-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .remove-buff-btn {
+    background: linear-gradient(to bottom, var(--error-color), #a32920);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    font-weight: bold;
+  }
+  
+  .remove-buff-btn:hover {
+    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  
+  .save-buff-btn {
+    background: linear-gradient(to bottom, var(--highlight-color), #882018);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    font-weight: bold;
+  }
+  
+  .save-buff-btn:hover {
+    background: linear-gradient(to bottom, #d54a3c, #a6281d);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  
+  /* New Buff Form styling */
+  .new-buff-form {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+  }
+  
+  .new-buff-form h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--highlight-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+  }
+  
+  .new-buff-form > div {
+    margin-bottom: 15px;
+  }
+  
+  .new-buff-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .new-buff-form input[type="text"],
+  .new-buff-form input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  
+  .duration-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .duration-input {
+    width: 80px !important;
+  }
+  
+  .duration-type-select,
+  .bonus-type-select {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  
+  .stat-effects h4 {
+    margin: 15px 0 10px 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    font-size: 1rem;
+  }
+  
+  .stat-effect-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .stat-effect-row label {
+    width: 120px;
+    margin-bottom: 0;
+  }
+  
+  .stat-effect-row input {
+    width: 70px !important;
+    text-align: center;
+  }
+  
+  .add-buff-button {
+    background: linear-gradient(to bottom, var(--highlight-color), #882018);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+  }
+  
+  .add-buff-button:hover {
+    background: linear-gradient(to bottom, #d56c3c, #a6281d);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    .active-buffs {
+      grid-template-columns: 1fr;
+    }
+    
+    .duration-container,
+    .bonus-type-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .duration-input,
+    .duration-type-select,
+    .bonus-type-select {
+      width: 100% !important;
+    }
+  }

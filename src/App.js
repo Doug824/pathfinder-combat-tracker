@@ -8,7 +8,7 @@ import ThemeToggle from './components/ThemeToggle';
 import LoginPage from './pages/LoginPage';
 import useCharacterStorage from './hooks/useCharacterStorage';
 import useAuth from './hooks/useAuth';
-import logoImage from './assets/buffalot-logo.png';
+import logoIcon from './assets/HerosLedgerLogo.png';
 import './components/enhanced-ui.css';
 import './components/mobile-responsive.css';
 
@@ -254,8 +254,8 @@ function App() {
     <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <header className="App-header">
         <div className="app-title">
-          <img src={logoImage} alt="Buffalot Logo" className="app-logo" />
-          <h1>Buffalot</h1>
+          <img src={logoIcon} alt="Hero's Ledger Logo" className="app-logo" />
+          <h1>Hero's Ledger</h1>
           <p className="app-tagline">Because tracking stats shouldn't be a quest of its own</p>
         </div>
         <div className="header-controls">

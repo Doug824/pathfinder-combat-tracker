@@ -4,7 +4,8 @@ import CombatStatsCalculator from '../components/CombatStats/CombatStatsCalculat
 import CombatAbilities from '../components/CombatAbilities/CombatAbilities';
 import Playsheet from '../components/Playsheet';
 import BuffLibrary from '../components/BuffTracker/BuffLibrary';
-import '../components/BuffTracker/BuffLibrary.js';
+import '../components/BuffTracker/BuffLibrary.css';
+import '../components/BuffTracker/BuffTracker.css';
 
 const CombatTracker = ({
   character,
