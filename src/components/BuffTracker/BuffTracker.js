@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
+const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
   const [buffs, setBuffs] = useState(initialBuffs || []);
   
   // Update buffs when initialBuffs changes (e.g., when selecting a different character)
@@ -126,6 +126,24 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
     return `${buff.duration} ${buff.durationType}`;
   };
   
+  // New function to handle saving a buff to the library
+  const handleSaveBuff = (buff) => {
+    if (onSaveBuff) {
+      // Create a copy suitable for saving in the library
+      const buffToSave = {
+        ...buff,
+        id: `saved-${Date.now()}`, // New ID for the saved version
+        category: 'Custom', // Default category
+        description: `${buff.bonusType.charAt(0).toUpperCase() + buff.bonusType.slice(1)} bonus` // Simple description
+      };
+      
+      // Call the handler provided by the parent
+      onSaveBuff(buffToSave);
+    } else {
+      console.warn("Cannot save buff: onSaveBuff function not provided");
+    }
+  };
+  
   return (
     <div className="buff-tracker">
       <h2>Active Buffs & Effects</h2>
@@ -150,7 +168,12 @@ const BuffTracker = ({ onBuffsChange, initialBuffs }) => {
                     </p>
                   ))}
               </div>
-              <button onClick={() => handleRemoveBuff(buff.id)}>Remove</button>
+              <div className="buff-actions">
+                <button onClick={() => handleRemoveBuff(buff.id)} className="remove-buff-btn">Remove</button>
+                {onSaveBuff && (
+                  <button onClick={() => handleSaveBuff(buff)} className="save-buff-btn">Save to Library</button>
+                )}
+              </div>
             </div>
           ))
         )}

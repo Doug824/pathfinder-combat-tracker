@@ -141,6 +141,37 @@ const useCharacterStorage = (user) => {
         damageAbilityMod: 'strength',
         offhandAttackAbilityMod: 'strength',
         offhandDamageAbilityMod: 'strength',
+        // Add saved buffs array
+        savedBuffs: [
+          // Some default buffs for new characters
+          {
+            id: `saved-bless-${Date.now()}`,
+            name: 'Bless',
+            description: '+1 morale bonus on attack rolls and saves vs. fear',
+            category: 'Spell',
+            duration: 1,
+            durationType: 'minutes',
+            bonusType: 'morale',
+            effects: { 
+              attackBonus: 1,
+              fortitude: 1,
+              reflex: 1,
+              will: 1
+            }
+          },
+          {
+            id: `saved-shield-of-faith-${Date.now()}`,
+            name: 'Shield of Faith',
+            description: '+2 deflection bonus to AC',
+            category: 'Spell',
+            duration: 1,
+            durationType: 'minutes',
+            bonusType: 'deflection',
+            effects: { 
+              ac: 2
+            }
+          }
+        ],
         // Store owner information
         owner: user ? user.username : 'guest',
         created: new Date().toISOString(),
@@ -384,6 +415,26 @@ const useCharacterStorage = (user) => {
     }
   };
   
+  // New function to update saved buffs
+  const updateSavedBuffs = (newSavedBuffs) => {
+    try {
+      if (activeCharacter) {
+        const updatedCharacter = {
+          ...activeCharacter,
+          savedBuffs: newSavedBuffs || [],
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated saved buffs:", newSavedBuffs?.length);
+      } else {
+        console.warn("No active character to update saved buffs for");
+      }
+    } catch (error) {
+      console.error("Error updating saved buffs:", error);
+    }
+  };
+  
   return {
     characters,
     activeCharacterId,
@@ -397,7 +448,8 @@ const useCharacterStorage = (user) => {
     updateGear,
     updateCombatAbilities,
     updateWeapons,
-    updateCombatSettings
+    updateCombatSettings,
+    updateSavedBuffs  // Add this new function
   };
 };
 

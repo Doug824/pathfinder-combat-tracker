@@ -1,0 +1,370 @@
+/* Mobile-Friendly Enhancements for Buffalot */
+
+/* Base responsive setup */
+@media (max-width: 768px) {
+    /* Global adjustments */
+    body {
+      font-size: 14px;
+    }
+    
+    .App {
+      padding: 10px;
+    }
+    
+    /* Header & Navigation */
+    .App-header {
+      flex-direction: column;
+      padding: 10px;
+    }
+    
+    .app-title {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    
+    .header-controls {
+      width: 100%;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .main-nav {
+      width: 100%;
+    }
+    
+    .nav-list {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .nav-button {
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    
+    .user-section {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    /* Mobile-friendly tabs */
+    .tabs {
+      flex-direction: column;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .tab-button {
+      border-radius: 0;
+      text-align: left;
+      padding: 12px 15px;
+    }
+    
+    .tab-button:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .tab-content {
+      padding: 15px 10px;
+    }
+    
+    /* Character Manager */
+    .character-cards {
+      grid-template-columns: 1fr;
+    }
+    
+    .character-card {
+      padding: 12px;
+    }
+    
+    .character-card-content h4 {
+      font-size: 1.1rem;
+    }
+    
+    .character-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+    }
+    
+    /* Character Setup */
+    .setup-section {
+      padding: 15px 10px;
+    }
+    
+    .form-row {
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      width: 100%;
+    }
+    
+    .gear-stats-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    
+    /* Stats Displays */
+    .stat-display {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .stat-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    /* Combat Tracker */
+    .playsheet {
+      grid-template-columns: 1fr;
+    }
+    
+    .attack-row, .defense-row, .save-row {
+      flex-direction: row; /* Keep these as rows for better display */
+      padding: 10px;
+    }
+    
+    .dice-form .form-row {
+      flex-direction: column;
+    }
+    
+    /* Buff Tracker */
+    .active-buffs {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    
+    .new-buff-form .form-row {
+      flex-direction: column;
+    }
+    
+    .duration-container, .bonus-type-container {
+      width: 100%;
+    }
+    
+    /* Combat Abilities */
+    .abilities-list {
+      grid-template-columns: 1fr;
+    }
+    
+    .ability-controls {
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    
+    .ability-input {
+      width: 100%;
+    }
+    
+    .toggle-switch {
+      margin-top: 5px;
+    }
+    
+    .effects-row {
+      grid-template-columns: 1fr;
+    }
+    
+    /* Login Page */
+    .login-container {
+      padding: 15px;
+    }
+    
+    .login-card {
+      padding: 20px 15px;
+    }
+  }
+  
+  /* Small Phone Adjustments */
+  @media (max-width: 480px) {
+    /* Extreme space saving for very small screens */
+    .App {
+      padding: 5px;
+    }
+    
+    /* Hamburger menu for very small screens */
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .nav-button {
+      width: 100%;
+      text-align: left;
+    }
+    
+    /* Extremely compact forms */
+    .form-control, input, select, textarea {
+      font-size: 16px; /* Prevent zoom on iOS */
+      padding: 8px;
+    }
+    
+    /* Make buttons easier to tap */
+    button {
+      min-height: 44px; /* Apple's recommended minimum touch target size */
+    }
+    
+    /* Stack user controls */
+    .user-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    /* Simplify headers */
+    h1 {
+      font-size: 1.5rem;
+    }
+    
+    h2 {
+      font-size: 1.3rem;
+    }
+    
+    h3 {
+      font-size: 1.1rem;
+    }
+    
+    /* Maximize input size on tiny screens */
+    input[type="number"] {
+      min-width: auto;
+      width: 100%; /* Full width on tiny screens */
+    }
+  }
+  
+  /* Touch-friendly enhancements */
+  @media (hover: none) {
+    /* Larger touch targets for finger input */
+    button, .nav-button, .tab-button, input[type="checkbox"], .toggle-switch {
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    
+    /* Increase tap targets */
+    .ability-card, .character-card, .gear-card, .buff-card {
+      padding: 15px;
+    }
+    
+    /* Remove hover effects that don't work well on touch */
+    .ability-card:hover, .gear-card:hover, .character-card:hover, 
+    .attack-row:hover, .defense-row:hover, .save-row:hover,
+    .stat-display:hover {
+      transform: none;
+      box-shadow: var(--card-shadow);
+    }
+    
+    /* Replace with active state effects */
+    .ability-card:active, .gear-card:active, .character-card:active {
+      background-color: var(--bg-tertiary);
+    }
+    
+    /* Make scrollable areas easier to use */
+    .gear-list, .active-buffs, .tab-content {
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      overscroll-behavior: contain; /* Prevent scroll chaining */
+    }
+  }
+  
+  /* Floating button for new character */
+  @media (max-width: 768px) {
+    .character-manager-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .new-character-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: auto;
+      border-radius: 50%;
+      height: 56px;
+      width: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 100;
+      padding: 0;
+    }
+    
+    .new-character-btn::after {
+      content: "+";
+      font-size: 32px;
+      line-height: 1;
+    }
+    
+    .new-character-btn span {
+      display: none;
+    }
+  }
+  
+  /* Better scrolling for mobile */
+  .abilities-list, .gear-list, .character-cards, .active-buffs {
+    overflow-y: auto;
+    max-height: 80vh;
+    padding-right: 5px;
+    scrollbar-width: thin;
+  }
+  
+  /* Mobile-specific animations */
+  @media (max-width: 768px) {
+    /* Smoother transitions between pages */
+    .app-content {
+      transition: opacity 0.2s ease;
+    }
+    
+    /* Enhanced touch feedback */
+    .roll-button:active, .add-dice-btn:active, 
+    .login-button:active, .new-character-btn:active, 
+    .save-button:active, .edit-button:active {
+      transform: scale(0.96);
+    }
+  }
+  
+  /* Accessibility Improvements for Mobile */
+  @media (max-width: 768px) {
+    /* Increase contrast for better visibility */
+    .text-secondary {
+      color: var(--text-primary);
+    }
+    
+    /* Increase font size for readability */
+    .form-control, input, select, textarea, button {
+      font-size: 16px; /* Prevent auto zoom on iOS */
+    }
+    
+    /* Ensure tap targets are large enough */
+    button, .tab-button, .nav-button, 
+    .toggle-switch, .character-card {
+      min-height: 44px; /* Apple's recommended minimum */
+    }
+  }
+  
+  /* Fix potential issues with iOS */
+  @supports (-webkit-touch-callout: none) {
+    /* Fix for iOS height issue */
+    .App {
+      min-height: -webkit-fill-available;
+    }
+    
+    /* Fix for iOS input styling */
+    input, select {
+      -webkit-appearance: none;
+      border-radius: 4px;
+    }
+    
+    /* Fix for iOS momentum scrolling */
+    .abilities-list, .gear-list, .character-cards, .active-buffs {
+      -webkit-overflow-scrolling: touch;
+    }
+  }

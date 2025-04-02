@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { calculateFinalStats } from '../utils/bonusCalculator';
-import './Playsheet.css'; // Import the new CSS file
+import { getSizeACModifier, getSizeModifier } from '../utils/sizeUtils';
+import './Playsheet.css';
 
 const Playsheet = ({
   character,
@@ -188,14 +189,17 @@ const Playsheet = ({
     // Apply two-weapon fighting penalty if active
     const twfPenalty = twoWeaponFighting ? -2 : 0;
     
+    // Get size modifier for attack rolls
+    const sizeAttackModifier = getSizeModifier(character?.size || 'medium');
+
     // Calculate primary weapon attack bonus - include direct penalty
-    const totalAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + directAttackPenalty;
+    const totalAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + directAttackPenalty + sizeAttackModifier;
     
     // Calculate primary weapon damage modifier - include direct penalty
     const primaryDamageMod = selectedDamageMod + damageBonuses + primaryWeapon.damageBonus + directDamagePenalty;
 
     // Calculate offhand weapon attack bonus
-    const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + directAttackPenalty;
+    const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + directAttackPenalty + sizeAttackModifier;
     
     // Calculate offhand weapon damage modifier (typically half ability bonus)
     const offhandAbilityDamageMod = twoWeaponFighting ? Math.floor(selectedOffhandDamageMod / 2) : selectedOffhandDamageMod;
@@ -204,15 +208,19 @@ const Playsheet = ({
     // Calculate AC values - ensure AC penalty is applied
     const baseAC = 10;
     const acBonuses = bonusDetails.ac?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
-    const normalAC = baseAC + dexMod + acBonuses;
-  
-    // Touch AC calculation
-    const touchAC = baseAC + dexMod + (bonusDetails.ac?.filter(b => 
-      ['dodge', 'deflection', 'luck', 'sacred', 'profane', 'insight', 'morale'].includes(b.type)
+    // Normal AC
+    const sizeACModifier = getSizeACModifier(character?.size || 'medium');
+    const normalAC = baseAC + dexMod + acBonuses + sizeACModifier;
+
+    // Touch AC
+    const touchAC = baseAC + dexMod + sizeACModifier + (bonusDetails.ac?.filter(b => 
+      ['dodge', 'deflection', 'luck', 'sacred', 'profane', 'insight', 'morale', 'untyped'].includes(b.type)
     ).reduce((sum, bonus) => sum + bonus.value, 0) || 0);
-  
-    // Flat-footed AC calculation
-    const flatFootedAC = baseAC + (bonusDetails.ac?.filter(b => b.type !== 'dodge').reduce((sum, bonus) => sum + bonus.value, 0) || 0);
+
+    // Flat-footed AC
+    const flatFootedAC = baseAC + sizeACModifier + (bonusDetails.ac?.filter(b => 
+      b.type !== 'dodge'
+    ).reduce((sum, bonus) => sum + bonus.value, 0) || 0);
     
     // Calculate CMB and CMD
       const cmb = baseBAB + strMod + (bonusDetails.cmb?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);

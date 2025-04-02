@@ -10,6 +10,8 @@ import useCharacterStorage from './hooks/useCharacterStorage';
 import useAuth from './hooks/useAuth';
 import logoImage from './assets/buffalot-logo.png';
 import './components/enhanced-ui.css';
+import './components/mobile-responsive.css';
+
 
 function App() {
   // Authentication
@@ -36,7 +38,8 @@ function App() {
     updateGear,
     updateCombatAbilities,
     updateWeapons,
-    updateCombatSettings
+    updateCombatSettings,
+    updateSavedBuffs
   } = useCharacterStorage(user);
   
   // State for current page
@@ -328,6 +331,7 @@ function App() {
             onCombatAbilitiesChange={handleCombatAbilitiesChange}
             onUpdateWeapons={handleUpdateWeapons}
             onUpdateCombatSettings={handleUpdateCombatSettings}
+            onUpdateSavedBuffs={updateSavedBuffs} // Add this line
           />
         )}
         
