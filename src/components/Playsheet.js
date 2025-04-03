@@ -44,8 +44,6 @@ const Playsheet = ({
   });
 
   // State for combat dice
-  const [diceCount, setDiceCount] = useState(1);
-  const [diceType, setDiceType] = useState(6);
   const [diceResult, setDiceResult] = useState(null);
   const [showAverage, setShowAverage] = useState(true);
   const [diceGroups, setDiceGroups] = useState([

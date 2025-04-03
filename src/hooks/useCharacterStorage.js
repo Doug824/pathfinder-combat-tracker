@@ -75,7 +75,7 @@ const useCharacterStorage = (user) => {
     } catch (error) {
       console.error("Error updating active character:", error);
     }
-  }, [activeCharacterId, characters, user]);
+  }, [getActiveCharacterKey,activeCharacterId, characters, user]);
   
   // Create a new character
   const createCharacter = (characterData) => {
@@ -449,7 +449,7 @@ const useCharacterStorage = (user) => {
     updateCombatAbilities,
     updateWeapons,
     updateCombatSettings,
-    updateSavedBuffs  // Add this new function
+    updateSavedBuffs
   };
 };
 

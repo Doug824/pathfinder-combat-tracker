@@ -68,7 +68,7 @@ const BasicStats = ({ onStatsChange, initialStats }) => {
     }
     
     onStatsChange(parsedStats);
-  }, []);
+  }, [onStatsChange, stats]);
   
   return (
     <div className="basic-stats">
