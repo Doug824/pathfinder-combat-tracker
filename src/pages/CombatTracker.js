@@ -48,7 +48,6 @@ const CombatTracker = ({
         console.log(`Saved buff "${buff.name}" to library`);
       } else {
         console.log(`Buff "${buff.name}" already exists in library`);
-        // Optionally implement a user notification here
       }
     } else {
       console.warn("Cannot save buff: Missing character or onUpdateSavedBuffs prop");

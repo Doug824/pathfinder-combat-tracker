@@ -1,6 +1,4 @@
-/* Mobile-Friendly Enhancements for Buffalot */
-
-/* Base responsive setup */
+/* Mobile-Friendly Enhancements for Hero's Ledger */
 @media (max-width: 768px) {
     /* Global adjustments */
     body {
@@ -127,7 +125,7 @@
     }
     
     .attack-row, .defense-row, .save-row {
-      flex-direction: row; /* Keep these as rows for better display */
+      flex-direction: row;
       padding: 10px;
     }
     

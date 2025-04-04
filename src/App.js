@@ -79,8 +79,7 @@ function App() {
     setCurrentPage(pageName);
   }, []);
   
-  // SIMPLIFIED NAVIGATION LOGIC
-  // Only one effect that handles auto-navigation to setup
+  // Effect to handle auto-navigation to setup
   useEffect(() => {
     // Only auto-navigate if:
     // 1. We have an active character
@@ -331,7 +330,7 @@ function App() {
             onCombatAbilitiesChange={handleCombatAbilitiesChange}
             onUpdateWeapons={handleUpdateWeapons}
             onUpdateCombatSettings={handleUpdateCombatSettings}
-            onUpdateSavedBuffs={updateSavedBuffs} // Add this line
+            onUpdateSavedBuffs={updateSavedBuffs}
           />
         )}
         

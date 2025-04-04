@@ -19,7 +19,7 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
     }
   });
   
-  // Pathfinder size categories
+  // Size categories
   const sizeOptions = [
     { value: 'fine', label: 'Fine' },
     { value: 'diminutive', label: 'Diminutive' },

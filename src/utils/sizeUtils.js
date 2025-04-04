@@ -1,5 +1,5 @@
 /**
- * Utility functions for handling creature sizes in Pathfinder
+ * Utility functions for handling creature sizes
  */
 
 /**

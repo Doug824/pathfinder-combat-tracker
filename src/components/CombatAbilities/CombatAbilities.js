@@ -22,7 +22,7 @@ const CombatAbilities = ({
     description: '',
     type: 'standard', // standard, swift, move, full-round, etc.
     isActive: false,
-    bonusType: 'untyped', // Add this line to ensure bonusType is set
+    bonusType: 'untyped', // ensure bonusType is set
     variableInput: false, // Whether this ability needs a value input when activated
     inputLabel: '', // Label for the input field (e.g., "Power Attack Penalty")
     inputMax: null, // Maximum value for the input

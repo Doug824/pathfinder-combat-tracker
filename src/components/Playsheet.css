@@ -380,7 +380,6 @@
     color: var(--highlight-color);
   }
   
-  /* Adjust these existing styles */
   .dice-formula {
     font-size: 1.2rem;
     font-weight: bold;

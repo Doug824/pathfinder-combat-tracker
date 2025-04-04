@@ -44,7 +44,7 @@ const CharacterSetup = ({
     }
   });
   
-  // Equipment slots based on Pathfinder rules
+  // Equipment slots
   const equipmentSlots = [
     { value: 'head', label: 'Head' },
     { value: 'headband', label: 'Headband' },
@@ -78,7 +78,7 @@ const CharacterSetup = ({
     { value: 'colossal', label: 'Colossal' }
   ];
   
-  // Bonus types - same as in BuffTracker
+  // Bonus types
   const bonusTypes = [
     { value: 'enhancement', label: 'Enhancement' },
     { value: 'luck', label: 'Luck' },

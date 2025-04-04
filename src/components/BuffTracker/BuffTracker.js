@@ -38,7 +38,7 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
     { value: 'permanent', label: 'Permanent' }
   ];
   
-  // Bonus type options - these follow Pathfinder's stacking rules
+  // Bonus type options
   const bonusTypes = [
     { value: 'enhancement', label: 'Enhancement' },
     { value: 'luck', label: 'Luck' },
@@ -132,7 +132,7 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
       // Create a copy suitable for saving in the library
       const buffToSave = {
         ...buff,
-        id: `saved-${Date.now()}`, // New ID for the saved version
+        id: `saved-${Date.now()}`,
         category: 'Custom', // Default category
         description: `${buff.bonusType.charAt(0).toUpperCase() + buff.bonusType.slice(1)} bonus` // Simple description
       };

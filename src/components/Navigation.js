@@ -11,7 +11,7 @@ const Navigation = ({ currentPage, setCurrentPage, activeCharacter }) => {
     console.log("Navigation clicked:", pageId);
     // Add a small delay for 'manager' to ensure state updates properly
     if (pageId === 'manager') {
-      // This prevents the page from immediately changing back
+      // Prevents the page from immediately changing back
       setTimeout(() => {
         setCurrentPage(pageId);
       }, 10);

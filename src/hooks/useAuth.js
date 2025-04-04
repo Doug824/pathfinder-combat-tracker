@@ -61,7 +61,7 @@ const useAuth = () => {
     // Create new user
     users[username] = {
       username,
-      password, // In a real app, this should be hashed!
+      password,
       createdAt: new Date().toISOString()
     };
     
