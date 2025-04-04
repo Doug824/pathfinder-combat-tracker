@@ -107,6 +107,7 @@ yarn build
    - Alignment
 3. Set your base attributes (STR, DEX, CON, INT, WIS, CHA)
 4. Save the character
+5. You'll have to go back and edit the character to entrer in Base Attack Bonus and Saving Throws.
 
 ### Configuring Equipment
 
@@ -155,19 +156,6 @@ yarn build
     - `bonusCalculator.js` - Combat stat calculations
     - `sizeUtils.js` - Size-related utilities
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgements
 
