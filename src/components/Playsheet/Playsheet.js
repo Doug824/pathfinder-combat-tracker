@@ -725,6 +725,7 @@ const Playsheet = ({
       overflow: 'hidden',
       paddingBottom: isMobile ? '50px' : '0'
     }}>
+      
       {/* Left Column: Combat Stats */}
       <div className="playsheet-left-column">
         <div className="playsheet-section attacks">
@@ -821,7 +822,21 @@ const Playsheet = ({
             {hasHaste && <span> (includes Haste)</span>}
           </div>
         </div>
-        
+        {/* Hit Points Section */}
+        <HitPointTracker
+          character={character}
+          finalStats={finalStats}
+          onHitPointChange={onUpdateHitPoints || (() => console.warn("No hit point update function provided"))}
+          className="playsheet-hp-tracker mini-hp-tracker"
+        />
+
+        {character?.hitPoints?.negLevels > 0 && (
+          <div className="negative-levels-indicator">
+            <div className="negative-levels-warning">
+              <span>{character.hitPoints.negLevels} Negative Level{character.hitPoints.negLevels > 1 ? 's' : ''} (-{character.hitPoints.negLevels} to attacks, saves, and maneuvers)</span>
+            </div>
+          </div>
+        )}
         <div className="playsheet-section defenses">
           <h3>Armor Class</h3>
           <div className="defense-row">
@@ -1082,14 +1097,6 @@ const Playsheet = ({
           )}
         </div>
         
-        {/* Hit Points Section */}
-        <HitPointTracker
-          character={character}
-          finalStats={finalStats}
-          onHitPointChange={onUpdateHitPoints || (() => console.warn("No hit point update function provided"))}
-          className="playsheet-hp-tracker mini-hp-tracker"
-        />
-
         {character?.hitPoints?.negLevels > 0 && (
           <div className="negative-levels-indicator">
             <div className="negative-levels-warning">
