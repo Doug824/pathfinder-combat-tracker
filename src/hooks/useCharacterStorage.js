@@ -126,7 +126,7 @@ const useCharacterStorage = (user) => {
         hitPoints: {
           baseHP: baseHP,
           maxHP: initialMaxHP,
-          trueMaxHP: initialMaxHP, // Add the true max HP field
+          trueMaxHP: initialMaxHP,
           currentHP: initialMaxHP,
           tempHP: 0,
           nonLethalDamage: 0,
@@ -146,11 +146,13 @@ const useCharacterStorage = (user) => {
           attackBonus: 0,
           damageBonus: 0
         },
+        primaryWeaponModMultiplier: 1.0, // Default to 1.0× for primary
         offhandWeapon: {
           name: 'Off-Hand Weapon',
           attackBonus: 0,
           damageBonus: 0
         },
+        offhandWeaponModMultiplier: 0.5, // Default to 0.5× for offhand
         // Default combat settings
         twoWeaponFighting: false,
         offhandAttacksCount: 1,
@@ -361,7 +363,7 @@ const useCharacterStorage = (user) => {
   };
   
   // Function to update weapons
-  const updateWeapons = (primaryWeapon, offhandWeapon) => {
+  const updateWeapons = (primaryWeapon, offhandWeapon, primaryModMultiplier, offhandModMultiplier) => {
     try {
       if (activeCharacter) {
         // Create clean versions of the weapon data
@@ -377,15 +379,26 @@ const useCharacterStorage = (user) => {
           damageBonus: parseInt(offhandWeapon.damageBonus) || 0
         };
         
+        // Parse multiplier values with proper defaults
+        const primaryMult = parseFloat(primaryModMultiplier) || 1.0;
+        const offhandMult = parseFloat(offhandModMultiplier) || 0.5;
+        
         const updatedCharacter = {
           ...activeCharacter,
           primaryWeapon: cleanPrimary,
           offhandWeapon: cleanOffhand,
+          primaryWeaponModMultiplier: primaryMult,
+          offhandWeaponModMultiplier: offhandMult,
           lastModified: new Date().toISOString()
         };
         
         updateCharacter(updatedCharacter);
-        console.log("Updated weapon configuration", { primary: cleanPrimary, offhand: cleanOffhand });
+        console.log("Updated weapon configuration", { 
+          primary: cleanPrimary, 
+          offhand: cleanOffhand,
+          primaryMult: primaryMult,
+          offhandMult: offhandMult
+        });
       }
     } catch (error) {
       console.error("Error updating weapons:", error);

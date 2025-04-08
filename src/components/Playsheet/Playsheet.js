@@ -37,6 +37,14 @@ const Playsheet = ({
   const [offhandAttackAbilityMod, setOffhandAttackAbilityMod] = useState(character?.offhandAttackAbilityMod || 'strength');
   const [offhandDamageAbilityMod, setOffhandDamageAbilityMod] = useState(character?.offhandDamageAbilityMod || 'strength');
   
+  // State for weapon multipliers
+  const [primaryModMultiplier, setPrimaryModMultiplier] = useState(
+    character?.primaryWeaponModMultiplier || 1.0
+  );
+  const [offhandModMultiplier, setOffhandModMultiplier] = useState(
+    character?.offhandWeaponModMultiplier || 0.5
+  );
+
   // State for weapons
   const [primaryWeapon, setPrimaryWeapon] = useState(character?.primaryWeapon || {
     name: 'Primary Weapon',
@@ -235,15 +243,18 @@ const Playsheet = ({
     const rawAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + sizeAttackModifier;
     const finalAttackBonus = rawAttackBonus + negativeLevelPenalty; // Apply penalty once
 
-    // Calculate primary weapon damage modifier
-    const primaryDamageMod = selectedDamageMod + damageBonuses + primaryWeapon.damageBonus;
+
+    // Calculate primary weapon damage modifier with multiplier
+    const rawDamageMod = selectedDamageMod * primaryModMultiplier;
+    const primaryDamageMod = Math.floor(rawDamageMod) + damageBonuses + primaryWeapon.damageBonus;
 
     // Calculate raw offhand attack bonus (before negative level penalties)
     const rawOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + sizeAttackModifier;
-    
-    // Calculate offhand weapon damage modifier (typically half ability bonus)
     const offhandAbilityDamageMod = twoWeaponFighting ? Math.floor(selectedOffhandDamageMod / 2) : selectedOffhandDamageMod;
-    const totalOffhandDamageMod = offhandAbilityDamageMod + damageBonuses + offhandWeapon.damageBonus;
+
+    // Calculate offhand weapon damage modifier with multiplier
+    const rawOffhandDamageMod = selectedOffhandDamageMod * offhandModMultiplier;
+    const totalOffhandDamageMod = Math.floor(rawOffhandDamageMod) + damageBonuses + offhandWeapon.damageBonus;
     
     // Calculate AC values
     const baseAC = 10;
@@ -429,26 +440,48 @@ const Playsheet = ({
   // Handle weapon changes
   const handleWeaponChange = (isOffhand, field, value) => {
     if (isOffhand) {
-      const updatedOffhand = {
-        ...offhandWeapon,
-        [field]: field === 'name' ? value : (parseInt(value) || 0)
-      };
-      setOffhandWeapon(updatedOffhand);
-      
-      // Save weapon data if character exists
-      if (character && typeof onUpdateWeapons === 'function') {
-        onUpdateWeapons(primaryWeapon, updatedOffhand);
+      if (field === 'modMultiplier') {
+        // Handle multiplier specifically since it might be a decimal
+        const multiplier = parseFloat(value) || 0.5;
+        setOffhandModMultiplier(multiplier);
+        
+        // Save weapon data if character exists
+        if (character && typeof onUpdateWeapons === 'function') {
+          onUpdateWeapons(primaryWeapon, offhandWeapon, primaryModMultiplier, multiplier);
+        }
+      } else {
+        const updatedOffhand = {
+          ...offhandWeapon,
+          [field]: field === 'name' ? value : (parseInt(value) || 0)
+        };
+        setOffhandWeapon(updatedOffhand);
+        
+        // Save weapon data if character exists
+        if (character && typeof onUpdateWeapons === 'function') {
+          onUpdateWeapons(primaryWeapon, updatedOffhand, primaryModMultiplier, offhandModMultiplier);
+        }
       }
     } else {
-      const updatedPrimary = {
-        ...primaryWeapon,
-        [field]: field === 'name' ? value : (parseInt(value) || 0)
-      };
-      setPrimaryWeapon(updatedPrimary);
-      
-      // Save weapon data if character exists
-      if (character && typeof onUpdateWeapons === 'function') {
-        onUpdateWeapons(updatedPrimary, offhandWeapon);
+      if (field === 'modMultiplier') {
+        // Handle multiplier specifically since it might be a decimal
+        const multiplier = parseFloat(value) || 1.0;
+        setPrimaryModMultiplier(multiplier);
+        
+        // Save weapon data if character exists
+        if (character && typeof onUpdateWeapons === 'function') {
+          onUpdateWeapons(primaryWeapon, offhandWeapon, multiplier, offhandModMultiplier);
+        }
+      } else {
+        const updatedPrimary = {
+          ...primaryWeapon,
+          [field]: field === 'name' ? value : (parseInt(value) || 0)
+        };
+        setPrimaryWeapon(updatedPrimary);
+        
+        // Save weapon data if character exists
+        if (character && typeof onUpdateWeapons === 'function') {
+          onUpdateWeapons(updatedPrimary, offhandWeapon, primaryModMultiplier, offhandModMultiplier);
+        }
       }
     }
   };
@@ -866,6 +899,22 @@ const Playsheet = ({
                     className="form-control"
                   />
                 </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Ability Damage Multiplier</label>
+                    <select
+                      value={primaryModMultiplier}
+                      onChange={(e) => handleWeaponChange(false, 'modMultiplier', e.target.value)}
+                      className="form-control"
+                    >
+                      <option value="0">No Modifier</option>
+                      <option value="0.5">Half (0.5×)</option>
+                      <option value="1">Normal (1×)</option>
+                      <option value="1.5">One and a Half (1.5×)</option>
+                      <option value="2">Double (2×)</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               
               <div className="form-row">
@@ -940,6 +989,22 @@ const Playsheet = ({
                       onChange={(e) => handleWeaponChange(true, 'name', e.target.value)}
                       className="form-control"
                     />
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Ability Damage Multiplier</label>
+                      <select
+                        value={offhandModMultiplier}
+                        onChange={(e) => handleWeaponChange(true, 'modMultiplier', e.target.value)}
+                        className="form-control"
+                      >
+                        <option value="0">No Modifier</option>
+                        <option value="0.5">Half (0.5×)</option>
+                        <option value="1">Normal (1×)</option>
+                        <option value="1.5">One and a Half (1.5×)</option>
+                        <option value="2">Double (2×)</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
                 

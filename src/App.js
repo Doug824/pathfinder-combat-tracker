@@ -236,10 +236,10 @@ function App() {
     }
   };
   
-  const handleUpdateWeapons = (primaryWeapon, offhandWeapon) => {
-    console.log("Weapons updated");
+  const handleUpdateWeapons = (primaryWeapon, offhandWeapon, primaryModMultiplier, offhandModMultiplier) => {
+    console.log("Weapons updated with multipliers");
     if (activeCharacter) {
-      updateWeapons(primaryWeapon, offhandWeapon);
+      updateWeapons(primaryWeapon, offhandWeapon, primaryModMultiplier, offhandModMultiplier);
     }
   };
   
