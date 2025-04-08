@@ -122,10 +122,11 @@ const useCharacterStorage = (user) => {
         alignment: characterData.alignment || '',
         // Use our carefully processed stats object
         stats: statsWithDefaults,
-        // Add hit points data
+        // Add hit points data with trueMaxHP field
         hitPoints: {
           baseHP: baseHP,
           maxHP: initialMaxHP,
+          trueMaxHP: initialMaxHP, // Add the true max HP field
           currentHP: initialMaxHP,
           tempHP: 0,
           nonLethalDamage: 0,
@@ -455,14 +456,22 @@ const useCharacterStorage = (user) => {
   const updateHitPoints = (newHitPoints) => {
     try {
       if (activeCharacter) {
+        // Make sure trueMaxHP is preserved if it doesn't exist in the new hit points
+        const updatedHitPoints = {
+          ...newHitPoints,
+          // If trueMaxHP doesn't exist in newHitPoints but exists in character, keep the old value
+          trueMaxHP: newHitPoints.trueMaxHP || 
+                    (activeCharacter.hitPoints?.trueMaxHP || activeCharacter.hitPoints?.maxHP)
+        };
+        
         const updatedCharacter = {
           ...activeCharacter,
-          hitPoints: newHitPoints,
+          hitPoints: updatedHitPoints,
           lastModified: new Date().toISOString()
         };
         
         updateCharacter(updatedCharacter);
-        console.log("Updated character hit points:", newHitPoints);
+        console.log("Updated character hit points:", updatedHitPoints);
       } else {
         console.warn("No active character to update hit points for");
       }

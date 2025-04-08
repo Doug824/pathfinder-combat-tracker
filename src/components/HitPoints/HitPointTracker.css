@@ -118,6 +118,18 @@
   margin-left: 6px;
 }
 
+/* Styling for true max HP display */
+.true-max-hp {
+  font-size: 0.9rem;
+  color: var(--highlight-color);
+  margin-top: 4px;
+  font-weight: bold;
+  padding: 2px 6px;
+  background-color: rgba(var(--highlight-color-rgb, 192, 57, 43), 0.1);
+  border-radius: 4px;
+  display: inline-block;
+}
+
 .nonlethal-damage, .negative-levels {
   font-size: 0.9rem;
   color: var(--text-secondary);
@@ -303,4 +315,12 @@
 
 .hp-change-animation {
   animation: hpChange 0.5s ease;
+}
+
+/* Styling for mini-HP tracker in playsheet */
+.mini-hp-tracker .true-max-hp {
+  font-size: 0.85rem;
+  display: inline-flex;
+  padding: 1px 5px;
+  margin-left: 10px;
 }

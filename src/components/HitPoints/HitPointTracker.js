@@ -8,7 +8,9 @@ const HitPointTracker = ({
   onHitPointChange,
   className = ''
 }) => {
+  // Add a state for true max HP (without negative level penalties)
   const [hitPoints, setHitPoints] = useState({
+    trueMaxHP: character?.hitPoints?.trueMaxHP || character?.hitPoints?.maxHP || 0,
     maxHP: character?.hitPoints?.maxHP || 0,
     currentHP: character?.hitPoints?.currentHP || 0,
     tempHP: character?.hitPoints?.tempHP || 0,
@@ -26,10 +28,10 @@ const HitPointTracker = ({
     return level * conModifier;
   };
   
-  // Apply penalties from negative levels
-  const applyNegativeLevelPenalties = (baseValue) => {
+  // Apply penalties from negative levels to maxHP
+  const applyNegativeLevelPenalties = (baseValue, negLevels) => {
     // Each negative level reduces max HP by 5
-    const negLevelPenalty = (hitPoints.negLevels || 0) * 5;
+    const negLevelPenalty = negLevels * 5;
     return Math.max(1, baseValue - negLevelPenalty);
   };
 
@@ -51,47 +53,48 @@ const HitPointTracker = ({
         hpChange = level * conDifference;
       }
       
-      // Calculate base max HP before negative level penalties
-      let baseMaxHP = hitPoints.maxHP + hpChange;
+      // First, update the true max HP without negative level penalties
+      let newTrueMaxHP = hitPoints.trueMaxHP;
       
-      // Apply negative level penalties (-5 HP per negative level)
-      const maxHP = applyNegativeLevelPenalties(baseMaxHP);
+      // If Con changed, adjust true max HP
+      if (hasConChanged) {
+        newTrueMaxHP = hitPoints.trueMaxHP + hpChange;
+      }
+      
+      // Now apply negative level penalties to get displayed max HP
+      const newMaxHP = applyNegativeLevelPenalties(newTrueMaxHP, hitPoints.negLevels);
       
       // Adjust current HP
-      let currentHP = hitPoints.currentHP;
+      let newCurrentHP = hitPoints.currentHP;
       
-      // If max HP goes up, current HP should too (unless character is injured)
+      // If max HP goes up due to Constitution change, current HP should too (if not injured)
       if (hpChange > 0 && hitPoints.currentHP === hitPoints.maxHP) {
-        currentHP = maxHP;
+        newCurrentHP = newMaxHP;
       }
       
       // If max HP goes down, current HP should never exceed max
-      if (currentHP > maxHP) {
-        currentHP = maxHP;
+      if (newCurrentHP > newMaxHP) {
+        newCurrentHP = newMaxHP;
       }
       
-      // Apply negative level penalties to current HP as well
+      // Apply negative level changes to current HP
       if (hasNegLevelsChanged) {
-        // Calculate the difference in negative levels
+        // Get the difference in negative levels
         const prevNegLevels = character.hitPoints?.negLevels || 0;
         const newNegLevels = hitPoints.negLevels;
-        // Only apply the difference in negative levels
-        if (prevNegLevels !== newNegLevels) {
-          const negLevelsDiff = newNegLevels - prevNegLevels;
-          
-          // Each negative level reduces current HP by 5
-          const hpPenalty = negLevelsDiff * 5;
-          currentHP -= hpPenalty;
-        }
+        const negLevelsDiff = newNegLevels - prevNegLevels;
+        
+        // Each negative level change affects current HP by 5 points
+        const hpPenalty = negLevelsDiff * 5;
+        newCurrentHP = Math.max(1, newCurrentHP - hpPenalty);
       }
       
       const updatedHitPoints = {
         ...hitPoints,
-        maxHP: maxHP,
-        currentHP: currentHP,
-        lastConModifier: conModifier,
-        // Also store the base max HP without negative level penalties
-        baseMaxHP: baseMaxHP
+        trueMaxHP: newTrueMaxHP,  // Store the true max HP (without negative level penalties)
+        maxHP: newMaxHP,          // Store the effective max HP with penalties
+        currentHP: newCurrentHP,  // Store the updated current HP
+        lastConModifier: conModifier
       };
       
       setHitPoints(updatedHitPoints);
@@ -136,43 +139,75 @@ const HitPointTracker = ({
     const updatedHitPoints = { ...hitPoints, [field]: valueParsed };
     
     // Special handling for various fields
-    if (field === 'maxHP') {
-      // When directly editing max HP, we need to account for negative level penalties
-      // This value represents the max HP before negative level penalties
+    if (field === 'trueMaxHP') {
+      // When changing the true max HP, we need to recalculate the effective max HP
+      // by applying negative level penalties
+      updatedHitPoints.maxHP = applyNegativeLevelPenalties(valueParsed, hitPoints.negLevels);
+      
+      // Also update current HP if appropriate
+      if (hitPoints.currentHP === hitPoints.maxHP) {
+        // Character is at full health, so keep them at full health
+        updatedHitPoints.currentHP = updatedHitPoints.maxHP;
+      } else if (updatedHitPoints.maxHP < hitPoints.currentHP) {
+        // If new max HP is less than current HP, adjust current HP down
+        updatedHitPoints.currentHP = updatedHitPoints.maxHP;
+      }
+      
+      // Update the base HP calculation
       const conBonus = calculateConBonus();
       updatedHitPoints.baseHP = valueParsed - conBonus;
-      
-      // Remember that the displayed maxHP already includes negative level penalties
-      // Store the pre-penalty value in baseMaxHP
-      updatedHitPoints.baseMaxHP = valueParsed + (hitPoints.negLevels * 5);
     } 
-    else if (field === 'baseHP') {
-      // When changing base HP, recalculate maxHP with Con bonus
+    else if (field === 'maxHP') {
+      // When directly editing the displayed max HP, we need to update the true max HP
+      // by adding back the negative level penalties
+      updatedHitPoints.trueMaxHP = valueParsed + (hitPoints.negLevels * 5);
+      
+      // Also update current HP if appropriate
+      if (hitPoints.currentHP === hitPoints.maxHP) {
+        // Character is at full health, so keep them at full health
+        updatedHitPoints.currentHP = valueParsed;
+      } else if (valueParsed < hitPoints.currentHP) {
+        // If new max HP is less than current HP, adjust current HP down
+        updatedHitPoints.currentHP = valueParsed;
+      }
+      
+      // Update the base HP calculation
       const conBonus = calculateConBonus();
-      const rawMaxHP = valueParsed + conBonus;
-      // Apply negative level penalties
-      updatedHitPoints.maxHP = applyNegativeLevelPenalties(rawMaxHP);
-      updatedHitPoints.baseMaxHP = rawMaxHP;
+      updatedHitPoints.baseHP = updatedHitPoints.trueMaxHP - conBonus;
+    }
+    else if (field === 'baseHP') {
+      // When changing base HP, recalculate both true max HP and effective max HP
+      const conBonus = calculateConBonus();
+      const newTrueMaxHP = valueParsed + conBonus;
+      
+      updatedHitPoints.trueMaxHP = newTrueMaxHP;
+      updatedHitPoints.maxHP = applyNegativeLevelPenalties(newTrueMaxHP, hitPoints.negLevels);
+      
+      // Adjust current HP if needed
+      if (hitPoints.currentHP === hitPoints.maxHP) {
+        // Keep at full health
+        updatedHitPoints.currentHP = updatedHitPoints.maxHP;
+      } else if (updatedHitPoints.maxHP < hitPoints.currentHP) {
+        // Cap current HP at max
+        updatedHitPoints.currentHP = updatedHitPoints.maxHP;
+      }
     }
     else if (field === 'negLevels') {
-      // When changing negative levels, recalculate maxHP with penalties
-      // First, get the max HP without penalties (baseMaxHP or calculate it)
-      const baseMaxHP = hitPoints.baseMaxHP || (hitPoints.maxHP + (hitPoints.negLevels * 5));
+      // When changing negative levels, recalculate the effective max HP
+      // but don't change the true max HP value
+      updatedHitPoints.maxHP = applyNegativeLevelPenalties(hitPoints.trueMaxHP, valueParsed);
       
-      // Apply the new negative level penalties
-      updatedHitPoints.maxHP = applyNegativeLevelPenalties(baseMaxHP);
-      updatedHitPoints.baseMaxHP = baseMaxHP;
-      
-      // Also adjust current HP for the negative level difference
+      // Calculate the HP adjustment
       const negLevelDiff = valueParsed - hitPoints.negLevels;
       const hpPenalty = negLevelDiff * 5;
+      
+      // Apply the adjustment to current HP
       updatedHitPoints.currentHP = Math.max(1, hitPoints.currentHP - hpPenalty);
-    }
-    
-    // If maxHP changes, ensure currentHP isn't higher than maxHP
-    if ((field === 'maxHP' || field === 'baseHP' || field === 'negLevels') && 
-        updatedHitPoints.maxHP < hitPoints.currentHP) {
-      updatedHitPoints.currentHP = updatedHitPoints.maxHP;
+      
+      // Make sure current HP doesn't exceed max HP
+      if (updatedHitPoints.currentHP > updatedHitPoints.maxHP) {
+        updatedHitPoints.currentHP = updatedHitPoints.maxHP;
+      }
     }
     
     setHitPoints(updatedHitPoints);
@@ -295,6 +330,13 @@ const HitPointTracker = ({
             )}
           </div>
           
+          {/* Show true max HP if negative levels are present */}
+          {hitPoints.negLevels > 0 && (
+            <div className="true-max-hp">
+              True Max HP: {hitPoints.trueMaxHP}
+            </div>
+          )}
+          
           {hitPoints.nonLethalDamage > 0 && (
             <div className="nonlethal-damage">
               Non-lethal: {hitPoints.nonLethalDamage}
@@ -330,8 +372,18 @@ const HitPointTracker = ({
       </div>
       
       <div className="hp-edit-container">
+        {/* Add True Max HP field that's always visible */}
         <div className="hp-row">
-          <label>Max HP</label>
+          <label>True Max HP</label>
+          <NumericInput
+            value={hitPoints.trueMaxHP}
+            onChange={(value) => handleHPChange('trueMaxHP', value)}
+            min={1}
+          />
+        </div>
+        
+        <div className="hp-row">
+          <label>Effective Max HP</label>
           <NumericInput
             value={hitPoints.maxHP}
             onChange={(value) => handleHPChange('maxHP', value)}
