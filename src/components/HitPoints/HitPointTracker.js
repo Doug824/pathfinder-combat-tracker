@@ -396,7 +396,7 @@ const HitPointTracker = ({
           <NumericInput
             value={hitPoints.currentHP}
             onChange={(value) => handleHPChange('currentHP', value)}
-            min={-10}
+            min={-1000}
             max={hitPoints.maxHP}
           />
         </div>
