@@ -396,6 +396,223 @@
     flex-direction: column;
     gap: 5px;
   }
+
+  /* Mini HP Tracker for Playsheet */
+.mini-hp-tracker {
+  margin-bottom: 20px;
+}
+
+.mini-hp-tracker .hp-quick-actions,
+.mini-hp-tracker .hp-edit-container {
+  display: none;
+}
+
+.mini-hp-tracker .hp-header {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+.mini-hp-tracker .hp-visual-container {
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+}
+
+.mini-hp-tracker .hp-heart {
+  width: 40px;
+  height: 40px;
+}
+
+.mini-hp-tracker .hp-values {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+  .mini-hp-tracker .hp-visual-container {
+    flex-direction: row;
+  }
+  
+  .mini-hp-tracker .hp-status {
+    text-align: left;
+  }
+  
+  .mini-hp-tracker .hp-values {
+    justify-content: flex-start;
+  }
+}
+
+.negative-levels-indicator {
+  margin-bottom: 15px;
+}
+
+.negative-levels-warning {
+  position: relative;
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: rgba(var(--error-color-rgb, 192, 57, 43), 0.1);
+  border-left: 4px solid var(--error-color);
+  color: var(--error-color);
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.negative-levels-warning .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  font-weight: normal;
+  font-size: 0.9rem;
+}
+
+.negative-levels-warning:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Styles for attack value container with negative level indicator */
+.attack-value-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.negative-level-indicator {
+  color: var(--error-color);
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: help;
+}
+
+/* Add tooltip styles if not already present */
+[title] {
+  position: relative;
+}
+
+[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Global styles for the negative level warning banner */
+.negative-levels-indicator {
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  background-color: rgba(var(--error-color-rgb, 192, 57, 43), 0.1);
+  border-left: 4px solid var(--error-color);
+  color: var(--error-color);
+  font-weight: bold;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.negative-levels-warning {
+  font-size: 0.9rem;
+}
+
+.negative-levels-details {
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+/* Compact animation for the negative level banner */
+@keyframes pulseWarning {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+.negative-levels-indicator {
+  animation: pulseWarning 2s infinite;
+}
+
+/* Styling for attack value containers with negative level indicators */
+.attack-value-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.negative-level-indicator {
+  color: var(--error-color);
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Negative levels warning styling */
+.negative-levels-indicator {
+  margin: 10px 0;
+  padding: 8px 12px;
+  background-color: rgba(var(--error-color, 192, 57, 43), 0.1);
+  border-left: 3px solid var(--error-color, #C0392B);
+  border-radius: 4px;
+}
+
+.negative-levels-warning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--error-color, #C0392B);
+  font-weight: bold;
+}
+
+/* Make the attack and defense rows cleaner */
+.attack-row, .defense-row, .save-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background-color: var(--bg-primary);
+}
+
+/* Make the values consistent */
+.attack-value, .defense-value, .save-value {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--highlight-color);
+  min-width: 50px;
+  text-align: right;
+}
+
+/* Position the negative level indicator correctly */
+.save-row .attack-value-container,
+.defense-row .attack-value-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
   /* Responsive adjustments */
   @media (max-width: 992px) {
     .playsheet {

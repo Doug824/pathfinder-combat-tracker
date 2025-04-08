@@ -47,7 +47,8 @@ function App() {
     updateCombatAbilities,
     updateWeapons,
     updateCombatSettings,
-    updateSavedBuffs
+    updateSavedBuffs,
+    updateHitPoints
   } = useCharacterStorage(user);
   
   // State for current page
@@ -207,6 +208,15 @@ function App() {
     setActiveBuffs(newBuffs);
     if (activeCharacter) {
       updateBuffs(newBuffs);
+    }
+  };
+
+  const handleHitPointsChange = (newHitPoints) => {
+    console.log("Hit points changed:", newHitPoints);
+    if (activeCharacter) {
+      updateHitPoints(newHitPoints);
+    } else {
+      console.warn("No active character to update hit points for");
     }
   };
   
@@ -385,6 +395,7 @@ function App() {
             onUpdateWeapons={handleUpdateWeapons}
             onUpdateCombatSettings={handleUpdateCombatSettings}
             onUpdateSavedBuffs={updateSavedBuffs}
+            onUpdateHitPoints={handleHitPointsChange}
           />
         )}
         

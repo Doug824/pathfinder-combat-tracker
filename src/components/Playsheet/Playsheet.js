@@ -3,6 +3,7 @@ import { calculateFinalStats } from '../../utils/bonusCalculator';
 import { getSizeACModifier, getSizeModifier } from '../../utils/sizeUtils';
 import AnimatedDiceRoller from '../dice/AnimatedDiceRoller';
 import './Playsheet.css';
+import HitPointTracker from '../HitPoints/HitPointTracker';
 
 const Playsheet = ({
   character,
@@ -12,7 +13,8 @@ const Playsheet = ({
   combatAbilities,
   onCombatAbilitiesChange,
   onUpdateWeapons,
-  onUpdateCombatSettings
+  onUpdateCombatSettings,
+  onUpdateHitPoints
 }) => {
   // State for tracking screen size
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -64,6 +66,33 @@ const Playsheet = ({
     will: 0
   });
   
+  // State to store calculated final stats for HP tracking
+  const [finalStats, setFinalStats] = useState({...stats});
+
+  // Function to apply negative level penalties
+  const applyNegativeLevelPenalties = (statValue, type = 'general') => {
+    const negLevels = character?.hitPoints?.negLevels || 0;
+    
+    if (negLevels <= 0) return statValue;
+    
+    // The penalties are applied directly in the main calculation
+    // This function exists for readability but no longer applies the penalties
+    // to avoid double application
+    return statValue;
+  };
+
+  // Recalculate final stats whenever inputs change
+  useEffect(() => {
+    // Get active abilities
+    const activeAbilities = combatAbilities.filter(ability => ability.isActive);
+    
+    // Calculate final stats with all active effects
+    const { finalStats: calculatedStats } = calculateFinalStats(stats, [...buffs, ...activeAbilities], gear);
+    
+    // Update final stats
+    setFinalStats(calculatedStats);
+  }, [stats, buffs, gear, combatAbilities]);
+
   // Window resize listener to update the mobile state
   useEffect(() => {
     const handleResize = () => {
@@ -192,23 +221,25 @@ const Playsheet = ({
     const attackBonuses = bonusDetails.attackBonus?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
     const damageBonuses = bonusDetails.damage?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
 
-    // FIXED: Removed the direct checks for Power Attack that were causing double penalties
-    // The penalties are already included in the attackBonuses calculation above
-
     // Apply two-weapon fighting penalty if active
     const twfPenalty = twoWeaponFighting ? -2 : 0;
     
     // Get size modifier for attack rolls
     const sizeAttackModifier = getSizeModifier(character?.size || 'medium');
-
-    // Calculate primary weapon attack bonus
-    const totalAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + sizeAttackModifier;
     
+    // Apply negative level penalties - only once here
+    const negLevels = character?.hitPoints?.negLevels || 0;
+    const negativeLevelPenalty = negLevels > 0 ? -negLevels : 0;
+
+    // Calculate the attack bonus with negative level penalty applied once
+    const rawAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + sizeAttackModifier;
+    const finalAttackBonus = rawAttackBonus + negativeLevelPenalty; // Apply penalty once
+
     // Calculate primary weapon damage modifier
     const primaryDamageMod = selectedDamageMod + damageBonuses + primaryWeapon.damageBonus;
 
-    // Calculate offhand weapon attack bonus
-    const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + sizeAttackModifier;
+    // Calculate raw offhand attack bonus (before negative level penalties)
+    const rawOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + sizeAttackModifier;
     
     // Calculate offhand weapon damage modifier (typically half ability bonus)
     const offhandAbilityDamageMod = twoWeaponFighting ? Math.floor(selectedOffhandDamageMod / 2) : selectedOffhandDamageMod;
@@ -297,17 +328,18 @@ const Playsheet = ({
     const refBonuses = bonusDetails.reflex?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
     const willBonuses = bonusDetails.will?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
     
-    const fort = baseFort + conMod + fortBonuses;
-    const ref = baseRef + dexMod + refBonuses;
-    const will = baseWill + wisMod + willBonuses;
+    // Apply negative level penalties to saves
+    const fort = baseFort + conMod + fortBonuses + negativeLevelPenalty;
+    const ref = baseRef + dexMod + refBonuses + negativeLevelPenalty;
+    const will = baseWill + wisMod + willBonuses + negativeLevelPenalty;
     
     setCombatStats({
       baseAttackBonus: baseBAB,
-      attackBonus: totalAttackBonus,
+      attackBonus: finalAttackBonus,
       normalAC,
       touchAC,
       flatFootedAC,
-      cmb,
+      cmb: cmb + negativeLevelPenalty, // Apply negative level penalty to CMB
       cmd,
       fort,
       ref,
@@ -321,38 +353,79 @@ const Playsheet = ({
     // Update the current damage modifier for the dice roller
     setCurrentDamageModifier(primaryDamageMod);
     
-    // Update attacks array based on BAB and haste
-    updateAttackModifiers(baseBAB, totalAttackBonus, hasHaste);
+    // Generate attack modifiers
+    const attackModifiersArray = [];
     
-    // Calculate offhand attacks if two-weapon fighting is enabled
+    // First attack at full bonus with negative level penalty already applied
+    attackModifiersArray.push(finalAttackBonus);
+    
+    // Calculate iterative attacks based on BAB
+    let remainingBAB = baseBAB;
+    
+    // First iterative at BAB +6
+    if (remainingBAB >= 6) {
+      remainingBAB -= 5;
+      const rawIterativeBonus = rawAttackBonus - 5;
+      const finalIterative = rawIterativeBonus + negativeLevelPenalty; // Apply negative level penalty once
+      attackModifiersArray.push(finalIterative);
+    }
+    
+    // Second iterative at BAB +11
+    if (remainingBAB >= 5) {
+      remainingBAB -= 5;
+      const rawIterativeBonus = rawAttackBonus - 10;
+      const finalIterative = rawIterativeBonus + negativeLevelPenalty; // Apply negative level penalty once
+      attackModifiersArray.push(finalIterative);
+    }
+    
+    // Third iterative at BAB +16
+    if (remainingBAB >= 5) {
+      remainingBAB -= 5;
+      const rawIterativeBonus = rawAttackBonus - 15;
+      const finalIterative = rawIterativeBonus + negativeLevelPenalty; // Apply negative level penalty once
+      attackModifiersArray.push(finalIterative);
+    }
+    
+    // Add haste attack if applicable - insert after primary attack
+    if (hasHaste) {
+      // The haste attack should have the same bonus as the first attack (including negative level penalty)
+      attackModifiersArray.splice(1, 0, finalAttackBonus);
+    }
+    
+    // Set the attack modifiers state with the final calculated values
+    setAttacksCount(attackModifiersArray.length);
+    setAttackModifiers(attackModifiersArray);
+    
+    // Similarly for offhand attacks if using two-weapon fighting
     if (twoWeaponFighting) {
-      updateOffhandAttackModifiers(baseBAB, totalOffhandAttackBonus);
+      // Generate array of raw offhand attack modifiers
+      const offhandAttackModifiersArray = [];
+      
+      const rawOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + sizeAttackModifier;
+      // Apply the negative level penalty to the offhand attack
+      const finalOffhandAttackBonus = rawOffhandAttackBonus + negativeLevelPenalty;
+      
+      offhandAttackModifiersArray.push(finalOffhandAttackBonus);
+      
+      // Add additional offhand attacks if BAB is high enough
+      let offhandRemainingBAB = baseBAB;
+      for (let i = 1; i < offhandAttacksCount; i++) {
+        offhandRemainingBAB -= 5;
+        if (offhandRemainingBAB >= 1) {
+          const rawOffhandIterativeBonus = rawOffhandAttackBonus - (baseBAB - offhandRemainingBAB);
+          // Apply negative level penalty to each iterative attack
+          const finalOffhandIterative = rawOffhandIterativeBonus + negativeLevelPenalty;
+          offhandAttackModifiersArray.push(Math.max(finalOffhandIterative, finalOffhandAttackBonus - baseBAB + 1));
+        }
+      }
+      
+      setOffhandAttackModifiers(offhandAttackModifiersArray);
     }
     
   }, [stats, buffs, gear, combatAbilities, character, hasHaste, twoWeaponFighting,
     attackAbilityMod, damageAbilityMod, offhandAttackAbilityMod, offhandDamageAbilityMod,
-    primaryWeapon, offhandWeapon]);
-  
-  // Function to update offhand attack modifiers
-  const updateOffhandAttackModifiers = (baseBAB, totalAttackBonus) => {
-    const attacks = [];
-    
-    // Add first offhand attack
-    attacks.push(totalAttackBonus);
-    
-    // Add additional offhand attacks if BAB is high enough
-    let remainingBAB = baseBAB;
-    for (let i = 1; i < offhandAttacksCount; i++) {
-      remainingBAB -= 5;
-      if (remainingBAB >= 1) {
-        const attackMod = totalAttackBonus - (baseBAB - remainingBAB);
-        attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
-      }
-    }
-    
-    setOffhandAttackModifiers(attacks);
-  };
-  
+    primaryWeapon, offhandWeapon, offhandAttacksCount]);
+
   // Handle weapon changes
   const handleWeaponChange = (isOffhand, field, value) => {
     if (isOffhand) {
@@ -595,58 +668,19 @@ const Playsheet = ({
   const AttackRow = ({ attackName, attackValue }) => {
     // Determine if this is a haste attack
     const isHasteAttack = attackName === 'Haste Attack';
+    const hasNegativeLevels = character?.hitPoints?.negLevels > 0;
     
     return (
       <div className={`attack-row ${isHasteAttack ? 'haste-attack' : ''}`}>
         <span className="attack-name">{attackName}</span>
-        <span className="attack-value">{attackValue}</span>
+        <div className="attack-value-container">
+          <span className="attack-value">{attackValue}</span>
+          {hasNegativeLevels && (
+            <span className="negative-level-indicator">*</span>
+          )}
+        </div>
       </div>
     );
-  };
-
-  const updateAttackModifiers = (baseBAB, totalAttackBonus, hasHaste) => {
-    const attacks = [];
-    
-    // Add first attack at full BAB
-    attacks.push(totalAttackBonus);
-    
-    // In Pathfinder, a character gets iterative attacks at BAB +6, +11, and +16
-    // Maximum is 4 iterative attacks (at BAB +16 or higher)
-    let iterativeAttacks = 0;
-    let remainingBAB = baseBAB;
-    
-    // First iterative at BAB +6
-    if (remainingBAB >= 6) {
-      remainingBAB -= 5;
-      const attackMod = totalAttackBonus - 5;
-      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
-      iterativeAttacks++;
-    }
-    
-    // Second iterative at BAB +11
-    if (remainingBAB >= 5) {
-      remainingBAB -= 5;
-      const attackMod = totalAttackBonus - 10;
-      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
-      iterativeAttacks++;
-    }
-    
-    // Third iterative at BAB +16
-    if (remainingBAB >= 5) {
-      remainingBAB -= 5;
-      const attackMod = totalAttackBonus - 15;
-      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
-      iterativeAttacks++;
-    }
-    
-    // Add haste attack if applicable - insert after primary attack
-    if (hasHaste) {
-      // Insert haste attack as the second attack in the array
-      attacks.splice(1, 0, totalAttackBonus);
-    }
-    
-    setAttacksCount(attacks.length);
-    setAttackModifiers(attacks);
   };
 
   return (
@@ -731,7 +765,12 @@ const Playsheet = ({
                   {offhandAttackModifiers.map((mod, index) => (
                     <div key={index} className="attack-row">
                       <span className="attack-name">Off-hand Attack {index + 1}</span>
-                      <span className="attack-value">{formatModifier(mod)}</span>
+                      <div className="attack-value-container">
+                        <span className="attack-value">{formatModifier(mod)}</span>
+                        {character?.hitPoints?.negLevels > 0 && (
+                          <span className="negative-level-indicator">*</span>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -778,15 +817,30 @@ const Playsheet = ({
           <h3>Saving Throws</h3>
           <div className="save-row">
             <span className="save-name">Fortitude:</span>
-            <span className="save-value">{formatModifier(combatStats.fort)}</span>
+            <div className="attack-value-container">
+              <span className="save-value">{formatModifier(combatStats.fort)}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-indicator">*</span>
+              )}
+            </div>
           </div>
           <div className="save-row">
             <span className="save-name">Reflex:</span>
-            <span className="save-value">{formatModifier(combatStats.ref)}</span>
+            <div className="attack-value-container">
+              <span className="save-value">{formatModifier(combatStats.ref)}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-indicator">*</span>
+              )}
+            </div>
           </div>
           <div className="save-row">
             <span className="save-name">Will:</span>
-            <span className="save-value">{formatModifier(combatStats.will)}</span>
+            <div className="attack-value-container">
+              <span className="save-value">{formatModifier(combatStats.will)}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-indicator">*</span>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -963,6 +1017,22 @@ const Playsheet = ({
           )}
         </div>
         
+        {/* Hit Points Section */}
+        <HitPointTracker
+          character={character}
+          finalStats={finalStats}
+          onHitPointChange={onUpdateHitPoints || (() => console.warn("No hit point update function provided"))}
+          className="playsheet-hp-tracker mini-hp-tracker"
+        />
+
+        {character?.hitPoints?.negLevels > 0 && (
+          <div className="negative-levels-indicator">
+            <div className="negative-levels-warning">
+              <span>{character.hitPoints.negLevels} Negative Level{character.hitPoints.negLevels > 1 ? 's' : ''} (-{character.hitPoints.negLevels} to attacks, saves, and maneuvers)</span>
+            </div>
+          </div>
+        )}
+
         {/* Dice Roller Section */}
         <div className="playsheet-section dice-roller" style={{
           width: '100%',

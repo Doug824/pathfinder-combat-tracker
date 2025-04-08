@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { calculateFinalStats } from '../../utils/bonusCalculator';
 import { getSizeModifier, getSizeACModifier, getSizeDisplayName } from '../../utils/sizeUtils';
+
 const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, combatAbilities = [] }) => {
   const [finalStats, setFinalStats] = useState({...baseStats});
   const [bonusDetails, setBonusDetails] = useState({});
@@ -19,6 +21,29 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
   
   // Calculate modifiers
   const getModifier = (score) => Math.floor((score - 10) / 2);
+  
+  // Apply penalties from negative levels
+  const applyNegativeLevelPenalties = (statValue, type = 'general') => {
+    const negLevels = character?.hitPoints?.negLevels || 0;
+    
+    if (negLevels <= 0) return statValue;
+    
+    switch (type) {
+      case 'hp':
+        // Each negative level reduces HP by 5
+        return Math.max(1, statValue - (negLevels * 5));
+      case 'attack':
+      case 'save':
+      case 'maneuver':
+        // Each negative level applies a -1 penalty to attacks, saves, and combat maneuvers
+        return statValue - negLevels;
+      case 'skillCheck':
+        // Negative levels also apply a -1 to skill checks
+        return statValue - negLevels;
+      default:
+        return statValue;
+    }
+  };
   
   useEffect(() => {
     // Get active abilities
@@ -92,17 +117,48 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
     const sizeModifier = getSizeModifier(character.size || 'medium');
     const sizeACModifier = getSizeACModifier(character.size || 'medium');
     
+    // Store the raw sum before penalties
+    const rawAttackBonus = baseAttackBonus + attackBonus;
+    // Apply negative level penalties to attack bonus
+    const totalAttackBonus = applyNegativeLevelPenalties(rawAttackBonus, 'attack');
+    
+    // Apply negative level penalties to saves
+    const fortSave = applyNegativeLevelPenalties(
+      baseFortitude + conMod + fortitudeBonus,
+      'save'
+    );
+    
+    const refSave = applyNegativeLevelPenalties(
+      baseReflex + dexMod + reflexBonus,
+      'save'
+    );
+    
+    const willSave = applyNegativeLevelPenalties(
+      baseWill + wisMod + willBonus,
+      'save'
+    );
+    
+    // Apply negative level penalties to CMB
+    const totalCMB = applyNegativeLevelPenalties(
+      baseAttackBonus + strMod + sizeModifier + cmbBonus,
+      'maneuver'
+    );
+    
+    // Apply negative level penalties to CMD
+    const totalCMD = applyNegativeLevelPenalties(
+      10 + baseAttackBonus + strMod + dexMod + sizeModifier + deflectionBonus + dodgeBonus + cmdBonus,
+      'maneuver'
+    );
+    
     // Calculate derived stats
     setDerived({
       ac: 10 + dexMod + acBonus + sizeACModifier,
-      fortitudeSave: baseFortitude + conMod + fortitudeBonus,
-      reflexSave: baseReflex + dexMod + reflexBonus,
-      willSave: baseWill + wisMod + willBonus,
-      attackBonus: baseAttackBonus + attackBonus,
-      // CMB = BAB + STR modifier + size modifier + misc bonuses
-      cmb: baseAttackBonus + strMod + sizeModifier + cmbBonus,
-      // CMD = 10 + BAB + STR modifier + DEX modifier + size modifier + deflection bonus + dodge bonus + misc bonuses
-      cmd: 10 + baseAttackBonus + strMod + dexMod + sizeModifier + deflectionBonus + dodgeBonus + cmdBonus,
+      fortitudeSave: fortSave,
+      reflexSave: refSave,
+      willSave: willSave,
+      attackBonus: totalAttackBonus,
+      cmb: totalCMB,
+      cmd: totalCMD,
       // Include ability modifier in damage bonus
       damageBonus: abilityDamageBonus + damageBonus,
       // Store size modifiers for display
@@ -114,6 +170,15 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
   return (
     <div className="combat-stats">
       <h2>Combat Statistics</h2>
+      
+      {character?.hitPoints?.negLevels > 0 && (
+        <div className="negative-levels-warning">
+          <h4>Negative Levels: {character.hitPoints.negLevels}</h4>
+          <p>All attack rolls, saving throws, combat maneuvers, and skill checks have a 
+          -{character.hitPoints.negLevels} penalty.</p>
+          <p>Maximum hit points are reduced by {character.hitPoints.negLevels * 5}.</p>
+        </div>
+      )}
       
       <div className="final-attributes">
         <h3>Final Attributes (with buffs & gear)</h3>
@@ -174,6 +239,11 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             <div className="stat-header">
               <span className="stat-name">Attack Bonus:</span>
               <span className="stat-value">{derived.attackBonus >= 0 ? '+' : ''}{derived.attackBonus}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-effect">
+                  (includes -{character.hitPoints.negLevels} negative level penalty)
+                </span>
+              )}
             </div>
             <div className="save-details">
               <span>Base: {character.baseAttackBonus || 0}</span>
@@ -269,6 +339,11 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             <div className="stat-header">
               <span className="stat-name">CMB:</span>
               <span className="stat-value">{derived.cmb >= 0 ? '+' : ''}{derived.cmb}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-effect">
+                  (includes -{character.hitPoints.negLevels} negative level penalty)
+                </span>
+              )}
             </div>
             <div className="save-details">
               <span>BAB ({character.baseAttackBonus || 0}) + STR modifier ({getModifier(finalStats.strength) >= 0 ? '+' : ''}{getModifier(finalStats.strength)})</span>
@@ -293,13 +368,17 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             <div className="stat-header">
               <span className="stat-name">CMD:</span>
               <span className="stat-value">{derived.cmd}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-effect">
+                  (includes -{character.hitPoints.negLevels} negative level penalty)
+                </span>
+              )}
             </div>
             <div className="save-details">
               <span>10 + BAB ({character.baseAttackBonus || 0}) + STR ({getModifier(finalStats.strength) >= 0 ? '+' : ''}{getModifier(finalStats.strength)}) + DEX ({getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)})</span>
               {derived.sizeModifier !== 0 && (
                 <span> + Size modifier: {derived.sizeModifier >= 0 ? '+' : ''}{derived.sizeModifier}</span>
               )}
-              {/* Other CMD details... */}
             </div>
           </div>
         </div>
@@ -310,10 +389,25 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             <div className="stat-header">
               <span className="stat-name">Fortitude Save:</span>
               <span className="stat-value">{derived.fortitudeSave >= 0 ? '+' : ''}{derived.fortitudeSave}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-effect">
+                  (includes -{character.hitPoints.negLevels} negative level penalty)
+                </span>
+              )}
             </div>
             <div className="save-details">
               <span>Base: {character.baseFortitude || 0} + CON modifier: {getModifier(finalStats.constitution) >= 0 ? '+' : ''}{getModifier(finalStats.constitution)}</span>
-              {/* Fortitude bonuses... */}
+              {bonusDetails.fortitude && bonusDetails.fortitude.length > 0 && (
+                <div className="stat-bonuses">
+                  <div className="bonus-sources">
+                    {bonusDetails.fortitude.map((bonus, idx) => (
+                      <div key={idx} className="bonus-source">
+                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
@@ -321,10 +415,25 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             <div className="stat-header">
               <span className="stat-name">Reflex Save:</span>
               <span className="stat-value">{derived.reflexSave >= 0 ? '+' : ''}{derived.reflexSave}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-effect">
+                  (includes -{character.hitPoints.negLevels} negative level penalty)
+                </span>
+              )}
             </div>
             <div className="save-details">
               <span>Base: {character.baseReflex || 0} + DEX modifier: {getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)}</span>
-              {/* Reflex bonuses... */}
+              {bonusDetails.reflex && bonusDetails.reflex.length > 0 && (
+                <div className="stat-bonuses">
+                  <div className="bonus-sources">
+                    {bonusDetails.reflex.map((bonus, idx) => (
+                      <div key={idx} className="bonus-source">
+                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
@@ -332,14 +441,57 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             <div className="stat-header">
               <span className="stat-name">Will Save:</span>
               <span className="stat-value">{derived.willSave >= 0 ? '+' : ''}{derived.willSave}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-effect">
+                  (includes -{character.hitPoints.negLevels} negative level penalty)
+                </span>
+              )}
             </div>
             <div className="save-details">
               <span>Base: {character.baseWill || 0} + WIS modifier: {getModifier(finalStats.wisdom) >= 0 ? '+' : ''}{getModifier(finalStats.wisdom)}</span>
-              {/* Will bonuses... */}
+              {bonusDetails.will && bonusDetails.will.length > 0 && (
+                <div className="stat-bonuses">
+                  <div className="bonus-sources">
+                    {bonusDetails.will.map((bonus, idx) => (
+                      <div key={idx} className="bonus-source">
+                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Add CSS for the negative level effects */}
+      <style jsx>{`
+        .negative-levels-warning {
+          margin: 15px 0;
+          padding: 12px;
+          background-color: rgba(192, 57, 43, 0.1);
+          border-left: 4px solid var(--error-color);
+          border-radius: 4px;
+        }
+        
+        .negative-levels-warning h4 {
+          margin-top: 0;
+          margin-bottom: 8px;
+          color: var(--error-color);
+        }
+        
+        .negative-levels-warning p {
+          margin: 5px 0;
+          font-size: 0.9rem;
+        }
+        
+        .negative-level-effect {
+          font-size: 0.8rem;
+          color: var(--error-color);
+          margin-left: 8px;
+        }
+      `}</style>
     </div>
   );
 };

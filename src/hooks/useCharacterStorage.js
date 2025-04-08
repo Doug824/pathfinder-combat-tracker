@@ -105,6 +105,12 @@ const useCharacterStorage = (user) => {
       
       console.log("Final stats after processing:", statsWithDefaults);
       
+      // Calculate initial hit points based on constitution
+      const conModifier = Math.floor((statsWithDefaults.constitution - 10) / 2);
+      // Conservative default of 8 + con modifier for level 1 HP
+      const baseHP = 8;
+      const initialMaxHP = baseHP + conModifier;
+      
       // Create the character object with all necessary defaults
       const newCharacter = {
         id: Date.now().toString(),
@@ -116,6 +122,16 @@ const useCharacterStorage = (user) => {
         alignment: characterData.alignment || '',
         // Use our carefully processed stats object
         stats: statsWithDefaults,
+        // Add hit points data
+        hitPoints: {
+          baseHP: baseHP,
+          maxHP: initialMaxHP,
+          currentHP: initialMaxHP,
+          tempHP: 0,
+          nonLethalDamage: 0,
+          negLevels: 0,
+          lastConModifier: conModifier
+        },
         buffs: [],
         gear: [],
         combatAbilities: [],
@@ -415,7 +431,7 @@ const useCharacterStorage = (user) => {
     }
   };
   
-  // New function to update saved buffs
+  // Function to update saved buffs
   const updateSavedBuffs = (newSavedBuffs) => {
     try {
       if (activeCharacter) {
@@ -435,6 +451,26 @@ const useCharacterStorage = (user) => {
     }
   };
   
+  // Function to update hit points
+  const updateHitPoints = (newHitPoints) => {
+    try {
+      if (activeCharacter) {
+        const updatedCharacter = {
+          ...activeCharacter,
+          hitPoints: newHitPoints,
+          lastModified: new Date().toISOString()
+        };
+        
+        updateCharacter(updatedCharacter);
+        console.log("Updated character hit points:", newHitPoints);
+      } else {
+        console.warn("No active character to update hit points for");
+      }
+    } catch (error) {
+      console.error("Error updating hit points:", error);
+    }
+  };
+  
   return {
     characters,
     activeCharacterId,
@@ -449,7 +485,8 @@ const useCharacterStorage = (user) => {
     updateCombatAbilities,
     updateWeapons,
     updateCombatSettings,
-    updateSavedBuffs
+    updateSavedBuffs,
+    updateHitPoints
   };
 };
 

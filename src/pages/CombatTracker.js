@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BuffTracker from '../components/BuffTracker/BuffTracker';
 import CombatStatsCalculator from '../components/CombatStats/CombatStatsCalculator';
 import CombatAbilities from '../components/CombatAbilities/CombatAbilities';
 import Playsheet from '../components/Playsheet/Playsheet';
 import BuffLibrary from '../components/BuffTracker/BuffLibrary';
+import HitPointTracker from '../components/HitPoints/HitPointTracker';
+import { calculateFinalStats } from '../utils/bonusCalculator';
 
 const CombatTracker = ({
   character,
@@ -15,18 +17,36 @@ const CombatTracker = ({
   onCombatAbilitiesChange,
   onUpdateWeapons,
   onUpdateCombatSettings,
-  onUpdateSavedBuffs
+  onUpdateSavedBuffs,
+  onUpdateHitPoints
 }) => {
   // State for tracking active tabs
   const [activeTab, setActiveTab] = useState('playsheet');
   
+  // State to store calculated final stats (including all buffs, abilities, etc.)
+  const [finalStats, setFinalStats] = useState(stats);
+  
+  // Add a new tab for hit points
   const tabs = [
     { id: 'playsheet', label: 'Playsheet' },
     { id: 'stats', label: 'Combat Stats' },
+    { id: 'hitpoints', label: 'Hit Points' },
     { id: 'buffs', label: 'Active Buffs' },
     { id: 'buffLibrary', label: 'Buff Library' },
     { id: 'abilities', label: 'Combat Abilities' }
   ];
+  
+  // Calculate final stats when components or stats change
+  useEffect(() => {
+    // Get active abilities
+    const activeAbilities = combatAbilities.filter(ability => ability.isActive);
+    
+    // Calculate final stats with all active effects
+    const { finalStats: calculatedStats } = calculateFinalStats(stats, [...buffs, ...activeAbilities], gear);
+    
+    // Update final stats
+    setFinalStats(calculatedStats);
+  }, [stats, buffs, gear, combatAbilities]);
   
   // Handler to save a buff to the library
   const handleSaveBuff = (buff) => {
@@ -52,43 +72,50 @@ const CombatTracker = ({
     }
   };
 
-    // Apply a buff from the library
-    const handleApplyBuffFromLibrary = (buff) => {
-      // Create a copy of the buff to add to active buffs
-      const buffToApply = { 
-        ...buff,
-        id: Date.now(), // Generate a new ID for this instance
-        originId: buff.id // Store the original ID to track its source
-      };
-      
-      const updatedBuffs = [...buffs, buffToApply];
-      onBuffsChange(updatedBuffs);
+  // Apply a buff from the library
+  const handleApplyBuffFromLibrary = (buff) => {
+    // Create a copy of the buff to add to active buffs
+    const buffToApply = { 
+      ...buff,
+      id: Date.now(), // Generate a new ID for this instance
+      originId: buff.id // Store the original ID to track its source
     };
     
-    // Remove an active buff by ID
-    const handleRemoveBuffById = (originId) => {
-      const updatedBuffs = buffs.filter(buff => buff.originId !== originId);
-      onBuffsChange(updatedBuffs);
-    };
-    
-    // Delete a buff from the saved library
-    const handleDeleteSavedBuff = (buffId) => {
-      if (character && character.savedBuffs && onUpdateSavedBuffs) {
-        const updatedSavedBuffs = character.savedBuffs.filter(buff => buff.id !== buffId);
-        onUpdateSavedBuffs(updatedSavedBuffs);
-        console.log(`Deleted buff ${buffId} from library`);
-      }
-    };
-    
-    // Create a buff package from multiple buffs
-    const handleCreateBuffPackage = (newPackage) => {
-      if (character && character.savedBuffs && onUpdateSavedBuffs) {
-        const updatedSavedBuffs = [...character.savedBuffs, newPackage];
-        onUpdateSavedBuffs(updatedSavedBuffs);
-        console.log(`Created buff package: ${newPackage.name}`);
-      }
-    };
+    const updatedBuffs = [...buffs, buffToApply];
+    onBuffsChange(updatedBuffs);
+  };
   
+  // Remove an active buff by ID
+  const handleRemoveBuffById = (originId) => {
+    const updatedBuffs = buffs.filter(buff => buff.originId !== originId);
+    onBuffsChange(updatedBuffs);
+  };
+  
+  // Delete a buff from the saved library
+  const handleDeleteSavedBuff = (buffId) => {
+    if (character && character.savedBuffs && onUpdateSavedBuffs) {
+      const updatedSavedBuffs = character.savedBuffs.filter(buff => buff.id !== buffId);
+      onUpdateSavedBuffs(updatedSavedBuffs);
+      console.log(`Deleted buff ${buffId} from library`);
+    }
+  };
+  
+  // Create a buff package from multiple buffs
+  const handleCreateBuffPackage = (newPackage) => {
+    if (character && character.savedBuffs && onUpdateSavedBuffs) {
+      const updatedSavedBuffs = [...character.savedBuffs, newPackage];
+      onUpdateSavedBuffs(updatedSavedBuffs);
+      console.log(`Created buff package: ${newPackage.name}`);
+    }
+  };
+  
+  // Handler for hit point changes
+  const handleHitPointsChange = (newHitPoints) => {
+    if (onUpdateHitPoints) {
+      onUpdateHitPoints(newHitPoints);
+    }
+  };
+
   return (
     <div className="combat-tracker">
       <div className="tabs-container">
@@ -105,18 +132,19 @@ const CombatTracker = ({
         </div>
         
         <div className="tab-content">
-          {activeTab === 'playsheet' && (
-            <Playsheet
-              character={character}
-              stats={stats}
-              buffs={buffs}
-              gear={gear}
-              combatAbilities={combatAbilities}
-              onCombatAbilitiesChange={onCombatAbilitiesChange}
-              onUpdateWeapons={onUpdateWeapons}
-              onUpdateCombatSettings={onUpdateCombatSettings}
-            />
-          )}
+        {activeTab === 'playsheet' && (
+          <Playsheet
+            character={character}
+            stats={stats}
+            buffs={buffs}
+            gear={gear}
+            combatAbilities={combatAbilities}
+            onCombatAbilitiesChange={onCombatAbilitiesChange}
+            onUpdateWeapons={onUpdateWeapons}
+            onUpdateCombatSettings={onUpdateCombatSettings}
+            onUpdateHitPoints={handleHitPointsChange}
+          />
+        )}
           
           {activeTab === 'stats' && (
             <CombatStatsCalculator 
@@ -125,6 +153,14 @@ const CombatTracker = ({
               gear={gear} 
               character={character}
               combatAbilities={combatAbilities}
+            />
+          )}
+          
+          {activeTab === 'hitpoints' && (
+            <HitPointTracker
+              character={character}
+              finalStats={finalStats}
+              onHitPointChange={handleHitPointsChange}
             />
           )}
           
