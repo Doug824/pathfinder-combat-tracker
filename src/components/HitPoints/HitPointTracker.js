@@ -235,7 +235,7 @@ const HitPointTracker = ({
     
     // Then reduce current HP if there's damage left
     if (amount > 0) {
-      newCurrentHP = Math.max(-10, newCurrentHP - amount);
+      newCurrentHP = Math.max(-1000, newCurrentHP - amount);
     }
     
     const updatedHitPoints = {
