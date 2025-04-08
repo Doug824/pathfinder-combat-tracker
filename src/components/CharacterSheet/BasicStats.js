@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import NumericInput from '../common/NumericInput';
 
 const BasicStats = ({ onStatsChange, initialStats }) => {
   // Use initialStats if provided, otherwise use defaults
@@ -72,22 +73,24 @@ const BasicStats = ({ onStatsChange, initialStats }) => {
   
   return (
     <div className="basic-stats">
-      <h2>Character Attributes</h2>
-      
-      {Object.entries(stats).map(([stat, value]) => (
-        <div key={stat} className="stat-row">
-          <label htmlFor={stat}>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
-          <input
-            id={stat}
-            type="number"
-            value={value}
-            onChange={(e) => handleStatChange(stat, e.target.value)}
-          />
-          <span className="modifier">
-            Modifier: {calculateModifier(value) >= 0 ? '+' : ''}{calculateModifier(value)}
-          </span>
-        </div>
-      ))}
+      <h3>Character Attributes</h3>
+      <div className="stats-grid">
+        {Object.entries(stats).map(([stat, value]) => (
+          <div key={stat} className="stat-row">
+            <label htmlFor={stat}>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
+            <NumericInput
+              id={stat}
+              value={value}
+              onChange={(value) => handleStatChange(stat, value)}
+              min={3}
+              max={30}
+            />
+            <span className="modifier">
+              Mod: {calculateModifier(value) >= 0 ? '+' : ''}{calculateModifier(value)}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,0 +1,688 @@
+/* ===== RESPONSIVE STYLES ===== */
+
+/* ===== LARGE SCREENS (1200px and above) ===== */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+  
+  /* Wider layout for large screens */
+  .App {
+    padding: 30px;
+  }
+  
+  /* Three-column layout for larger screens */
+  .grid-cols-xl-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .grid-cols-xl-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ===== DESKTOP (992px to 1199px) ===== */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .container {
+    max-width: 960px;
+  }
+  
+  /* Standard desktop layout */
+  .App {
+    padding: 25px;
+  }
+  
+  /* Two-column layout for desktops */
+  .grid-cols-lg-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .grid-cols-lg-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ===== TABLET (768px to 991px) ===== */
+@media (min-width: 768px) and (max-width: 991px) {
+  .container {
+    max-width: 720px;
+  }
+  
+  /* Tablet-specific layout */
+  .App {
+    padding: 20px;
+  }
+  
+  /* Header adjustments for tablet */
+  .App-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .app-title {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .header-controls {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Navigation adjustments */
+  .nav-list {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  
+  /* Two columns for tablets */
+  .grid-cols-md-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  /* Single column for character lists */
+  .character-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  /* Adjust playsheet layout */
+  .playsheet {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .attack-value, .defense-value, .save-value {
+    font-size: 1.2rem;
+  }
+  
+  /* Form adjustments */
+  .form-row {
+    flex-wrap: wrap;
+  }
+  
+  .form-row .form-group {
+    flex: 0 0 48%;
+    min-width: 200px;
+  }
+  
+  /* Buff/gear list columns */
+  .active-buffs, 
+  .gear-list,
+  .abilities-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ===== MOBILE (576px to 767px) ===== */
+@media (min-width: 576px) and (max-width: 767px) {
+  .container {
+    max-width: 540px;
+  }
+  
+  /* Mobile-specific layout */
+  .App {
+    padding: 15px;
+  }
+  
+  /* Header adjustments for mobile */
+  .App-header {
+    flex-direction: column;
+    padding: 15px 10px;
+  }
+  
+  .app-title {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .app-tagline {
+    display: none; /* Hide tagline on small screens */
+  }
+  
+  .header-controls {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Navigation adjustments */
+  .nav-list {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-button {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  
+  /* User section adjustments */
+  .user-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  /* Single column for mobile */
+  .grid-cols-sm-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Character cards in single column */
+  .character-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Form adjustments */
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+  
+  /* Playsheet adjustments */
+  .playsheet {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  /* Buff/gear list columns */
+  .active-buffs, 
+  .gear-list,
+  .abilities-list {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Tab adjustments */
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-button {
+    flex: 1 0 auto;
+    min-width: 100px;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  
+  /* Smaller paddings for cards */
+  .card, 
+  .buff-card, 
+  .gear-card, 
+  .ability-card, 
+  .character-card,
+  .saved-buff-card,
+  .buff-package-card {
+    padding: 12px;
+  }
+  
+  /* Combat tracker adjustments */
+  .attack-row, 
+  .defense-row, 
+  .save-row {
+    padding: 8px;
+  }
+  
+  .attack-value, 
+  .defense-value, 
+  .save-value {
+    font-size: 1.1rem;
+  }
+  
+  /* Dice roller in single column */
+  .dice-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .roll-button,
+  .average-button {
+    width: 100%;
+  }
+  
+  /* Fixed bottom button for new character */
+  .new-character-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .new-character-btn span {
+    display: none;
+  }
+  
+  .new-character-btn:before {
+    content: "+";
+    font-size: 24px;
+  }
+}
+
+/* ===== SMALL MOBILE (575px and below) ===== */
+@media (max-width: 575px) {
+  /* Container full width on small screens */
+  .container {
+    width: 100%;
+    padding: 0 10px;
+  }
+  
+  /* Very small mobile layout */
+  .App {
+    padding: 10px;
+  }
+  
+  /* Minimal header for very small screens */
+  .App-header {
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .app-title {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .app-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .app-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .app-tagline {
+    display: none; /* Hide tagline on very small screens */
+  }
+  
+  .header-controls {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Navigation for very small screens */
+  .nav-list {
+    width: 100%;
+    flex-direction: row; /* Keep horizontal but smaller */
+    justify-content: space-between;
+  }
+  
+  .nav-button {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  /* User section full width */
+  .user-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .username {
+    font-size: 0.9rem;
+  }
+  
+  /* Single column for everything */
+  .grid-cols-xs-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Smaller typography */
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+  h3 { font-size: 1.2rem; }
+  h4 { font-size: 1rem; }
+  
+  /* Even more compact cards */
+  .card, 
+  .buff-card, 
+  .gear-card, 
+  .ability-card, 
+  .character-card,
+  .saved-buff-card,
+  .buff-package-card {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Vertical active character info */
+  .active-character-info h2 {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .character-subtitle {
+    margin-top: 5px;
+  }
+  
+  /* Combat tracker extreme compactness */
+  .attack-row, 
+  .defense-row, 
+  .save-row {
+    padding: 6px;
+  }
+  
+  .attack-name, 
+  .defense-name, 
+  .save-name {
+    font-size: 0.9rem;
+  }
+  
+  .attack-value, 
+  .defense-value, 
+  .save-value {
+    font-size: 1rem;
+    min-width: auto;
+  }
+  
+  /* Tab adjustments for very small screens */
+  .tabs {
+    flex-direction: column;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .tab-button {
+    border-radius: 0;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .tab-content {
+    padding: 15px 10px;
+  }
+  
+  /* Dice roller extreme compactness */
+  .dice-group {
+    padding: 8px;
+  }
+  
+  .dice-form .form-row {
+    margin-bottom: 10px;
+  }
+  
+  .result-value {
+    font-size: 1.8rem;
+  }
+  
+  /* Login page smaller */
+  .login-container {
+    padding: 10px;
+  }
+  
+  .login-card {
+    padding: 15px;
+  }
+  
+  /* Scrollable areas for very small screens */
+  .character-setup,
+  .combat-tracker,
+  .character-manager {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+}
+
+/* ===== SPECIFIC DEVICE ADJUSTMENTS ===== */
+
+/* iPhone SE, 5, 5S */
+@media (max-width: 320px) {
+  .App-header {
+    padding: 8px;
+  }
+  
+  .app-logo {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .app-title h1 {
+    font-size: 1.3rem;
+  }
+  
+  .nav-button {
+    padding: 5px 6px;
+    font-size: 0.75rem;
+  }
+  
+  /* Extreme space saving */
+  .card, .buff-card, .gear-card, .ability-card {
+    padding: 8px;
+  }
+  
+  /* Minimal form controls */
+  input, select, button {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 6px;
+  }
+}
+
+/* Ensure input fields are large enough on mobile */
+@media (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+  
+  /* Make buttons easier to tap */
+  button, .btn, .nav-button {
+    min-height: 44px; /* Apple's minimum recommended touch target size */
+  }
+  
+  /* Fix for iOS height issue */
+  .App {
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Fix for iOS momentum scrolling */
+  .overflow-container,
+  .character-cards,
+  .active-buffs,
+  .gear-list,
+  .abilities-list {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ===== ORIENTATION SPECIFIC ===== */
+
+/* Landscape orientation on mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+  .App-header {
+    flex-direction: row;
+    padding: 10px;
+  }
+  
+  .app-title {
+    width: auto;
+    margin-bottom: 0;
+  }
+  
+  .header-controls {
+    flex-direction: row;
+    width: auto;
+  }
+  
+  .nav-list {
+    flex-direction: row;
+    width: auto;
+  }
+  
+  /* Two-column layout for landscape */
+  .character-cards,
+  .active-buffs,
+  .gear-list,
+  .abilities-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  /* Playsheet in two columns for landscape */
+  .playsheet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  body {
+    background-color: white;
+    color: black;
+  }
+  
+  .App {
+    padding: 0;
+    max-width: 100%;
+  }
+  
+  .App-header,
+  .nav-list,
+  .theme-toggle,
+  .logout-button,
+  .new-character-btn,
+  button:not(.print-visible) {
+    display: none;
+  }
+  
+  .character-card,
+  .buff-card,
+  .gear-card,
+  .ability-card,
+  .saved-buff-card,
+  .buff-package-card,
+  .setup-section,
+  .playsheet-section {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+  
+  .tab-content {
+    display: block !important;
+  }
+  
+  /* Ensure dark mode content is visible when printed */
+  .dark-mode {
+    --text-primary: black;
+    --text-secondary: #333;
+    --bg-primary: white;
+    --bg-secondary: white;
+    --border-color: #ddd;
+  }
+  
+  /* Add page breaks before major sections */
+  .character-setup,
+  .combat-tracker,
+  .buff-tracker,
+  .combat-abilities {
+    page-break-before: always;
+  }
+  
+  /* Avoid page breaks within important elements */
+  .stat-display,
+  .attack-row,
+  .defense-row,
+  .save-row {
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+  :root {
+    --bg-primary: white;
+    --bg-secondary: #f0f0f0;
+    --bg-tertiary: #e0e0e0;
+    --text-primary: black;
+    --text-secondary: #333;
+    --border-color: black;
+    --highlight-color: #8b0000; /* Dark red */
+    --error-color: #8b0000;
+    --success-color: #006400; /* Dark green */
+    --active-color: #006400;
+    --inactive-color: #707070;
+  }
+  
+  .dark-mode {
+    --bg-primary: black;
+    --bg-secondary: #222;
+    --bg-tertiary: #333;
+    --text-primary: white;
+    --text-secondary: #ddd;
+    --border-color: white;
+    --highlight-color: #ff6666; /* Light red */
+    --error-color: #ff6666;
+    --success-color: #66ff66; /* Light green */
+    --active-color: #66ff66;
+    --inactive-color: #aaaaaa;
+  }
+  
+  /* Increase contrast for focus states */
+  button:focus, 
+  input:focus, 
+  select:focus, 
+  textarea:focus, 
+  a:focus {
+    outline: 3px solid var(--highlight-color);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .card:hover, 
+  .buff-card:hover, 
+  .gear-card:hover, 
+  .ability-card:hover, 
+  .character-card:hover,
+  .saved-buff-card:hover,
+  .buff-package-card:hover,
+  .btn:hover,
+  button:hover {
+    transform: none !important;
+  }
+  
+  /* Hide animations that could be distracting */
+  .dice-result:before,
+  .attack-value:after, 
+  .defense-value:after, 
+  .save-value:after,
+  .btn:after,
+  .roll-button:after,
+  .add-dice-btn:after,
+  .login-button:after {
+    display: none !important;
+  }
+}

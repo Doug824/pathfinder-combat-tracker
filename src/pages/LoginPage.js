@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// Import logo image (make sure to add this to your project's assets folder)
 import logoWithName from '../assets/HerosLedgerLogo-1.png';
 
 const LoginPage = ({ onLogin, onRegister }) => {

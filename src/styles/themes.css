@@ -1,0 +1,131 @@
+/* Light Mode (Default) */
+:root {
+    --bg-primary: #F8F5F0;
+    --bg-secondary: #E3CDA4;
+    --bg-tertiary: #D4A017;
+    --text-primary: #3E2723;
+    --text-secondary: #5A4030;
+    --border-color: #D4A017;
+    --button-bg: #C0392B;
+    --button-text: #F9F5E3;
+    --button-hover: #A63125;
+    --card-shadow: 0 2px 5px rgba(62,39,35,0.2);
+    --highlight-color: #C0392B;
+    --error-color: #C0392B;
+    --success-color: #4A7C59;
+    --active-color: #4A7C59;
+    --inactive-color: #7F7F7F;
+    --tab-active-bg: #F9F5E3;
+    --tab-inactive-bg: #E3CDA4;
+    --focus-ring: 0 0 0 3px rgba(192, 57, 43, 0.5);
+    
+    /* Additional theme colors for enhanced UI */
+    --input-bg: #FFFFFF;
+    --input-border: #D1C4A9;
+    --input-text: #3E2723;
+    --input-placeholder: #8D7B66;
+    --input-hover-border: #BBA888;
+    --input-focus-border: #D4A017;
+    
+    --panel-header-bg: linear-gradient(to bottom, #E3CDA4, #D4A017);
+    --panel-header-text: #3E2723;
+    --panel-body-bg: #F8F5F0;
+    
+    --tooltip-bg: #3E2723;
+    --tooltip-text: #F8F5F0;
+    
+    --notification-info-bg: #E3F2FD;
+    --notification-info-text: #0D47A1;
+    --notification-success-bg: #E8F5E9;
+    --notification-success-text: #2E7D32;
+    --notification-warning-bg: #FFF8E1;
+    --notification-warning-text: #F57F17;
+    --notification-error-bg: #FFEBEE;
+    --notification-error-text: #C62828;
+    
+    /* Dice colors */
+    --dice-bg: #F8F5F0;
+    --dice-text: #3E2723;
+    --dice-border: #D4A017;
+    --dice-result-bg: #E3CDA4;
+    --dice-result-highlight: #C0392B;
+  }
+  
+  /* Dark Mode */
+  .dark-mode {
+    --bg-primary: #1C1C1C;
+    --bg-secondary: #2D2D2D;
+    --bg-tertiary: #3C3C3C;
+    --text-primary: #F9F5E3;
+    --text-secondary: #E3CDA4;
+    --border-color: #D4A017;
+    --button-bg: #C0392B;
+    --button-text: #F9F5E3;
+    --button-hover: #A63125;
+    --card-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    --highlight-color: #C0392B;
+    --error-color: #E74C3C;
+    --success-color: #4A7C59;
+    --active-color: #4A7C59;
+    --inactive-color: #777777;
+    --tab-active-bg: #1C1C1C;
+    --tab-inactive-bg: #2D2D2D;
+    --focus-ring: 0 0 0 3px rgba(192, 57, 43, 0.5);
+    
+    /* Additional theme colors for enhanced UI */
+    --input-bg: #2D2D2D;
+    --input-border: #3C3C3C;
+    --input-text: #F9F5E3;
+    --input-placeholder: #AAAAAA;
+    --input-hover-border: #4D4D4D;
+    --input-focus-border: #D4A017;
+    
+    --panel-header-bg: linear-gradient(to bottom, #3C3C3C, #2D2D2D);
+    --panel-header-text: #F9F5E3;
+    --panel-body-bg: #1C1C1C;
+    
+    --tooltip-bg: #F9F5E3;
+    --tooltip-text: #1C1C1C;
+    
+    --notification-info-bg: #1A2937;
+    --notification-info-text: #90CAF9;
+    --notification-success-bg: #1B2E22;
+    --notification-success-text: #A5D6A7;
+    --notification-warning-bg: #332D1A;
+    --notification-warning-text: #FFCC80;
+    --notification-error-bg: #311B1B;
+    --notification-error-text: #EF9A9A;
+    
+    /* Dice colors */
+    --dice-bg: #2D2D2D;
+    --dice-text: #F9F5E3;
+    --dice-border: #D4A017;
+    --dice-result-bg: #3C3C3C;
+    --dice-result-highlight: #C0392B;
+  }
+  
+  /* Fantasy-themed color accents - can be used for specific UI elements */
+  .theme-arcane {
+    --accent-primary: #8E44AD;
+    --accent-secondary: #3498DB;
+  }
+  
+  .theme-nature {
+    --accent-primary: #27AE60;
+    --accent-secondary: #F1C40F;
+  }
+  
+  .theme-warrior {
+    --accent-primary: #C0392B;
+    --accent-secondary: #F39C12;
+  }
+  
+  .theme-rogue {
+    --accent-primary: #34495E;
+    --accent-secondary: #7F8C8D;
+  }
+  
+  .theme-cleric {
+    --accent-primary: #ECF0F1;
+    --accent-secondary: #F1C40F;
+  }

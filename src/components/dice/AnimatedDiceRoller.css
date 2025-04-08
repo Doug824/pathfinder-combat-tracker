@@ -1,0 +1,359 @@
+.animated-dice-roller {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--bg-primary);
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06));
+    margin-bottom: 1.5rem;
+  }
+  
+  .dice-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .dice-form-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.3rem;
+    color: var(--highlight-color, #c0392b);
+    border-bottom: 1px solid var(--border-color, #d4a017);
+    padding-bottom: 0.5rem;
+  }
+  
+  .dice-group {
+    background-color: var(--bg-secondary, #f8f5f0);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.1));
+    margin-bottom: 0.5rem;
+  }
+  
+  .dice-group-content {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+  }
+  
+  .dice-count, .dice-type {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .dice-count {
+    width: 80px;
+  }
+  
+  .dice-type {
+    flex: 1;
+  }
+  
+  .dice-input, .dice-select, .modifier-input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color, #d1c4a9);
+    border-radius: 0.375rem;
+    font-size: 0.95rem;
+    background: var(--bg-primary, white);
+    color: var(--text-primary, #3e2723);
+  }
+  
+  .dice-input, .modifier-input {
+    width: 60px;
+    text-align: center;
+  }
+  
+  .remove-dice-btn {
+    background-color: var(--error-color, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .add-dice-btn {
+    background-color: var(--active-color, #4a7c59);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dice-modifier {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .dice-modifier label {
+    min-width: 70px;
+  }
+  
+  .dice-display {
+    background-color: var(--bg-secondary, #e3cda4);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    margin: 1rem 0;
+    box-shadow: var(--shadow-inner, inset 0 2px 4px 0 rgba(0, 0, 0, 0.06));
+  }
+  
+  .dice-formula {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary, #3e2723);
+  }
+  
+  .dice-result {
+    position: relative;
+  }
+  
+  .result-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #5a4030);
+  }
+  
+  .result-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--highlight-color, #c0392b);
+    margin: 0.5rem 0;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+    display: block;
+  }
+  
+  .individual-rolls {
+    font-size: 0.9rem;
+    color: var(--text-secondary, #5a4030);
+    margin-top: 0.5rem;
+  }
+  
+  .dice-group-result {
+    margin-bottom: 0.25rem;
+  }
+  
+  .dice-group-formula {
+    font-weight: 600;
+    margin-right: 0.5rem;
+  }
+  
+  .individual-die {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background-color: var(--bg-primary, white);
+    border-radius: 4px;
+    margin: 0 2px;
+    font-weight: 600;
+  }
+  
+  .max-roll {
+    background-color: var(--success-color, #4a7c59);
+    color: white;
+  }
+  
+  .min-roll {
+    background-color: var(--error-color, #c0392b);
+    color: white;
+  }
+  
+  .damage-modifier-result {
+    margin-top: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .dice-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .roll-button, .average-button {
+    flex: 1;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  
+  .roll-button {
+    background-color: var(--button-bg, #c0392b);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .roll-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -100%;
+    right: 0;
+    bottom: 0;
+    width: 120%;
+    height: 200%;
+    background: rgba(255,255,255,0.2);
+    transform: rotate(30deg);
+    transition: all 0.5s ease;
+  }
+  
+  .roll-button:hover::after {
+    left: 100%;
+  }
+  
+  .roll-button:hover {
+    background-color: var(--button-hover, #a63125);
+    transform: translateY(-2px);
+  }
+  
+  .roll-button.rolling {
+    background-color: var(--inactive-color, #7f7f7f);
+    pointer-events: none;
+  }
+  
+  @keyframes dice-roll {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-10deg) scale(0.95); }
+    40% { transform: rotate(5deg) scale(1.05); }
+    60% { transform: rotate(-5deg) scale(0.98); }
+    80% { transform: rotate(10deg) scale(1.02); }
+  }
+  
+  .dice-rolling {
+    animation: dice-roll 0.8s ease-in-out;
+  }
+  
+  .average-button {
+    background-color: var(--bg-tertiary, #e3cda4);
+    color: var(--text-primary, #3e2723);
+  }
+  
+  .average-button:hover {
+    background-color: var(--bg-tertiary, #d4a017);
+    transform: translateY(-2px);
+  }
+  
+  .dice-history {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--border-color, #d4a017);
+    padding-top: 1rem;
+  }
+  
+  .dice-history h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    color: var(--text-secondary, #5a4030);
+  }
+  
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: var(--bg-primary, white);
+    border-radius: 0.375rem;
+    box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+  
+  .history-value {
+    font-weight: 600;
+    color: var(--highlight-color, #c0392b);
+    margin-right: 0.5rem;
+  }
+  
+  .history-formula {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #5a4030);
+  }
+  
+  .history-time {
+    font-size: 0.8rem;
+    color: var(--inactive-color, #7f7f7f);
+  }
+  
+  /* Dark mode styles */
+  .dark-mode .animated-dice-roller {
+    background-color: var(--bg-secondary, #2d2d2d);
+  }
+  
+  .dark-mode .dice-group {
+    background-color: var(--bg-primary, #1c1c1c);
+  }
+  
+  .dark-mode .dice-input, 
+  .dark-mode .dice-select, 
+  .dark-mode .modifier-input {
+    background-color: var(--bg-primary, #2d2d2d);
+    border-color: var(--border-color, #3c3c3c);
+    color: var(--text-primary, #f9f5e3);
+  }
+  
+  .dark-mode .dice-display {
+    background-color: var(--bg-tertiary, #3c3c3c);
+  }
+  
+  .dark-mode .result-label {
+    color: var(--text-secondary, #e3cda4);
+  }
+  
+  .dark-mode .individual-die {
+    background-color: var(--bg-secondary, #2d2d2d);
+    color: var(--text-primary, #f9f5e3);
+  }
+  
+  .dark-mode .history-item {
+    background-color: var(--bg-primary, #1c1c1c);
+  }
+  
+  .dark-mode .history-formula {
+    color: var(--text-secondary, #e3cda4);
+  }
+  
+  .dark-mode .average-button {
+    background-color: var(--bg-tertiary, #3c3c3c);
+    color: var(--text-primary, #f9f5e3);
+  }
+  
+  .dark-mode .average-button:hover {
+    background-color: var(--bg-tertiary, #4d4d4d);
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .dice-actions {
+      flex-direction: column;
+    }
+    
+    .individual-die {
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      font-size: 0.8rem;
+    }
+    
+    .result-value {
+      font-size: 2rem;
+    }
+  }

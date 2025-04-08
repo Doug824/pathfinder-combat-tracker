@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import CharacterList from './CharacterManagement/CharacterList';
-import CharacterForm from './CharacterManagement/CharacterForm';
+import CharacterList from './CharacterList';
+import CharacterForm from './CharacterForm';
 
 const CharacterManager = ({ 
   characters, 

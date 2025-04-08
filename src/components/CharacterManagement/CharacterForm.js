@@ -164,15 +164,15 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
               className="form-control"
             >
               <option value="">Select Alignment</option>
-              <option value="LG">Lawful Good</option>
-              <option value="NG">Neutral Good</option>
-              <option value="CG">Chaotic Good</option>
-              <option value="LN">Lawful Neutral</option>
-              <option value="N">True Neutral</option>
-              <option value="CN">Chaotic Neutral</option>
-              <option value="LE">Lawful Evil</option>
-              <option value="NE">Neutral Evil</option>
-              <option value="CE">Chaotic Evil</option>
+              <option value="Lawful Good">Lawful Good</option>
+              <option value="Neutral Good">Neutral Good</option>
+              <option value="Chaotic Good">Chaotic Good</option>
+              <option value="Lawful Neutral">Lawful Neutral</option>
+              <option value="True Neutral">True Neutral</option>
+              <option value="Chaotic Neutral">Chaotic Neutral</option>
+              <option value="Lawful Evil">Lawful Evil</option>
+              <option value="Neutral Evil">Neutral Evil</option>
+              <option value="Chaotic Evil">Chaotic Evil</option>
             </select>
           </div>
         </div>

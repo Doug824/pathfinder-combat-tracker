@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './BuffLibrary.css';
 
 const BuffLibrary = ({ savedBuffs, activeBuffs, onApplyBuff, onRemoveBuff, onDeleteSavedBuff, onCreateBuffPackage }) => {
   const [searchTerm, setSearchTerm] = useState('');

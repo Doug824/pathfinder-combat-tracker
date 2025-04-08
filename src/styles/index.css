@@ -1,0 +1,937 @@
+/* Base styles first */
+@import './base.css';
+
+/* Theme variables */
+@import './themes.css';
+
+/* Layout styles */
+@import './layout.css';
+
+/* Component styles */
+@import './components.css';
+
+/* Animations */
+@import './animations.css';
+
+/* Responsive styles last */
+@import './responsive.css';
+
+/* ===== MODERN UI IMPROVEMENTS ===== */
+
+/* Better fonts and typography */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Consistent spacing scale */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-xxl: 3rem;     /* 48px */
+  
+  /* Better shadows with consistent scale */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  
+  /* Border radiuses */
+  --radius-sm: 0.25rem;  /* 4px */
+  --radius-md: 0.375rem; /* 6px */
+  --radius-lg: 0.5rem;   /* 8px */
+  --radius-xl: 0.75rem;  /* 12px */
+  --radius-full: 9999px; /* For pills and circles */
+  
+  /* Transition speeds */
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+  --transition-slow: 350ms;
+}
+
+/* Apply base fonts */
+body, button, input, select, textarea {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.011em;
+}
+
+/* === LAYOUT REFINEMENTS === */
+
+/* Better app container with proper max-width and padding */
+.App {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-md);
+  transition: all var(--transition-normal) ease;
+}
+
+/* Improved header styling */
+.App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(to right, var(--bg-secondary), var(--bg-secondary) 70%, var(--bg-tertiary));
+  position: relative;
+  overflow: hidden;
+}
+
+.App-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--highlight-color);
+  z-index: 1;
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* Better navigation styling */
+.nav-list {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.nav-button {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast) ease;
+  font-weight: 500;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-item.active .nav-button {
+  background: var(--highlight-color);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+/* === CARD & SECTION REFINEMENTS === */
+
+/* More refined card styling */
+.card, .buff-card, .ability-card, .gear-card, .character-card,
+.saved-buff-card, .buff-package-card, .attack-section,
+.defense-row, .save-row, .dice-result {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal) ease;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover, .buff-card:hover, .ability-card:hover, .gear-card:hover,
+.character-card:hover, .saved-buff-card:hover, .buff-package-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(var(--border-color-rgb), 0.3);
+}
+
+/* Better sections */
+.setup-section, .playsheet-section, .combat-tracker .tab-content {
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  background: linear-gradient(to bottom, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  border: 1px solid rgba(var(--border-color-rgb), 0.2);
+}
+
+.section-header {
+  margin-bottom: var(--space-lg);
+  border-bottom: 1px solid rgba(var(--border-color-rgb), 0.3);
+  padding-bottom: var(--space-sm);
+}
+
+/* === FORM CONTROLS REFINEMENTS === */
+
+/* Input field sizing and styling */
+.form-control, 
+input[type="text"], 
+input[type="number"], 
+input[type="password"],
+select, 
+textarea {
+  height: auto;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-size: 0.95rem;
+  transition: all var(--transition-fast) ease;
+  width: 100%;
+  box-shadow: var(--shadow-inner);
+}
+
+/* Specific styling for number inputs */
+input[type="number"] {
+  max-width: 80px;
+  text-align: center;
+  padding: 0.375rem 0.5rem;
+  appearance: textfield;
+}
+
+/* Remove spinner buttons from number inputs in some browsers */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Focus states */
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--highlight-color);
+  box-shadow: 0 0 0 3px rgba(var(--highlight-color-rgb), 0.2);
+}
+
+/* Form layout improvements */
+.form-row {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: var(--space-md);
+}
+
+/* Label styling */
+label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Selects styling */
+select {
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* === BUTTON REFINEMENTS === */
+
+/* Better buttons */
+.btn,
+.roll-button,
+.login-button,
+.save-button,
+.edit-button,
+.add-buff-button,
+.add-gear-button,
+.add-ability-button,
+.add-dice-btn,
+.add-predefined-abilities-button,
+.new-character-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal) ease;
+  border: none;
+  background: var(--button-bg);
+  color: var(--button-text);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button hover state */
+.btn:hover,
+.roll-button:hover,
+.login-button:hover,
+.save-button:hover,
+.edit-button:hover,
+.add-buff-button:hover,
+.add-gear-button:hover,
+.add-ability-button:hover,
+.add-dice-btn:hover,
+.add-predefined-abilities-button:hover,
+.new-character-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: var(--button-hover);
+}
+
+/* Button active state */
+.btn:active,
+.roll-button:active,
+.login-button:active,
+.save-button:active,
+.edit-button:active,
+.add-buff-button:active,
+.add-gear-button:active,
+.add-ability-button:active,
+.add-dice-btn:active,
+.add-predefined-abilities-button:active,
+.new-character-btn:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Secondary buttons */
+.btn-secondary,
+.average-button,
+.cancel-button {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* === SPECIFIC COMPONENT REFINEMENTS === */
+
+/* PlaySheet improvements */
+.playsheet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.attack-row,
+.defense-row,
+.save-row {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all var(--transition-fast) ease;
+}
+
+.attack-row:hover,
+.defense-row:hover,
+.save-row:hover {
+  background-color: var(--bg-secondary);
+  transform: translateX(4px);
+}
+
+/* Attack value styling */
+.attack-value,
+.defense-value,
+.save-value {
+  font-family: 'Poppins', monospace;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: var(--highlight-color);
+  min-width: 60px;
+  text-align: right;
+  position: relative;
+}
+
+/* Highlight for haste attack */
+.haste-attack {
+  border-left: 3px solid #3498db;
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+/* Character sheet improvements */
+.character-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+}
+
+/* Buff tracker improvements */
+.active-buffs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.buff-card,
+.gear-card,
+.ability-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.buff-card-header,
+.gear-card-header,
+.ability-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+/* Toggle switch improvements */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 28px;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--inactive-color);
+  transition: var(--transition-normal);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-inner);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: var(--transition-normal);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--active-color);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(28px);
+}
+
+/* Dice roller improvements */
+.dice-display {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  text-align: center;
+  box-shadow: var(--shadow-inner);
+  margin: var(--space-md) 0;
+}
+
+.result-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--highlight-color);
+  margin: var(--space-sm) 0;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+}
+
+/* Table styling */
+.table-container {
+  margin: var(--space-md) 0;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.table thead th {
+  background-color: var(--bg-secondary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: rgba(var(--bg-secondary-rgb), 0.3);
+}
+
+/* === RESPONSIVE REFINEMENTS === */
+
+/* Tablets (768px and up) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .App {
+    padding: var(--space-sm);
+  }
+  
+  .App-header {
+    padding: var(--space-md);
+  }
+  
+  .playsheet {
+    gap: var(--space-md);
+  }
+  
+  .setup-section, .playsheet-section, .combat-tracker .tab-content {
+    padding: var(--space-md);
+  }
+  
+  .form-row {
+    flex-wrap: wrap;
+  }
+  
+  .form-group {
+    min-width: 150px;
+  }
+}
+
+/* Mobile (max-width: 767px) */
+@media (max-width: 767px) {
+  .App {
+    padding: var(--space-xs);
+  }
+  
+  .App-header {
+    flex-direction: column;
+    padding: var(--space-sm);
+    gap: var(--space-sm);
+  }
+  
+  .app-title {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .header-controls {
+    width: 100%;
+  }
+  
+  .nav-list {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-button {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.85rem;
+  }
+  
+  .playsheet {
+    grid-template-columns: 1fr;
+  }
+  
+  .setup-section, .playsheet-section, .combat-tracker .tab-content {
+    padding: var(--space-sm);
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+  
+  .character-form {
+    grid-template-columns: 1fr;
+  }
+  
+  .active-buffs {
+    grid-template-columns: 1fr;
+  }
+  
+  .attack-value, .defense-value, .save-value {
+    font-size: 1.1rem;
+  }
+  
+  .result-value {
+    font-size: 2rem;
+  }
+  
+  /* Compact tabs for mobile */
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-button {
+    flex: 1 0 auto;
+    min-width: 100px;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.85rem;
+  }
+  
+  /* Stack buttons on mobile */
+  .dice-actions {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .character-card {
+    padding: var(--space-sm);
+  }
+}
+
+/* Small mobile devices (max-width: 375px) */
+@media (max-width: 375px) {
+  .app-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .app-title h1 {
+    font-size: 1.4rem;
+  }
+  
+  .nav-button {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .form-control, input, select, textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .attack-value, .defense-value, .save-value {
+    font-size: 1rem;
+  }
+}
+
+/* === DARK MODE REFINEMENTS === */
+
+/* Add these at the end to ensure they have higher specificity */
+.dark-mode .App-header {
+  background: linear-gradient(to right, var(--bg-secondary), var(--bg-secondary) 70%, var(--bg-tertiary));
+}
+
+.dark-mode .setup-section, 
+.dark-mode .playsheet-section, 
+.dark-mode .combat-tracker .tab-content {
+  background: linear-gradient(to bottom, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .card,
+.dark-mode .buff-card,
+.dark-mode .ability-card,
+.dark-mode .gear-card,
+.dark-mode .character-card,
+.dark-mode .saved-buff-card,
+.dark-mode .buff-package-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .attack-row:hover,
+.dark-mode .defense-row:hover,
+.dark-mode .save-row:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* === VISUAL ENHANCEMENTS === */
+
+/* Add subtle gradients and patterns */
+.card, .buff-card, .ability-card, .character-card {
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+}
+
+/* Cool glow effect for attack values */
+.attack-value, .defense-value, .save-value, .result-value {
+  text-shadow: 0 0 10px rgba(var(--highlight-color-rgb), 0.3);
+}
+
+/* Parchment texture background for the app */
+.App {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.05"><rect fill="%23000" width="100" height="100"/><filter id="a"><feTurbulence type="fractalNoise" baseFrequency="0.5" stitchTiles="stitch"/><feColorMatrix in="turbulence" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0"/></filter><rect width="100" height="100" filter="url(%23a)"/></svg>');
+  background-repeat: repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Better focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--highlight-color);
+  outline-offset: 2px;
+}
+
+/* Animation for dice rolls */
+.dice-rolling {
+  animation: diceRoll 0.8s ease-in-out;
+}
+
+@keyframes diceRoll {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-10deg) scale(0.9); }
+  40% { transform: rotate(5deg) scale(1.1); }
+  60% { transform: rotate(-5deg) scale(0.95); }
+  80% { transform: rotate(10deg) scale(1.05); }
+}
+
+/* Micro-interactions */
+.nav-button, .btn, .attack-row, .character-card {
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Improve table row hover */
+.table tbody tr:hover {
+  background-color: rgba(var(--highlight-color-rgb), 0.1);
+}
+
+/* Improve scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--highlight-color);
+  border-radius: 4px;
+  border: 2px solid var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--button-hover);
+}
+
+/* Color variables additions - add these to your :root and .dark-mode */
+:root {
+  --highlight-color-rgb: 192, 57, 43;   /* C0392B */
+  --border-color-rgb: 212, 160, 23;     /* D4A017 */
+  --bg-secondary-rgb: 227, 205, 164;    /* E3CDA4 */
+}
+
+.dark-mode {
+  --highlight-color-rgb: 192, 57, 43;   /* C0392B */
+  --border-color-rgb: 212, 160, 23;     /* D4A017 */
+  --bg-secondary-rgb: 45, 45, 45;       /* 2D2D2D */
+}
+
+/* === INPUT SIZE OPTIMIZATIONS === */
+
+/* Generic input sizing optimization */
+input, select, textarea, button {
+  font-size: 0.95rem;
+}
+
+/* Specific numeric input optimization */
+input[type="number"] {
+  max-width: 70px;
+  padding: 0.375rem 0.5rem;
+}
+
+.stat-input input,
+.gear-stat-input input,
+.ability-input input {
+  max-width: 60px;
+  padding: 0.375rem 0.5rem;
+}
+
+/* Combat Abilities and Stats display */
+.ability-effects, .gear-effects, .buff-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ability-effect, .gear-stat, .buff-effect {
+  background-color: rgba(var(--bg-tertiary-rgb), 0.5);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Improve gear and buff cards */
+.gear-card, .buff-card, .ability-card {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.gear-card-header, .buff-card-header, .ability-header {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(var(--border-color-rgb), 0.3);
+}
+
+.gear-meta, .buff-meta, .ability-meta {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.gear-card-actions, .buff-actions, .ability-controls {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* Color coding for bonuses and penalties */
+.bonus-positive {
+  color: var(--success-color);
+}
+
+.bonus-negative {
+  color: var(--error-color);
+}
+
+/* === ADDITIONAL RESPONSIVE TWEAKS === */
+
+/* Landscape orientation for mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+  .playsheet {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+  
+  .active-buffs, .abilities-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Better styling for small tablets */
+@media (min-width: 600px) and (max-width: 900px) {
+  .form-row {
+    flex-wrap: wrap;
+  }
+  
+  .form-group {
+    flex: 1 0 45%;
+  }
+}
+
+/* Ensure buttons are tappable on mobile */
+@media (max-width: 767px) {
+  button, .btn, .nav-button, .roll-button, .add-dice-btn {
+    min-height: 44px; /* Apple's recommended minimum touch target size */
+  }
+  
+  .playsheet-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+/* Fixed "Create Character" button on mobile for better UX */
+@media (max-width: 767px) {
+  .new-character-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .new-character-btn:after {
+    content: '+';
+    font-size: 24px;
+    line-height: 1;
+  }
+  
+  .new-character-btn span {
+    display: none;
+  }
+}
+
+/* Animations for page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* === PRINT STYLES === */
+@media print {
+  .App {
+    padding: 0;
+    background-image: none;
+  }
+  
+  .App-header, .nav-list, .tabs {
+    display: none;
+  }
+  
+  .card, .buff-card, .ability-card, .gear-card, .character-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+
+/* === ACCESSIBILITY IMPROVEMENTS === */
+
+/* High contrast focus outlines */
+@media (prefers-contrast: more) {
+  *:focus {
+    outline: 3px solid black !important;
+    outline-offset: 2px !important;
+  }
+  
+  .dark-mode *:focus {
+    outline: 3px solid white !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

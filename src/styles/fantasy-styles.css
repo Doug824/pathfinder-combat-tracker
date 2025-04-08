@@ -1,0 +1,387 @@
+/* === FANTASY FONT IMPORTS === */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap');
+
+/* === FANTASY THEME OVERRIDES === */
+
+/* Apply fantasy fonts */
+body, button, input, select, textarea {
+  font-family: 'Libre Baskerville', 'IM Fell English', serif;
+}
+
+h1, h2, h3, h4, .app-title h1, .section-header h2, .dice-form-title {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  letter-spacing: 0.03em;
+}
+
+/* More muted colors - especially less reds */
+:root {
+  --highlight-color: #8E6516;      /* Gold instead of red */
+  --highlight-color-rgb: 142, 101, 22;
+  --button-bg: #704214;            /* Brown instead of red */
+  --button-hover: #8B5A2B;
+  --active-color: #4A7C59;         /* Keep green for active */
+  --error-color: #A65936;          /* Muted orange-red instead of bright red */
+  --success-color: #4A7C59;
+  --border-color: #D4A017;         /* Gold */
+  --border-color-rgb: 212, 160, 23;
+}
+
+/* Dark mode adjustments */
+.dark-mode {
+  --bg-primary: #1C1C1C;
+  --bg-secondary: #2D2D2D;
+  --bg-tertiary: #3C3C3C;
+  --text-primary: #F9F5E3;
+  --text-secondary: #E3CDA4;
+  --border-color: #D4A017;
+  --border-color-rgb: 212, 160, 23;
+  --button-bg: #704214;            /* Brown */
+  --button-text: #F9F5E3;
+  --button-hover: #8B5A2B;
+  --card-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  --highlight-color: #D4A017;      /* Gold */
+  --highlight-color-rgb: 212, 160, 23;
+  --error-color: #A65936;          /* Muted orange-red */
+  --success-color: #4A7C59;
+  --active-color: #4A7C59;
+  --inactive-color: #777777;
+  --tab-active-bg: #1C1C1C;
+  --tab-inactive-bg: #2D2D2D;
+}
+
+/* Improve form layouts */
+
+/* Make form sections more compact with smaller field widths */
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* For the basic attributes section */
+.basic-stats .stat-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.basic-stats .stat-row label {
+  min-width: 120px;
+  font-weight: bold;
+}
+
+.basic-stats .stat-row input {
+  width: 60px;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.basic-stats .modifier {
+  margin-left: 10px;
+  color: var(--text-secondary);
+}
+
+/* For the add new gear section */
+.new-gear-form {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.new-gear-form h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.gear-stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.gear-stat-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gear-stat-input label {
+  font-size: 0.9rem;
+}
+
+.gear-stat-input input {
+  width: 60px;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+/* For the combat abilities section */
+.new-ability-form {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.new-ability-form h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.effects-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* Card layout for stats, gear, and abilities */
+.card-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+/* Make cards more compact */
+.card, 
+.buff-card, 
+.ability-card, 
+.gear-card, 
+.saved-buff-card,
+.buff-package-card {
+  padding: 12px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+/* Add a subtle fantasy parchment texture to cards */
+.card, 
+.buff-card, 
+.ability-card, 
+.gear-card, 
+.saved-buff-card,
+.buff-package-card,
+.setup-section, 
+.playsheet-section {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><rect fill="%23D4A017" width="100" height="100"/><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.25 0"/></filter><rect width="100" height="100" filter="url(%23noise)"/></svg>');
+  background-repeat: repeat;
+  border: 1px solid rgba(var(--border-color-rgb), 0.3);
+}
+
+/* Add subtle scroll ornaments to section headers */
+.section-header h2:before,
+.section-header h2:after,
+.playsheet-section h3:before,
+.playsheet-section h3:after {
+  color: var(--highlight-color);
+  margin: 0 8px;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* Fantasy button styles */
+.btn,
+.roll-button,
+.login-button,
+.save-button,
+.edit-button,
+.add-buff-button,
+.add-gear-button,
+.add-ability-button,
+.add-dice-btn,
+.add-predefined-abilities-button,
+.new-character-btn {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  background: linear-gradient(to bottom, var(--button-bg), shade(var(--button-bg), 20%));
+  letter-spacing: 0.03em;
+}
+
+.btn:hover,
+.roll-button:hover,
+.login-button:hover,
+.save-button:hover,
+.edit-button:hover,
+.add-buff-button:hover,
+.add-gear-button:hover,
+.add-ability-button:hover,
+.add-dice-btn:hover,
+.add-predefined-abilities-button:hover,
+.new-character-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+/* Make the playsheet layout more compact */
+.playsheet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.playsheet-left-column,
+.playsheet-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.playsheet-section {
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.playsheet-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+/* Add fantasy-themed horizontal dividers */
+.divider {
+  position: relative;
+  height: 20px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.divider:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-color), transparent);
+}
+
+.divider:after {
+  content: "※";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-primary);
+  color: var(--highlight-color);
+  padding: 0 10px;
+}
+
+/* Combat statistics layout improvements */
+.stat-display {
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.stat-header {
+  display: grid;
+  grid-template-columns: 130px auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Make buff tracker styling match the others */
+.buff-tracker .new-buff-form {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.buff-tracker .new-buff-form h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.buff-tracker .stat-effects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+
+/* Fantasy-themed toggle switch */
+.toggle-switch .toggle-slider {
+  border: 1px solid var(--border-color);
+  background: linear-gradient(to bottom, #222, #333);
+}
+
+.toggle-switch .toggle-slider:before {
+  border: 1px solid var(--border-color);
+  background: linear-gradient(to bottom, #e3cda4, #c5ad7d);
+}
+
+input:checked + .toggle-slider {
+  background: linear-gradient(to bottom, #2d3b2a, #3a4a38);
+}
+
+/* Make the attack values look more fantasy-themed */
+.attack-value, 
+.defense-value, 
+.save-value, 
+.result-value {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  color: var(--highlight-color);
+  position: relative;
+  padding: 2px 8px;
+  background: rgba(var(--highlight-color-rgb), 0.1);
+  border-radius: 4px;
+}
+
+/* Dice roller styling adjustments */
+.animated-dice-roller {
+  font-family: 'Libre Baskerville', serif;
+}
+
+.dice-form-title {
+  color: var(--highlight-color);
+}
+
+.roll-button {
+  background-color: var(--button-bg);
+}
+
+.roll-button:hover {
+  background-color: var(--button-hover);
+}
+
+.result-value {
+  color: var(--highlight-color);
+}
+
+/* Media queries for responsive layouts */
+@media (max-width: 768px) {
+  .card-grid-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .gear-stats-container, 
+  .effects-row, 
+  .stat-effects {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .card-grid-layout {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+  
+  .gear-stats-container, 
+  .effects-row, 
+  .stat-effects {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

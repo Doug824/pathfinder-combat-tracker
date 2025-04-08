@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './BuffTracker.css';
 
 const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
   const [buffs, setBuffs] = useState(initialBuffs || []);
@@ -26,7 +27,8 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
       fortitude: 0,
       reflex: 0,
       will: 0,
-      ac: 0
+      ac: 0,
+      naturalArmor: 0,
     }
   });
   
@@ -148,7 +150,7 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
     <div className="buff-tracker">
       <h2>Active Buffs & Effects</h2>
       
-      <div className="active-buffs">
+      <div className="active-buffs card-grid-layout">
         {buffs.length === 0 ? (
           <p>No active buffs</p>
         ) : (
@@ -181,115 +183,145 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
       
       <div className="new-buff-form">
         <h3>Add New Buff</h3>
-        <div>
-          <label>Name:</label>
-          <input 
-            type="text" 
-            value={newBuff.name}
-            onChange={(e) => handleBuffChange('name', e.target.value)}
-          />
-        </div>
-        
-        <div className="duration-container">
-          <label>Duration:</label>
-          {newBuff.durationType !== 'permanent' && (
+        <div className="form-row">
+          <div className="form-group">
+            <label>Name:</label>
             <input 
-              type="number" 
-              min="1"
-              value={newBuff.duration}
-              onChange={(e) => handleBuffChange('duration', parseInt(e.target.value))}
-              className="duration-input"
+              type="text" 
+              value={newBuff.name}
+              onChange={(e) => handleBuffChange('name', e.target.value)}
+              className="form-control"
             />
-          )}
-          
-          <select
-            value={newBuff.durationType}
-            onChange={(e) => handleBuffChange('durationType', e.target.value)}
-            className="duration-type-select"
-          >
-            {durationTypes.map(type => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
+          </div>
         </div>
         
-        <div className="bonus-type-container">
-          <label>Bonus Type:</label>
-          <select
-            value={newBuff.bonusType}
-            onChange={(e) => handleBuffChange('bonusType', e.target.value)}
-            className="bonus-type-select"
-          >
-            {bonusTypes.map(type => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
+        <div className="form-row">
+          <div className="form-group" style={{ flex: '1', maxWidth: '200px' }}>
+            <label>Duration:</label>
+            <div className="duration-container">
+              {newBuff.durationType !== 'permanent' && (
+                <input 
+                  type="number" 
+                  min="1"
+                  value={newBuff.duration}
+                  onChange={(e) => handleBuffChange('duration', parseInt(e.target.value))}
+                  className="duration-input form-control"
+                />
+              )}
+              
+              <select
+                value={newBuff.durationType}
+                onChange={(e) => handleBuffChange('durationType', e.target.value)}
+                className="duration-type-select form-control"
+              >
+                {durationTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <div className="form-group" style={{ flex: '1', maxWidth: '200px' }}>
+            <label>Bonus Type:</label>
+            <select
+              value={newBuff.bonusType}
+              onChange={(e) => handleBuffChange('bonusType', e.target.value)}
+              className="bonus-type-select form-control"
+            >
+              {bonusTypes.map(type => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         
         <div className="stat-effects">
           <h4>Attribute Bonuses/Penalties</h4>
-          {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
-            <div key={stat} className="stat-effect-row">
-              <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects[stat]}
-                onChange={(e) => handleEffectChange(stat, e.target.value)}
-              />
-            </div>
-          ))}
+          <div className="effects-grid">
+            {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
+              <div key={stat} className="stat-effect-row">
+                <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}:</label>
+                <input 
+                  type="number" 
+                  value={newBuff.effects[stat]}
+                  onChange={(e) => handleEffectChange(stat, e.target.value)}
+                  className="form-control"
+                />
+              </div>
+            ))}
+          </div>
           
           <h4>Combat Bonuses/Penalties</h4>
-          <div className="stat-effect-row">
-            <label>Attack Bonus:</label>
-            <input 
-              type="number" 
-              value={newBuff.effects.attackBonus}
-              onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
-            />
-          </div>
-          
-          <div className="stat-effect-row">
-            <label>AC:</label>
-            <input 
-              type="number" 
-              value={newBuff.effects.ac}
-              onChange={(e) => handleEffectChange('ac', e.target.value)}
-            />
-          </div>
-          
-          <h4>Saving Throw Bonuses/Penalties</h4>
-          <div className="stat-effect-row">
-            <label>Fortitude:</label>
-            <input 
-              type="number" 
-              value={newBuff.effects.fortitude}
-              onChange={(e) => handleEffectChange('fortitude', e.target.value)}
-            />
-          </div>
-          <div className="stat-effect-row">
-            <label>Reflex:</label>
-            <input 
-              type="number" 
-              value={newBuff.effects.reflex}
-              onChange={(e) => handleEffectChange('reflex', e.target.value)}
-            />
-          </div>
-          <div className="stat-effect-row">
-            <label>Will:</label>
-            <input 
-              type="number" 
-              value={newBuff.effects.will}
-              onChange={(e) => handleEffectChange('will', e.target.value)}
-            />
+          <div className="effects-grid">
+            <div className="stat-effect-row">
+              <label>Attack Bonus:</label>
+              <input 
+                type="number" 
+                value={newBuff.effects.attackBonus}
+                onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="stat-effect-row">
+              <label>AC:</label>
+              <input 
+                type="number" 
+                value={newBuff.effects.ac}
+                onChange={(e) => handleEffectChange('ac', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="stat-effect-row">
+              <label>Fortitude:</label>
+              <input 
+                type="number" 
+                value={newBuff.effects.fortitude}
+                onChange={(e) => handleEffectChange('fortitude', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="stat-effect-row">
+              <label>Reflex:</label>
+              <input 
+                type="number" 
+                value={newBuff.effects.reflex}
+                onChange={(e) => handleEffectChange('reflex', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="stat-effect-row">
+              <label>Will:</label>
+              <input 
+                type="number" 
+                value={newBuff.effects.will}
+                onChange={(e) => handleEffectChange('will', e.target.value)}
+                className="form-control"
+              />
+            </div>
+            
+            <div className="stat-effect-row">
+              <label>Natural Armor:</label>
+              <input 
+                type="number" 
+                value={newBuff.effects.naturalArmor}
+                onChange={(e) => handleEffectChange('naturalArmor', e.target.value)}
+                className="form-control"
+              />
+            </div>
           </div>
         </div>
         
-        <button onClick={handleAddBuff} className="add-buff-button">Add Buff</button>
+        <button onClick={handleAddBuff} className="add-buff-button">
+          Add Buff
+        </button>
       </div>
     </div>
   );

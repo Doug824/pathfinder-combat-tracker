@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import BuffTracker from '../components/BuffTracker/BuffTracker';
 import CombatStatsCalculator from '../components/CombatStats/CombatStatsCalculator';
 import CombatAbilities from '../components/CombatAbilities/CombatAbilities';
-import Playsheet from '../components/Playsheet';
+import Playsheet from '../components/Playsheet/Playsheet';
 import BuffLibrary from '../components/BuffTracker/BuffLibrary';
-import '../components/BuffTracker/BuffLibrary.css';
-import '../components/BuffTracker/BuffTracker.css';
 
 const CombatTracker = ({
   character,

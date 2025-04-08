@@ -1,0 +1,429 @@
+/* App container */
+.App {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* App Header */
+.App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--highlight-color);
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 15px 20px;
+  box-shadow: var(--card-shadow);
+  flex-wrap: wrap;
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 25px;
+}
+
+.app-title h1 {
+  margin: 0;
+  color: var(--highlight-color);
+  font-size: 1.8rem;
+  white-space: nowrap;
+}
+
+.app-tagline {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Main Content Layout */
+.app-content {
+  flex: 1;
+  padding: 20px 0;
+  width: 100%;
+}
+
+/* User account section */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 5px;
+}
+
+.logout-button:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+/* Active Character Info */
+.active-character-info {
+  margin-bottom: 20px;
+  background-color: var(--bg-secondary);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  border-left: 4px solid var(--highlight-color);
+}
+
+.active-character-info h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 0;
+  margin-bottom: 10px;
+  border-bottom: none;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.character-subtitle {
+  font-size: 0.8em;
+  font-weight: normal;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.character-meta {
+  display: flex;
+  gap: 15px;
+  color: var(--text-secondary);
+  font-size: 0.85em;
+  flex-wrap: wrap;
+}
+
+/* Character Setup Layout */
+.character-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+.setup-section {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.section-header h2 {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Character Manager Layout */
+.character-manager {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.character-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.character-cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+/* Combat Tracker Layout */
+.combat-tracker {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tabs-container {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+/* Playsheet Layout */
+.playsheet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+.playsheet-section {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  background-color: var(--bg-secondary);
+  padding: 16px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.playsheet-section h3 {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.playsheet-section h3:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.playsheet-section.abilities {
+  grid-column: 1 / -1;
+}
+
+/* Buff Tracker Layout */
+.active-buffs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.new-buff-form {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+}
+
+/* Login Page Layout */
+.login-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  width: 100%;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-logo-large {
+  width: 80%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  border-radius: 25px;
+}
+
+.login-card {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.form-toggle {
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Two-column layout for forms and sections */
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+/* Grid layout for cards and lists */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+/* Main wrapper - ensures content is padded on small screens */
+.main-wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 10px;
+  margin: 0 auto;
+}
+
+/* Full-width container */
+.full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+/* Container with max width */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Fixed aspect ratio containers for responsive elements */
+.aspect-ratio-16-9 {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.aspect-ratio-4-3 {
+  position: relative;
+  width: 100%;
+  padding-top: 75%; /* 4:3 Aspect Ratio */
+}
+
+.aspect-ratio-1-1 {
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* 1:1 Aspect Ratio (Square) */
+}
+
+.aspect-ratio-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Fixed bottom container for mobile action buttons */
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-secondary);
+  padding: 10px 15px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+/* Safe area padding for notched devices */
+.safe-area-padding {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Center content vertically and horizontally */
+.centered-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* General layout utility for page sections */
+.page-section {
+  margin-bottom: 30px;
+}
+
+.page-title {
+  margin-bottom: 20px;
+}
+
+/* Spacing and dividers */
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 20px 0;
+  width: 100%;
+}
+
+.spacer-sm { height: 10px; }
+.spacer-md { height: 20px; }
+.spacer-lg { height: 30px; }

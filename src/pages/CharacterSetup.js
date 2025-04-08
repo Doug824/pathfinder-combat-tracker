@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import BasicStats from '../components/CharacterSheet/BasicStats';
-import { getSizeDisplayName } from '../utils/sizeUtils'; // Import the utility function
+import { getSizeDisplayName } from '../utils/sizeUtils';
+import GearItem from '../components/common/GearItem';
+import NumericInput from '../components/common/NumericInput';
 
 const CharacterSetup = ({ 
   character, 
@@ -40,7 +42,8 @@ const CharacterSetup = ({
       fortitude: 0,
       reflex: 0,
       will: 0,
-      ac: 0
+      ac: 0,
+      naturalArmor: 0
     }
   });
   
@@ -110,6 +113,14 @@ const CharacterSetup = ({
     }));
   };
   
+  // Handle numeric input changes
+  const handleNumericChange = (field, value) => {
+    setCharacterData(prev => ({
+      ...prev,
+      [field]: parseInt(value) || 0
+    }));
+  };
+  
   // Save character details
   const handleSaveDetails = () => {
     if (character) {
@@ -139,6 +150,13 @@ const CharacterSetup = ({
   };
   
   // Handle gear changes
+  const handleUpdateGear = (updatedItem) => {
+    const updatedGear = gear.map(item => 
+      item.id === updatedItem.id ? updatedItem : item
+    );
+    onGearChange(updatedGear);
+  };  
+  
   const handleAddGear = () => {
     if (newGearItem.name.trim() === '') return;
     
@@ -291,15 +309,15 @@ const CharacterSetup = ({
                   className="form-control"
                 >
                   <option value="">Select Alignment</option>
-                  <option value="LG">Lawful Good</option>
-                  <option value="NG">Neutral Good</option>
-                  <option value="CG">Chaotic Good</option>
-                  <option value="LN">Lawful Neutral</option>
-                  <option value="N">True Neutral</option>
-                  <option value="CN">Chaotic Neutral</option>
-                  <option value="LE">Lawful Evil</option>
-                  <option value="NE">Neutral Evil</option>
-                  <option value="CE">Chaotic Evil</option>
+                  <option value="Lawful Good">Lawful Good</option>
+                  <option value="Neutral Good">Neutral Good</option>
+                  <option value="Chaotic Good">Chaotic Good</option>
+                  <option value="Lawful Neutral">Lawful Neutral</option>
+                  <option value="True Neutral">True Neutral</option>
+                  <option value="Chaotic Neutral">Chaotic Neutral</option>
+                  <option value="Lawful Evil">Lawful Evil</option>
+                  <option value="Neutral Evil">Neutral Evil</option>
+                  <option value="Chaotic Evil">Chaotic Evil</option>
                 </select>
               </div>
             </div>
@@ -308,13 +326,12 @@ const CharacterSetup = ({
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="baseAttackBonus">Base Attack Bonus</label>
-                <input
-                  type="number"
-                  id="baseAttackBonus"
-                  name="baseAttackBonus"
+                <NumericInput
                   value={characterData.baseAttackBonus}
-                  onChange={handleChange}
+                  onChange={(value) => handleNumericChange('baseAttackBonus', value)}
                   className="form-control"
+                  min={0}
+                  max={20}
                 />
               </div>
             </div>
@@ -323,37 +340,34 @@ const CharacterSetup = ({
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="baseFortitude">Fortitude</label>
-                <input
-                  type="number"
-                  id="baseFortitude"
-                  name="baseFortitude"
+                <NumericInput
                   value={characterData.baseFortitude}
-                  onChange={handleChange}
+                  onChange={(value) => handleNumericChange('baseFortitude', value)}
                   className="form-control"
+                  min={0}
+                  max={20}
                 />
               </div>
               
               <div className="form-group">
                 <label htmlFor="baseReflex">Reflex</label>
-                <input
-                  type="number"
-                  id="baseReflex"
-                  name="baseReflex"
+                <NumericInput
                   value={characterData.baseReflex}
-                  onChange={handleChange}
+                  onChange={(value) => handleNumericChange('baseReflex', value)}
                   className="form-control"
+                  min={0}
+                  max={20}
                 />
               </div>
               
               <div className="form-group">
                 <label htmlFor="baseWill">Will</label>
-                <input
-                  type="number"
-                  id="baseWill"
-                  name="baseWill"
+                <NumericInput
                   value={characterData.baseWill}
-                  onChange={handleChange}
+                  onChange={(value) => handleNumericChange('baseWill', value)}
                   className="form-control"
+                  min={0}
+                  max={20}
                 />
               </div>
             </div>
@@ -413,183 +427,164 @@ const CharacterSetup = ({
       <section className="setup-section equipment">
         <h2>Equipment & Gear</h2>
         <div className="gear-section">
-          <div className="active-gear">
-            {gear.length === 0 ? (
-              <p>No gear equipped. Add gear items below.</p>
-            ) : (
-              <div className="gear-list">
-                {gear.map(item => (
-                  <div key={item.id} className="gear-card">
-                    <div className="gear-card-header">
-                      <h4>{item.name}</h4>
-                      <button 
-                        type="button" 
-                        className="remove-gear-btn"
-                        onClick={() => handleRemoveGear(item.id)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <div className="gear-meta">
-                      <span>Slot: {equipmentSlots.find(slot => slot.value === item.slot)?.label}</span>
-                      <span>Type: {item.bonusType.charAt(0).toUpperCase() + item.bonusType.slice(1)}</span>
-                    </div>
-                    <div className="gear-effects">
-                      {Object.entries(item.effects)
-                        .filter(([_, value]) => value !== 0)
-                        .map(([stat, value]) => (
-                          <span key={stat} className="gear-stat">
-                            {stat.charAt(0).toUpperCase() + stat.slice(1)}: {value > 0 ? '+' : ''}{value}
-                          </span>
-                        ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+        <div className="active-gear">
+          {gear.length === 0 ? (
+            <p>No gear equipped. Add gear items below.</p>
+          ) : (
+            <div className="gear-list card-grid-layout">
+              {gear.map(item => (
+                <GearItem
+                  key={item.id}
+                  item={item}
+                  onRemove={handleRemoveGear}
+                  onUpdate={handleUpdateGear}
+                  equipmentSlots={equipmentSlots}
+                  bonusTypes={bonusTypes}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+          
+        <div className="new-gear-form">
+          <h3>Add New Gear</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Item Name</label>
+              <input 
+                type="text" 
+                value={newGearItem.name}
+                onChange={(e) => handleGearChange('name', e.target.value)}
+                className="form-control"
+              />
+            </div>
           </div>
           
-          <div className="new-gear-form">
-            <h3>Add New Gear</h3>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Item Name</label>
-                <input 
-                  type="text" 
-                  value={newGearItem.name}
-                  onChange={(e) => handleGearChange('name', e.target.value)}
+          <div className="form-row">
+            <div className="form-group" style={{ flex: '1', maxWidth: '150px' }}>
+              <label>Equipment Slot</label>
+              <select
+                value={newGearItem.slot}
+                onChange={(e) => handleGearChange('slot', e.target.value)}
+                className="form-control"
+              >
+                {equipmentSlots.map(slot => (
+                  <option key={slot.value} value={slot.value}>
+                    {slot.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="form-group" style={{ flex: '1', maxWidth: '150px' }}>
+              <label>Bonus Type</label>
+              <select
+                value={newGearItem.bonusType}
+                onChange={(e) => handleGearChange('bonusType', e.target.value)}
+                className="form-control"
+              >
+                {bonusTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <h4>Attribute Bonuses</h4>
+          <div className="gear-stats-container">
+            {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
+              <div key={stat} className="gear-stat-input">
+                <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
+                <NumericInput 
+                  value={newGearItem.effects[stat]}
+                  onChange={(value) => handleGearEffectChange(stat, value)}
                   className="form-control"
+                  min={-10}
+                  max={20}
                 />
               </div>
-            </div>
-            
-            <div className="form-row">
-              <div className="form-group">
-                <label>Equipment Slot</label>
-                <select
-                  value={newGearItem.slot}
-                  onChange={(e) => handleGearChange('slot', e.target.value)}
-                  className="form-control"
-                >
-                  {equipmentSlots.map(slot => (
-                    <option key={slot.value} value={slot.value}>
-                      {slot.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="form-group">
-                <label>Bonus Type</label>
-                <select
-                  value={newGearItem.bonusType}
-                  onChange={(e) => handleGearChange('bonusType', e.target.value)}
-                  className="form-control"
-                >
-                  {bonusTypes.map(type => (
-                    <option key={type.value} value={type.value}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            
-            <h4>Attribute Bonuses</h4>
-            <div className="gear-stats-container">
-              {/* First row: strength, dexterity, constitution */}
-              <div className="form-row gear-stats-row">
-                {['strength', 'dexterity', 'constitution'].map(stat => (
-                  <div key={stat} className="form-group gear-stat-input">
-                    <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
-                    <input 
-                      type="number" 
-                      value={newGearItem.effects[stat]}
-                      onChange={(e) => handleGearEffectChange(stat, e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                ))}
-              </div>
-              
-              {/* Second row: intelligence, wisdom, charisma */}
-              <div className="form-row gear-stats-row">
-                {['intelligence', 'wisdom', 'charisma'].map(stat => (
-                  <div key={stat} className="form-group gear-stat-input">
-                    <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
-                    <input 
-                      type="number" 
-                      value={newGearItem.effects[stat]}
-                      onChange={(e) => handleGearEffectChange(stat, e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                ))}
-              </div>
-              
-              <h4>Combat Bonuses</h4>
-              {/* Combat values: Attack bonus, AC */}
-              <div className="form-row gear-stats-row combat-row">
-                <div className="form-group gear-stat-input">
-                  <label>Attack Bonus</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects.attackBonus}
-                    onChange={(e) => handleGearEffectChange('attackBonus', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-                <div className="form-group gear-stat-input">
-                  <label>AC</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects.ac}
-                    onChange={(e) => handleGearEffectChange('ac', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-              </div>
-              
-              {/* Saving throws: fortitude, reflex, will */}
-              <div className="form-row gear-stats-row">
-                <div className="form-group gear-stat-input">
-                  <label>Fortitude</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects.fortitude}
-                    onChange={(e) => handleGearEffectChange('fortitude', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-                <div className="form-group gear-stat-input">
-                  <label>Reflex</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects.reflex}
-                    onChange={(e) => handleGearEffectChange('reflex', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-                <div className="form-group gear-stat-input">
-                  <label>Will</label>
-                  <input 
-                    type="number" 
-                    value={newGearItem.effects.will}
-                    onChange={(e) => handleGearEffectChange('will', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <button 
-              type="button" 
-              onClick={handleAddGear} 
-              className="add-gear-button"
-            >
-              Add Item
-            </button>
+            ))}
           </div>
+          
+          <h4>Combat Bonuses</h4>
+          <div className="gear-stats-container">
+            <div className="gear-stat-input">
+              <label>Attack Bonus</label>
+              <NumericInput 
+                value={newGearItem.effects.attackBonus}
+                onChange={(value) => handleGearEffectChange('attackBonus', value)}
+                className="form-control"
+                min={-10}
+                max={20}
+              />
+            </div>
+            
+            <div className="gear-stat-input">
+              <label>AC</label>
+              <NumericInput 
+                value={newGearItem.effects.ac}
+                onChange={(value) => handleGearEffectChange('ac', value)}
+                className="form-control"
+                min={-10}
+                max={20}
+              />
+            </div>
+
+            <div className="gear-stat-input">
+              <label>Natural Armor</label>
+              <NumericInput 
+                value={newGearItem.effects.naturalArmor}
+                onChange={(value) => handleGearEffectChange('naturalArmor', value)}
+                className="form-control"
+                min={-10}
+                max={20}
+              />
+            </div>
+            
+            <div className="gear-stat-input">
+              <label>Fortitude</label>
+              <NumericInput 
+                value={newGearItem.effects.fortitude}
+                onChange={(value) => handleGearEffectChange('fortitude', value)}
+                className="form-control"
+                min={-10}
+                max={20}
+              />
+            </div>
+            
+            <div className="gear-stat-input">
+              <label>Reflex</label>
+              <NumericInput 
+                value={newGearItem.effects.reflex}
+                onChange={(value) => handleGearEffectChange('reflex', value)}
+                className="form-control"
+                min={-10}
+                max={20}
+              />
+            </div>
+            
+            <div className="gear-stat-input">
+              <label>Will</label>
+              <NumericInput 
+                value={newGearItem.effects.will}
+                onChange={(value) => handleGearEffectChange('will', value)}
+                className="form-control"
+                min={-10}
+                max={20}
+              />
+            </div>
+          </div>
+          
+          <button 
+            type="button" 
+            onClick={handleAddGear} 
+            className="add-gear-button"
+          >
+            Add Item
+          </button>
+        </div>
         </div>
       </section>
     </div>

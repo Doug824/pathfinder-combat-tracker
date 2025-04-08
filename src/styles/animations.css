@@ -1,0 +1,462 @@
+/* Fade In */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.saved-buff-card, 
+.buff-package-card,
+.gear-card, 
+.ability-card,
+.buff-card,
+.tab-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Delayed fade in sequence */
+.fade-in-1 { animation: fadeIn 0.3s ease-out 0.1s both; }
+.fade-in-2 { animation: fadeIn 0.3s ease-out 0.2s both; }
+.fade-in-3 { animation: fadeIn 0.3s ease-out 0.3s both; }
+.fade-in-4 { animation: fadeIn 0.3s ease-out 0.4s both; }
+.fade-in-5 { animation: fadeIn 0.3s ease-out 0.5s both; }
+
+/* Fade In Up */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Fade In Down */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-down {
+  animation: fadeInDown 0.4s ease-out;
+}
+
+/* Fade In Left */
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.fade-in-left {
+  animation: fadeInLeft 0.4s ease-out;
+}
+
+/* Fade In Right */
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.fade-in-right {
+  animation: fadeInRight 0.4s ease-out;
+}
+
+/* Zoom In */
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.zoom-in {
+  animation: zoomIn 0.3s ease-out;
+}
+
+/* Bounce */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+.bounce {
+  animation: bounce 1s ease;
+}
+
+/* Pulse */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.dice-result:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(200, 170, 110, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+/* Mobile new character button pulse */
+@media (max-width: 768px) {
+  .new-character-btn {
+    animation: pulse 2s infinite ease-in-out;
+  }
+}
+
+/* Glow effect without animation */
+.attack-value:before, 
+.defense-value:before, 
+.save-value:before, 
+.result-value:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.2) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  border-radius: 50%;
+}
+
+/* Rotate animation for loading states */
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+}
+
+.loading:after {
+  content: "⚔️";
+  font-size: 2rem;
+  animation: rotate 1.5s infinite ease;
+}
+
+/* Rotating icons */
+.rotate {
+  animation: rotate 2s linear infinite;
+}
+
+.rotate-slow {
+  animation: rotate 4s linear infinite;
+}
+
+/* Scale animation */
+@keyframes scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.scale {
+  animation: scale 2s ease infinite;
+}
+
+/* Shake animation - good for error states */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.6s ease;
+}
+
+/* Wobble animation */
+@keyframes wobble {
+  0% { transform: translateX(0%); }
+  15% { transform: translateX(-5%) rotate(-5deg); }
+  30% { transform: translateX(3%) rotate(3deg); }
+  45% { transform: translateX(-3%) rotate(-3deg); }
+  60% { transform: translateX(2%) rotate(2deg); }
+  75% { transform: translateX(-1%) rotate(-1deg); }
+  100% { transform: translateX(0%); }
+}
+
+.wobble {
+  animation: wobble 0.8s ease;
+}
+
+/* Float up and down */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* Slide in from right (for modals/drawers) */
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Slide out to right */
+@keyframes slideOutRight {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+.slide-out-right {
+  animation: slideOutRight 0.3s ease-in;
+}
+
+/* Slide in from bottom */
+@keyframes slideInBottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.slide-in-bottom {
+  animation: slideInBottom 0.3s ease-out;
+}
+
+/* Slide out to bottom */
+@keyframes slideOutBottom {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+.slide-out-bottom {
+  animation: slideOutBottom 0.3s ease-in;
+}
+
+/* Heartbeat animation */
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  40% { transform: scale(1); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.heartbeat {
+  animation: heartbeat 1.5s ease infinite;
+}
+
+/* Typing cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: currentColor;
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+/* Loading dots */
+@keyframes loadingDots {
+  0% { content: "."; }
+  33% { content: ".."; }
+  66% { content: "..."; }
+  100% { content: "."; }
+}
+
+.loading-dots:after {
+  content: ".";
+  animation: loadingDots 1.5s infinite;
+  display: inline-block;
+  width: 1em;
+  text-align: left;
+}
+
+/* Progress bar animation */
+@keyframes progressBar {
+  0% { width: 0%; background-color: var(--highlight-color); }
+  100% { width: 100%; background-color: var(--success-color); }
+}
+
+.loading-bar-animate {
+  animation: progressBar 2s linear;
+}
+
+/* Pop in animation */
+@keyframes popIn {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.pop-in {
+  animation: popIn 0.3s ease-out;
+}
+
+/* Spinner animation for loading */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  border: 3px solid rgba(0,0,0,0.1);
+  border-radius: 50%;
+  border-top: 3px solid var(--highlight-color);
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+/* Loading bar animation */
+@keyframes loadingBar {
+  0% { left: -30%; }
+  100% { left: 100%; }
+}
+
+/* Toast notification animations */
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Focus ring pulse animation */
+@keyframes focusRingPulse {
+  0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.5); }
+  70% { box-shadow: 0 0 0 5px rgba(192, 57, 43, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); }
+}
+
+.focus-pulse:focus {
+  animation: focusRingPulse 1.5s infinite;
+}
+
+/* Dice roll animation */
+@keyframes diceRoll {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-10deg) scale(0.9); }
+  40% { transform: rotate(5deg) scale(1.1); }
+  60% { transform: rotate(-5deg) scale(0.95); }
+  80% { transform: rotate(10deg) scale(1.05); }
+}
+
+.dice-rolling {
+  animation: diceRoll 0.5s ease-in-out;
+}
+
+/* Success checkmark animation */
+@keyframes checkmark {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.checkmark {
+  animation: checkmark 0.5s ease-out;
+}
+
+/* Stat increase animation */
+@keyframes statIncrease {
+  0% { color: var(--text-primary); }
+  50% { color: var(--success-color); transform: scale(1.1); }
+  100% { color: var(--text-primary); transform: scale(1); }
+}
+
+.stat-increase {
+  animation: statIncrease 1s ease-out;
+}
+
+/* Stat decrease animation */
+@keyframes statDecrease {
+  0% { color: var(--text-primary); }
+  50% { color: var(--error-color); transform: scale(0.9); }
+  100% { color: var(--text-primary); transform: scale(1); }
+}
+
+.stat-decrease {
+  animation: statDecrease 1s ease-out;
+}
+
+/* Apply for cards in a grid to create a staggered entrance */
+.card-grid > *:nth-child(1) { animation-delay: 0.1s; }
+.card-grid > *:nth-child(2) { animation-delay: 0.2s; }
+.card-grid > *:nth-child(3) { animation-delay: 0.3s; }
+.card-grid > *:nth-child(4) { animation-delay: 0.4s; }
+.card-grid > *:nth-child(5) { animation-delay: 0.5s; }
+.card-grid > *:nth-child(6) { animation-delay: 0.6s; }
+.card-grid > *:nth-child(7) { animation-delay: 0.7s; }
+.card-grid > *:nth-child(8) { animation-delay: 0.8s; }
+
+/* Page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Modal animations */
+.modal-backdrop {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  animation: zoomIn 0.3s ease-out;
+}
+
+/* Drawer animations for mobile */
+.drawer {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-open {
+    animation: slideInRight 0.3s ease-out;
+  }
+  
+  .mobile-menu-close {
+    animation: slideOutRight 0.3s ease-in forwards;
+  }
+}

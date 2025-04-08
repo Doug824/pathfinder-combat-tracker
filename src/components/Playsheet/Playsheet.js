@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { calculateFinalStats } from '../utils/bonusCalculator';
-import { getSizeACModifier, getSizeModifier } from '../utils/sizeUtils';
+import React, { useState, useEffect, useCallback } from 'react';
+import { calculateFinalStats } from '../../utils/bonusCalculator';
+import { getSizeACModifier, getSizeModifier } from '../../utils/sizeUtils';
+import AnimatedDiceRoller from '../dice/AnimatedDiceRoller';
 import './Playsheet.css';
 
 const Playsheet = ({
@@ -13,6 +14,9 @@ const Playsheet = ({
   onUpdateWeapons,
   onUpdateCombatSettings
 }) => {
+  // State for tracking screen size
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   // State for attack calculations
   const [attacksCount, setAttacksCount] = useState(1);
   const [hasHaste, setHasHaste] = useState(false);
@@ -43,12 +47,8 @@ const Playsheet = ({
     damageBonus: 0
   });
 
-  // State for combat dice
-  const [diceResult, setDiceResult] = useState(null);
-  const [showAverage, setShowAverage] = useState(true);
-  const [diceGroups, setDiceGroups] = useState([
-    { id: Date.now(), count: 1, type: 6 }
-  ]);
+  // State for tracking which weapon damage modifier to use in the dice roller
+  const [currentDamageModifier, setCurrentDamageModifier] = useState(damageModifier);
   
   // State for combat stats
   const [combatStats, setCombatStats] = useState({
@@ -63,6 +63,32 @@ const Playsheet = ({
     ref: 0,
     will: 0
   });
+  
+  // Window resize listener to update the mobile state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Fix for iOS Safari scroll issues
+    document.body.style.overflow = 'auto';
+    document.body.style.WebkitOverflowScrolling = 'touch';
+    document.body.style.height = 'auto';
+    
+    return () => {
+      document.body.style = ''; // Reset on unmount
+    };
+  }, []);
   
   // Calculate all stats with currently active abilities
   useEffect(() => {
@@ -166,23 +192,8 @@ const Playsheet = ({
     const attackBonuses = bonusDetails.attackBonus?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
     const damageBonuses = bonusDetails.damage?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
 
-    // Direct check for Power Attack abilities to ensure penalties are applied
-    let directAttackPenalty = 0;
-    let directDamagePenalty = 0;
-
-    // Look for active power attack abilities
-    for (const ability of processedAbilities) {
-      if (ability.isActive) {
-        if (ability.name === 'Improved Power Attack') {
-          const value = ability.inputValue || 1;
-          directAttackPenalty -= value; // Ensure the penalty is negative
-        }
-        else if (ability.name === 'Greater Power Attack') {
-          const value = ability.inputValue || 1;
-          directDamagePenalty -= value; // Ensure the penalty is negative
-        }
-      }
-    }
+    // FIXED: Removed the direct checks for Power Attack that were causing double penalties
+    // The penalties are already included in the attackBonuses calculation above
 
     // Apply two-weapon fighting penalty if active
     const twfPenalty = twoWeaponFighting ? -2 : 0;
@@ -190,22 +201,23 @@ const Playsheet = ({
     // Get size modifier for attack rolls
     const sizeAttackModifier = getSizeModifier(character?.size || 'medium');
 
-    // Calculate primary weapon attack bonus - include direct penalty
-    const totalAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + directAttackPenalty + sizeAttackModifier;
+    // Calculate primary weapon attack bonus
+    const totalAttackBonus = baseBAB + selectedAttackMod + attackBonuses + primaryWeapon.attackBonus + twfPenalty + sizeAttackModifier;
     
-    // Calculate primary weapon damage modifier - include direct penalty
-    const primaryDamageMod = selectedDamageMod + damageBonuses + primaryWeapon.damageBonus + directDamagePenalty;
+    // Calculate primary weapon damage modifier
+    const primaryDamageMod = selectedDamageMod + damageBonuses + primaryWeapon.damageBonus;
 
     // Calculate offhand weapon attack bonus
-    const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + directAttackPenalty + sizeAttackModifier;
+    const totalOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + sizeAttackModifier;
     
     // Calculate offhand weapon damage modifier (typically half ability bonus)
     const offhandAbilityDamageMod = twoWeaponFighting ? Math.floor(selectedOffhandDamageMod / 2) : selectedOffhandDamageMod;
-    const totalOffhandDamageMod = offhandAbilityDamageMod + damageBonuses + offhandWeapon.damageBonus + directDamagePenalty;
+    const totalOffhandDamageMod = offhandAbilityDamageMod + damageBonuses + offhandWeapon.damageBonus;
     
-    // Calculate AC values - ensure AC penalty is applied
+    // Calculate AC values
     const baseAC = 10;
     const acBonuses = bonusDetails.ac?.reduce((sum, bonus) => sum + bonus.value, 0) || 0;
+    
     // Normal AC
     const sizeACModifier = getSizeACModifier(character?.size || 'medium');
     const normalAC = baseAC + dexMod + acBonuses + sizeACModifier;
@@ -221,61 +233,61 @@ const Playsheet = ({
     ).reduce((sum, bonus) => sum + bonus.value, 0) || 0);
     
     // Calculate CMB and CMD
-      const cmb = baseBAB + strMod + (bonusDetails.cmb?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
+    const cmb = baseBAB + strMod + (bonusDetails.cmb?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
 
-      // Calculate dodge bonuses to CMD - track sources to avoid double-counting
-      let dodgeBonusToCmd = 0;
-      const dodgeSources = new Set(); // Track sources of dodge bonuses to avoid duplication
+    // Calculate dodge bonuses to CMD - track sources to avoid double-counting
+    let dodgeBonusToCmd = 0;
+    const dodgeSources = new Set(); // Track sources of dodge bonuses to avoid duplication
 
-      // Check for active abilities that provide dodge bonuses
-      for (const ability of processedAbilities) {
-        if (ability.isActive) {
-          // Only count if we haven't already counted a bonus from this source
-          const sourceName = ability.name;
-          if (!dodgeSources.has(sourceName)) {
-            // Combat Expertise provides dodge bonus to AC equal to the penalty to attack
-            if (ability.name === 'Combat Expertise' && ability.effects.ac > 0) {
-              dodgeBonusToCmd += ability.effects.ac;
-              dodgeSources.add(sourceName);
-              console.log(`Adding dodge bonus from ${sourceName}: +${ability.effects.ac} to CMD`);
-            }
-            // Fighting Defensively provides dodge bonus to AC
-            else if (ability.name === 'Fighting Defensively' && ability.effects.ac > 0) {
-              dodgeBonusToCmd += ability.effects.ac;
-              dodgeSources.add(sourceName);
-              console.log(`Adding dodge bonus from ${sourceName}: +${ability.effects.ac} to CMD`);
-            }
+    // Check for active abilities that provide dodge bonuses
+    for (const ability of processedAbilities) {
+      if (ability.isActive) {
+        // Only count if we haven't already counted a bonus from this source
+        const sourceName = ability.name;
+        if (!dodgeSources.has(sourceName)) {
+          // Combat Expertise provides dodge bonus to AC equal to the penalty to attack
+          if (ability.name === 'Combat Expertise' && ability.effects.ac > 0) {
+            dodgeBonusToCmd += ability.effects.ac;
+            dodgeSources.add(sourceName);
+            console.log(`Adding dodge bonus from ${sourceName}: +${ability.effects.ac} to CMD`);
+          }
+          // Fighting Defensively provides dodge bonus to AC
+          else if (ability.name === 'Fighting Defensively' && ability.effects.ac > 0) {
+            dodgeBonusToCmd += ability.effects.ac;
+            dodgeSources.add(sourceName);
+            console.log(`Adding dodge bonus from ${sourceName}: +${ability.effects.ac} to CMD`);
           }
         }
       }
+    }
 
-      // Add dodge bonuses from other sources (items, buffs, etc.)
-      // First collect all non-ability dodge bonuses to avoid double-counting
-      const dodgeBonusesFromOtherSources = [];
-      bonusDetails.ac?.forEach(bonus => {
-        if (bonus.type === 'dodge') {
-          const sourceName = bonus.name;
-          if (!dodgeSources.has(sourceName)) {
-            dodgeBonusesFromOtherSources.push({
-              source: sourceName,
-              value: bonus.value
-            });
-            dodgeSources.add(sourceName);
-          }
+    // Add dodge bonuses from other sources (items, buffs, etc.)
+    // First collect all non-ability dodge bonuses to avoid double-counting
+    const dodgeBonusesFromOtherSources = [];
+    bonusDetails.ac?.forEach(bonus => {
+      if (bonus.type === 'dodge') {
+        const sourceName = bonus.name;
+        if (!dodgeSources.has(sourceName)) {
+          dodgeBonusesFromOtherSources.push({
+            source: sourceName,
+            value: bonus.value
+          });
+          dodgeSources.add(sourceName);
         }
-      });
+      }
+    });
 
-      // Now add the unique dodge bonuses 
-      const otherDodgeBonuses = dodgeBonusesFromOtherSources.reduce((sum, bonus) => {
-        console.log(`Adding dodge bonus from ${bonus.source}: +${bonus.value} to CMD`);
-        return sum + bonus.value;
-      }, 0);
-      dodgeBonusToCmd += otherDodgeBonuses;
+    // Now add the unique dodge bonuses 
+    const otherDodgeBonuses = dodgeBonusesFromOtherSources.reduce((sum, bonus) => {
+      console.log(`Adding dodge bonus from ${bonus.source}: +${bonus.value} to CMD`);
+      return sum + bonus.value;
+    }, 0);
+    dodgeBonusToCmd += otherDodgeBonuses;
 
-      // Calculate CMD with dodge bonuses
-      const cmd = 10 + baseBAB + strMod + dexMod + dodgeBonusToCmd + (bonusDetails.cmd?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
+    // Calculate CMD with dodge bonuses
+    const cmd = 10 + baseBAB + strMod + dexMod + dodgeBonusToCmd + (bonusDetails.cmd?.reduce((sum, bonus) => sum + bonus.value, 0) || 0);
 
-      console.log(`Total dodge bonus to CMD: +${dodgeBonusToCmd}`);
+    console.log(`Total dodge bonus to CMD: +${dodgeBonusToCmd}`);
     
     // Calculate saving throws
     const baseFort = character?.baseFortitude || 0;
@@ -306,6 +318,9 @@ const Playsheet = ({
     setDamageModifier(primaryDamageMod);
     setOffhandDamageModifier(totalOffhandDamageMod);
     
+    // Update the current damage modifier for the dice roller
+    setCurrentDamageModifier(primaryDamageMod);
+    
     // Update attacks array based on BAB and haste
     updateAttackModifiers(baseBAB, totalAttackBonus, hasHaste);
     
@@ -317,30 +332,6 @@ const Playsheet = ({
   }, [stats, buffs, gear, combatAbilities, character, hasHaste, twoWeaponFighting,
     attackAbilityMod, damageAbilityMod, offhandAttackAbilityMod, offhandDamageAbilityMod,
     primaryWeapon, offhandWeapon]);
-  
-  // Function to update attack modifiers when BAB or haste changes
-  const updateAttackModifiers = (baseBAB, totalAttackBonus, hasHaste) => {
-    const attacks = [];
-    
-    // Add first attack at full BAB
-    attacks.push(totalAttackBonus);
-    
-    // Add iterative attacks (-5 per attack, minimum of +1)
-    let remainingBAB = baseBAB;
-    while (remainingBAB >= 6) { // At 6+ BAB, gain an additional attack
-      remainingBAB -= 5;
-      const attackMod = totalAttackBonus - (baseBAB - remainingBAB);
-      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
-    }
-    
-    // Add haste attack if applicable
-    if (hasHaste) {
-      attacks.push(totalAttackBonus); // Haste gives one extra attack at full BAB
-    }
-    
-    setAttacksCount(attacks.length);
-    setAttackModifiers(attacks);
-  };
   
   // Function to update offhand attack modifiers
   const updateOffhandAttackModifiers = (baseBAB, totalAttackBonus) => {
@@ -582,9 +573,12 @@ const Playsheet = ({
           effects: updatedEffects
         };
       }
+      
+      // Return unchanged for all other abilities
       return ability;
     });
     
+    // Apply the changes
     onCombatAbilitiesChange(updatedAbilities);
   };
   
@@ -593,86 +587,77 @@ const Playsheet = ({
     return value >= 0 ? `+${value}` : value;
   };
   
-  // Add a dice group
-const addDiceGroup = () => {
-  setDiceGroups([
-    ...diceGroups,
-    { id: Date.now(), count: 1, type: 6 }
-  ]);
-};
-
-// Remove a dice group
-const removeDiceGroup = (id) => {
-  if (diceGroups.length > 1) {
-    setDiceGroups(diceGroups.filter(group => group.id !== id));
-  }
-};
-
-// Update a dice group
-const updateDiceGroup = (id, field, value) => {
-  setDiceGroups(diceGroups.map(group => {
-    if (group.id === id) {
-      return {
-        ...group,
-        [field]: field === 'count' ? Math.max(1, parseInt(value) || 1) : parseInt(value)
-      };
-    }
-    return group;
-  }));
-};
-  // Calculate average result for dice
-  // Calculate average result for multiple dice groups
-const calculateAverageDice = () => {
-  let total = 0;
-  diceGroups.forEach(group => {
-    // Average of a die is (min + max) / 2
-    const averagePerDie = (1 + parseInt(group.type)) / 2;
-    total += group.count * averagePerDie;
-  });
-  return total + damageModifier;
-};
-
-// Roll multiple dice groups and get random result
-const rollDice = () => {
-  let total = 0;
-  const groupRolls = [];
-  
-  diceGroups.forEach(group => {
-    const rolls = [];
-    for (let i = 0; i < group.count; i++) {
-      const roll = Math.floor(Math.random() * group.type) + 1;
-      total += roll;
-      rolls.push(roll);
-    }
-    groupRolls.push({
-      formula: `${group.count}d${group.type}`,
-      rolls
-    });
-  });
-  
-  // Add damage modifier to the total
-  total += damageModifier;
-  
-  // Return both the total and rolls by dice group
-  return { total, groupRolls };
-};
-
-  // Handle button click to roll dice
-  // Handle button click to roll dice
-  const handleRollDice = () => {
-    const result = rollDice();
-    setDiceResult(result);
-    setShowAverage(false);
+  // Handler for selecting which weapon's damage modifier to use in the dice roller
+  const handleSelectWeaponDamage = (isOffhand) => {
+    setCurrentDamageModifier(isOffhand ? offhandDamageModifier : damageModifier);
   };
 
-  // Handle button click to show average
-  const handleShowAverage = () => {
-    setDiceResult(null);
-    setShowAverage(true);
+  const AttackRow = ({ attackName, attackValue }) => {
+    // Determine if this is a haste attack
+    const isHasteAttack = attackName === 'Haste Attack';
+    
+    return (
+      <div className={`attack-row ${isHasteAttack ? 'haste-attack' : ''}`}>
+        <span className="attack-name">{attackName}</span>
+        <span className="attack-value">{attackValue}</span>
+      </div>
+    );
+  };
+
+  const updateAttackModifiers = (baseBAB, totalAttackBonus, hasHaste) => {
+    const attacks = [];
+    
+    // Add first attack at full BAB
+    attacks.push(totalAttackBonus);
+    
+    // In Pathfinder, a character gets iterative attacks at BAB +6, +11, and +16
+    // Maximum is 4 iterative attacks (at BAB +16 or higher)
+    let iterativeAttacks = 0;
+    let remainingBAB = baseBAB;
+    
+    // First iterative at BAB +6
+    if (remainingBAB >= 6) {
+      remainingBAB -= 5;
+      const attackMod = totalAttackBonus - 5;
+      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
+      iterativeAttacks++;
+    }
+    
+    // Second iterative at BAB +11
+    if (remainingBAB >= 5) {
+      remainingBAB -= 5;
+      const attackMod = totalAttackBonus - 10;
+      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
+      iterativeAttacks++;
+    }
+    
+    // Third iterative at BAB +16
+    if (remainingBAB >= 5) {
+      remainingBAB -= 5;
+      const attackMod = totalAttackBonus - 15;
+      attacks.push(Math.max(attackMod, totalAttackBonus - baseBAB + 1));
+      iterativeAttacks++;
+    }
+    
+    // Add haste attack if applicable - insert after primary attack
+    if (hasHaste) {
+      // Insert haste attack as the second attack in the array
+      attacks.splice(1, 0, totalAttackBonus);
+    }
+    
+    setAttacksCount(attacks.length);
+    setAttackModifiers(attacks);
   };
 
   return (
-    <div className="playsheet">
+    <div className="playsheet" style={{
+      display: 'grid',
+      gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
+      gap: '20px',
+      width: '100%',
+      overflow: 'hidden',
+      paddingBottom: isMobile ? '50px' : '0'
+    }}>
       {/* Left Column: Combat Stats */}
       <div className="playsheet-left-column">
         <div className="playsheet-section attacks">
@@ -699,16 +684,37 @@ const rollDice = () => {
           
           {/* Primary Attacks Display */}
           <div className="attack-list">
-            {attackModifiers.map((mod, index) => (
-              <div key={index} className="attack-row">
-                <span className="attack-name">
-                  {index === 0 ? 'Primary Attack' : 
-                   (hasHaste && index === attackModifiers.length - 1) ? 'Haste Attack' : 
-                   `Iterative Attack ${index}`}
-                </span>
-                <span className="attack-value">{formatModifier(mod)}</span>
-              </div>
-            ))}
+          {attackModifiers.map((mod, index) => {
+            // Determine attack name based on position and haste
+            let attackName;
+            if (index === 0) {
+              attackName = 'First Attack';
+            } else if (hasHaste && index === 1) {
+              attackName = 'Haste Attack';
+            } else {
+              // Calculate the attack number, accounting for haste
+              const attackNumber = hasHaste ? index : index + 1;
+              
+              // Use ordinal names instead of "Iterative Attack X"
+              if (attackNumber === 2) {
+                attackName = 'Second Attack';
+              } else if (attackNumber === 3) {
+                attackName = 'Third Attack';
+              } else if (attackNumber === 4) {
+                attackName = 'Fourth Attack';
+              } else {
+                attackName = 'Fifth Attack';
+              }
+            }
+            
+            return (
+              <AttackRow 
+                key={index} 
+                attackName={attackName} 
+                attackValue={formatModifier(mod)} 
+              />
+            );
+          })}
           </div>
           
           <div className="damage-mod">
@@ -786,10 +792,12 @@ const rollDice = () => {
       </div>
       
       {/* Right Column: Weapon Configuration and Dice Roller */}
-      <div className="playsheet-right-column">
+      <div className="playsheet-right-column" style={{
+        width: '100%',
+        overflow: 'hidden'
+      }}>
         <div className="playsheet-section weapon-settings">
           <h3>Weapon Configuration</h3>
-          
           {/* Primary Weapon Settings */}
           <div className="primary-weapon">
             <h4>Primary Weapon</h4>
@@ -956,127 +964,40 @@ const rollDice = () => {
         </div>
         
         {/* Dice Roller Section */}
-        <div className="playsheet-section dice-roller">
+        <div className="playsheet-section dice-roller" style={{
+          width: '100%',
+          boxSizing: 'border-box'
+        }}>
           <h3>Dice Roller</h3>
           
-          <div className="dice-form">
-            {diceGroups.map((group, index) => (
-              <div key={group.id} className="dice-group">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Number of Dice</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="20"
-                      value={group.count}
-                      onChange={(e) => updateDiceGroup(group.id, 'count', e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label>Dice Type</label>
-                    <select
-                      value={group.type}
-                      onChange={(e) => updateDiceGroup(group.id, 'type', e.target.value)}
-                      className="form-control"
-                    >
-                      <option value="4">d4</option>
-                      <option value="6">d6</option>
-                      <option value="8">d8</option>
-                      <option value="10">d10</option>
-                      <option value="12">d12</option>
-                      <option value="20">d20</option>
-                      <option value="100">d100</option>
-                    </select>
-                  </div>
-                  
-                  <div className="dice-group-actions">
-                    {diceGroups.length > 1 && (
-                      <button 
-                        type="button" 
-                        onClick={() => removeDiceGroup(group.id)}
-                        className="remove-dice-btn"
-                        aria-label="Remove dice group"
-                      >
-                        −
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-            
-            <button 
-              type="button"
-              onClick={addDiceGroup}
-              className="add-dice-btn"
-            >
-              + Add Dice
-            </button>
-            
-            <div className="dice-display">
-              <div className="dice-formula">
-                {diceGroups.map((group, index) => (
-                  <span key={group.id}>
-                    {index > 0 && ' + '}
-                    {group.count}d{group.type}
-                  </span>
-                ))} 
-                {damageModifier !== 0 && (
-                  <span>{damageModifier > 0 ? ' + ' : ' - '}{Math.abs(damageModifier)}</span>
-                )}
-              </div>
-              
-              {showAverage && (
-                <div className="dice-result">
-                  <span className="result-label">Average:</span>
-                  <span className="result-value">{calculateAverageDice().toFixed(1)}</span>
-                </div>
-              )}
-              
-              {diceResult && !showAverage && (
-                <div className="dice-result">
-                  <span className="result-label">Roll Result:</span>
-                  <span className="result-value">{diceResult.total}</span>
-                  <div className="individual-rolls">
-                    {diceResult.groupRolls.map((group, groupIndex) => (
-                      <div key={groupIndex} className="dice-group-result">
-                        <span className="dice-group-formula">{group.formula}:</span> 
-                        <span className="dice-group-values">{group.rolls.join(', ')}</span>
-                      </div>
-                    ))}
-                    {damageModifier !== 0 && (
-                      <div className="damage-modifier-result">
-                        <span>Damage Modifier: {damageModifier > 0 ? '+' : ''}{damageModifier}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            <div className="dice-actions">
+          {/* Weapon selector for dice roller */}
+          {twoWeaponFighting && (
+            <div className="damage-modifier-select">
               <button 
-                onClick={handleRollDice} 
-                className="roll-button"
+                className={`weapon-selector ${currentDamageModifier === damageModifier ? 'active' : ''}`}
+                onClick={() => handleSelectWeaponDamage(false)}
               >
-                Roll Dice
+                {primaryWeapon.name} Damage
               </button>
-              
               <button 
-                onClick={handleShowAverage} 
-                className="average-button"
+                className={`weapon-selector ${currentDamageModifier === offhandDamageModifier ? 'active' : ''}`}
+                onClick={() => handleSelectWeaponDamage(true)}
               >
-                Show Average
+                {offhandWeapon.name} Damage
               </button>
             </div>
-          </div>
+          )}
+          
+          {/* Animated Dice Roller Component */}
+          <AnimatedDiceRoller damageModifier={currentDamageModifier} />
         </div>
       </div>
       {/* Combat Abilities - Full Width */}
-      <div className="playsheet-section abilities">
+      <div className="playsheet-section abilities" style={{
+        gridColumn: '1 / -1',
+        width: '100%',
+        overflow: 'hidden'
+      }}>
         <h3>Combat Abilities</h3>
         {combatAbilities.length === 0 ? (
           <p>No combat abilities defined. Add abilities in the Combat Abilities tab.</p>

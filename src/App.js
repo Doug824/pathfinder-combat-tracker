@@ -1,16 +1,21 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import './App.css';
-import CharacterManager from './components/CharacterManager';
+import CharacterManager from './components/CharacterManagement/CharacterManager';
 import CharacterSetup from './pages/CharacterSetup';
 import CombatTracker from './pages/CombatTracker';
-import Navigation from './components/Navigation';
-import ThemeToggle from './components/ThemeToggle';
+import Navigation from './components/layout/Navigation';
+import ThemeToggle from './components/common/ThemeToggle';
 import LoginPage from './pages/LoginPage';
+
+// Hook imports
 import useCharacterStorage from './hooks/useCharacterStorage';
 import useAuth from './hooks/useAuth';
+
+// Asset imports
 import logoIcon from './assets/HerosLedgerLogo.png';
-import './components/enhanced-ui.css';
-import './components/mobile-responsive.css';
+
+// CSS imports
+import './styles/index.css';
+import './styles/fantasy-styles.css';
 
 
 function App() {
@@ -24,6 +29,9 @@ function App() {
     isAuthenticated
   } = useAuth();
   
+  // State for tracking screen size
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   // Character storage (now depends on the user)
   const {
     characters,
@@ -79,6 +87,21 @@ function App() {
     setCurrentPage(pageName);
   }, []);
   
+  // Effect to add window resize listener to update the mobile state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   // Effect to handle auto-navigation to setup
   useEffect(() => {
     // Only auto-navigate if:
@@ -247,23 +270,54 @@ function App() {
       </div>
     );
   }
-  
+
   // Main app when authenticated
   return (
     <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <header className="App-header">
-        <div className="app-title">
+      <header className="App-header" style={{
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        alignItems: isMobile ? 'center' : 'center',
+        padding: '15px 20px',
+        gap: isMobile ? '15px' : '0'
+      }}>
+        <div className="app-title" style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          width: isMobile ? '100%' : 'auto',
+          justifyContent: isMobile ? 'center' : 'flex-start'
+        }}>
           <img src={logoIcon} alt="Hero's Ledger Logo" className="app-logo" />
-          <h1>Hero's Ledger</h1>
-          <p className="app-tagline">Because tracking stats shouldn't be a quest of its own</p>
+          <div>
+            <h1 style={{ margin: 0 }}>Hero's Ledger</h1>
+            <p className="app-tagline" style={{ margin: 0 }}>
+              Because tracking stats shouldn't be a quest of its own
+            </p>
+          </div>
         </div>
-        <div className="header-controls">
+        
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'center' : 'center',
+          gap: '15px',
+          width: isMobile ? '100%' : 'auto'
+        }}>
           <Navigation 
             currentPage={currentPage} 
             setCurrentPage={handlePageChange} 
             activeCharacter={activeCharacter}
+            isMobile={isMobile} // Pass this prop to Navigation
           />
-          <div className="user-section">
+          <div className="user-section" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            width: isMobile ? '100%' : 'auto',
+            justifyContent: isMobile ? 'center' : 'flex-end'
+          }}>
             <div className="user-info">
               <span className="username">{user.username}</span>
               <button onClick={handleLogout} className="logout-button">

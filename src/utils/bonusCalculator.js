@@ -23,7 +23,7 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
     'strength', 'dexterity', 'constitution', 
     'intelligence', 'wisdom', 'charisma',
     'attackBonus', 'ac', 'fortitude', 'reflex', 'will',
-    'cmb', 'cmd', 'damage'
+    'cmb', 'cmd', 'damage', 'naturalArmor'  // Add naturalArmor to the list
   ];
   
   // Initialize tracking for each stat
@@ -34,7 +34,8 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
     if (calculatedStats[stat] === undefined) {
       if (stat === 'attackBonus' || stat === 'ac' || 
           stat === 'fortitude' || stat === 'reflex' || stat === 'will' ||
-          stat === 'cmb' || stat === 'cmd' || stat === 'damage') {
+          stat === 'cmb' || stat === 'cmd' || stat === 'damage' ||
+          stat === 'naturalArmor') {  // Initialize naturalArmor
         calculatedStats[stat] = 0; 
       } else {
         calculatedStats[stat] = 10; // Default for ability scores
@@ -154,8 +155,32 @@ export const calculateDerivedStats = (finalStats, character = {}) => {
     ac += finalStats.ac;
   }
   
+  // Add natural armor bonus
+  if (finalStats.naturalArmor) {
+    ac += finalStats.naturalArmor;
+  }
+  
+  // Calculate touch AC - does not include natural armor bonus
+  let touchAC = 10 + getModifier(finalStats.dexterity || 10);
+  
+  // Calculate flat-footed AC - includes natural armor but not dex
+  let flatFootedAC = 10;
+  
+  // Add any direct AC bonuses
+  if (finalStats.ac) {
+    touchAC += finalStats.ac;
+    flatFootedAC += finalStats.ac;
+  }
+  
+  // Only add natural armor to flat-footed AC, not touch AC
+  if (finalStats.naturalArmor) {
+    flatFootedAC += finalStats.naturalArmor;
+  }
+  
   return {
     ac: ac,
+    touchAC: touchAC,
+    flatFootedAC: flatFootedAC,
     fortitudeSave: baseFortitude + getModifier(finalStats.constitution || 10) + (finalStats.fortitude || 0),
     reflexSave: baseReflex + getModifier(finalStats.dexterity || 10) + (finalStats.reflex || 0),
     willSave: baseWill + getModifier(finalStats.wisdom || 10) + (finalStats.will || 0),
