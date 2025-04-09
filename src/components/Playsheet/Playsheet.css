@@ -439,3 +439,85 @@
     margin-bottom: 60px;
   }
 }
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Switch to flex layout for better mobile experience */
+  .playsheet {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px;
+    overflow: visible !important; /* Force visible overflow */
+    width: 100% !important; /* Ensure full width */
+    padding-bottom: 120px !important; /* Add extra bottom padding */
+  }
+  
+  /* Make sure sections don't get cut off */
+  .playsheet-section {
+    width: 100% !important; /* Ensure full width */
+    box-sizing: border-box !important;
+    overflow: visible !important; /* Prevent content hiding */
+    max-width: 100%; /* Prevent horizontal overflow */
+  }
+  
+  /* Ensure the right column doesn't have hidden overflow */
+  .playsheet-right-column {
+    width: 100% !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Make sure dice roller doesn't have restricted width */
+  .playsheet-section.dice-roller {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+  
+  /* Ensure abilities section has plenty of space */
+  .playsheet-section.abilities {
+    width: 100% !important;
+    overflow: visible !important;
+    margin-bottom: 120px !important; /* Add extra space at the bottom */
+    padding-bottom: 50px !important;
+  }
+  
+  /* Make ability toggle rows more accessible */
+  .ability-toggle-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 15px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  /* Full width toggles */
+  .ability-toggle {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+  }
+  
+  /* Position toggle switches properly */
+  .toggle-switch {
+    align-self: flex-end !important;
+    margin-top: 10px !important;
+  }
+  
+  /* Make variable input area easier to tap */
+  .ability-variable-input {
+    width: 100% !important;
+    padding: 10px !important;
+    margin: 10px 0 !important;
+  }
+  
+  /* Ensure better spacing for active effects */
+  .ability-active-effects {
+    width: 100% !important;
+    margin: 10px 0 !important;
+  }
+  
+  /* Fix for haste attack special styling */
+  .attack-row.haste-attack {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+}
