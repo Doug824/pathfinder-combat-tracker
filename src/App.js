@@ -98,24 +98,26 @@ function App() {
     // Add event listener
     window.addEventListener('resize', handleResize);
     
-    // Fix iOS Safari scrolling issues
-    document.documentElement.style.height = 'initial';
-    document.documentElement.style.position = 'relative';
-    document.documentElement.style.overflowX = 'hidden';
-    document.documentElement.style.overflowY = 'auto';
-    document.documentElement.style.WebkitOverflowScrolling = 'touch';
-    
-    document.body.style.height = 'initial';
-    document.body.style.position = 'relative';
-    document.body.style.overflowX = 'hidden';
-    document.body.style.overflowY = 'visible';
-    document.body.style.WebkitOverflowScrolling = 'touch';
+    // Improved iOS Safari scrolling fixes - simplified approach
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      // Remove fixed positioning that might interfere with scrolling
+      document.documentElement.style.position = 'static';
+      document.body.style.position = 'static';
+      
+      // Enable scrolling
+      document.documentElement.style.overflow = 'auto';
+      document.body.style.overflow = 'auto';
+      
+      // Ensure content takes full width and proper scrolling behavior
+      document.documentElement.style.width = '100%';
+      document.documentElement.style.WebkitOverflowScrolling = 'touch';
+      document.body.style.width = '100%';
+      document.body.style.WebkitOverflowScrolling = 'touch';
+    }
     
     // Clean up
     return () => {
       window.removeEventListener('resize', handleResize);
-      document.documentElement.style = '';
-      document.body.style = '';
     };  
   }, []);
 
@@ -306,7 +308,8 @@ function App() {
         justifyContent: 'space-between',
         alignItems: isMobile ? 'center' : 'center',
         padding: '15px 20px',
-        gap: isMobile ? '15px' : '0'
+        gap: isMobile ? '15px' : '0',
+        width: '100%' // Ensure header takes full width
       }}>
         <div className="app-title" style={{
           display: 'flex',
@@ -355,7 +358,13 @@ function App() {
         </div>
       </header>
       
-      <main className="app-content">
+      <main className="app-content" style={{
+        paddingBottom: isMobile ? '120px' : '60px', // Extra padding on mobile
+        position: 'relative',
+        width: '100%',
+        overflowX: 'hidden',
+        overflowY: 'visible'
+      }}>
         {activeCharacter && currentPage !== 'manager' && (
           <div className="active-character-info">
             <h2>
