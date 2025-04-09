@@ -23,6 +23,43 @@ const CombatTracker = ({
   // State for tracking active tabs
   const [activeTab, setActiveTab] = useState('playsheet');
   
+   // Check if we're on mobile
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    
+    // Add resize listener for mobile detection
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
+      };
+      
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+    
+    // Force layout recalculation when tab changes on mobile
+    useEffect(() => {
+      if (isMobile) {
+        // Small delay to ensure DOM has updated
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 10);
+      }
+    }, [activeTab, isMobile]);
+    
+    // Apply iOS-specific fixes when needed
+    useEffect(() => {
+      if (isMobile && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        // Fix for iOS container issues
+        const tabContent = document.querySelector('.tab-content');
+        if (tabContent) {
+          tabContent.style.overflow = 'visible';
+          tabContent.style.height = 'auto';
+          tabContent.style.maxHeight = 'none';
+          tabContent.style.paddingBottom = '150px';
+        }
+      }
+    }, [activeTab, isMobile]);
+    
   // State to store calculated final stats (including all buffs, abilities, etc.)
   const [finalStats, setFinalStats] = useState(stats);
   
@@ -117,21 +154,39 @@ const CombatTracker = ({
   };
 
   return (
-    <div className="combat-tracker">
-      <div className="tabs-container">
+    <div className="combat-tracker" style={{
+      overflow: 'visible', // Ensure content is not cut off
+      position: 'relative', // Allow normal document flow
+      width: '100%', // Take full width
+      height: 'auto', // Let height adjust to content
+      paddingBottom: isMobile ? '150px' : '0' // Add extra space on mobile
+    }}>
+      <div className="tabs-container" style={{
+        overflow: 'visible', // Ensure content is not cut off
+        position: 'relative', // Allow normal document flow
+        height: 'auto' // Let height adjust to content
+      }}>
         <div className="tabs">
           {tabs.map(tab => (
             <button
               key={tab.id}
               className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
               onClick={() => setActiveTab(tab.id)}
+              style={{
+                minHeight: isMobile ? '50px' : 'auto' // Taller on mobile for better touch
+              }}
             >
               {tab.label}
             </button>
           ))}
         </div>
         
-        <div className="tab-content">
+        <div className="tab-content" style={{
+          overflow: 'visible', // Ensure content is not cut off
+          position: 'relative', // Allow normal document flow
+          height: 'auto', // Let height adjust to content
+          paddingBottom: isMobile ? '150px' : '20px' // Add extra space on mobile
+        }}>
         {activeTab === 'playsheet' && (
           <Playsheet
             character={character}
