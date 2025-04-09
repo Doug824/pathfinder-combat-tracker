@@ -16,6 +16,7 @@ import logoIcon from './assets/HerosLedgerLogo.png';
 // CSS imports
 import './styles/index.css';
 import './styles/fantasy-styles.css';
+import './styles/mobile-fixes.css';
 
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
   // State for tracking screen size
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Character storage (now depends on the user)
+  // Character storage ( depends on the user)
   const {
     characters,
     activeCharacterId,

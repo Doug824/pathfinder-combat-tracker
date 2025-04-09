@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { calculateFinalStats } from '../../utils/bonusCalculator';
 import { getSizeACModifier, getSizeModifier } from '../../utils/sizeUtils';
 import AnimatedDiceRoller from '../dice/AnimatedDiceRoller';
@@ -117,13 +117,24 @@ const Playsheet = ({
   }, []);
 
   useEffect(() => {
-    // Fix for iOS Safari scroll issues
-    document.body.style.overflow = 'auto';
+    // Ensure scrolling works on all browsers but especially iOS Safari
+    document.documentElement.style.height = 'initial';
+    document.documentElement.style.position = 'relative';
+    document.documentElement.style.overflowX = 'hidden';
+    document.documentElement.style.overflowY = 'auto';
+    document.documentElement.style.WebkitOverflowScrolling = 'touch';
+    
+    // Fix body element
+    document.body.style.height = 'initial';
+    document.body.style.position = 'relative';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'visible';
     document.body.style.WebkitOverflowScrolling = 'touch';
-    document.body.style.height = 'auto';
     
     return () => {
-      document.body.style = ''; // Reset on unmount
+      // Reset styles when component unmounts
+      document.documentElement.style = '';
+      document.body.style = '';
     };
   }, []);
   
@@ -250,11 +261,10 @@ const Playsheet = ({
 
     // Calculate raw offhand attack bonus (before negative level penalties)
     const rawOffhandAttackBonus = baseBAB + selectedOffhandAttackMod + attackBonuses + offhandWeapon.attackBonus + twfPenalty + sizeAttackModifier;
-    const offhandAbilityDamageMod = twoWeaponFighting ? Math.floor(selectedOffhandDamageMod / 2) : selectedOffhandDamageMod;
 
     // Calculate offhand weapon damage modifier with multiplier
-    const rawOffhandDamageMod = selectedOffhandDamageMod * offhandModMultiplier;
-    const totalOffhandDamageMod = Math.floor(rawOffhandDamageMod) + damageBonuses + offhandWeapon.damageBonus;
+    const offhandAbilityDamageMod = twoWeaponFighting ? Math.floor(selectedOffhandDamageMod / 2) : selectedOffhandDamageMod;
+    const totalOffhandDamageMod = offhandAbilityDamageMod + damageBonuses + offhandWeapon.damageBonus;
     
     // Calculate AC values
     const baseAC = 10;
@@ -489,7 +499,7 @@ const Playsheet = ({
   // Handle offhand attacks count change
   const handleOffhandAttacksCountChange = (value) => {
     const count = parseInt(value) || 1;
-    const newCount = Math.max(1, Math.min(count, 3)); // Limit to 1-3 attacks
+    const newCount = Math.max(1, Math.min(count, 4)); // Limit to 1-4 attacks
     setOffhandAttacksCount(newCount);
     
     // Save combat settings if character exists
@@ -717,15 +727,7 @@ const Playsheet = ({
   };
 
   return (
-    <div className="playsheet" style={{
-      display: 'grid',
-      gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
-      gap: '20px',
-      width: '100%',
-      overflow: 'hidden',
-      paddingBottom: isMobile ? '50px' : '0'
-    }}>
-      
+    <div className="playsheet">
       {/* Left Column: Combat Stats */}
       <div className="playsheet-left-column">
         <div className="playsheet-section attacks">
@@ -737,7 +739,7 @@ const Playsheet = ({
                 checked={hasHaste}
                 onChange={() => setHasHaste(!hasHaste)}
               />
-              Haste (Extra Attack)
+              <span>Haste (Extra Attack)</span>
             </label>
             
             <label className="twf-toggle">
@@ -746,7 +748,7 @@ const Playsheet = ({
                 checked={twoWeaponFighting}
                 onChange={handleTwoWeaponFightingToggle}
               />
-              Two-Weapon Fighting (-2 penalty)
+              <span>Two-Weapon Fighting</span>
             </label>
           </div>
           
@@ -802,7 +804,7 @@ const Playsheet = ({
                       <div className="attack-value-container">
                         <span className="attack-value">{formatModifier(mod)}</span>
                         {character?.hitPoints?.negLevels > 0 && (
-                          <span className="negative-level-indicator">*</span>
+                          <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
                         )}
                       </div>
                     </div>
@@ -822,21 +824,7 @@ const Playsheet = ({
             {hasHaste && <span> (includes Haste)</span>}
           </div>
         </div>
-        {/* Hit Points Section */}
-        <HitPointTracker
-          character={character}
-          finalStats={finalStats}
-          onHitPointChange={onUpdateHitPoints || (() => console.warn("No hit point update function provided"))}
-          className="playsheet-hp-tracker mini-hp-tracker"
-        />
-
-        {character?.hitPoints?.negLevels > 0 && (
-          <div className="negative-levels-indicator">
-            <div className="negative-levels-warning">
-              <span>{character.hitPoints.negLevels} Negative Level{character.hitPoints.negLevels > 1 ? 's' : ''} (-{character.hitPoints.negLevels} to attacks, saves, and maneuvers)</span>
-            </div>
-          </div>
-        )}
+        
         <div className="playsheet-section defenses">
           <h3>Armor Class</h3>
           <div className="defense-row">
@@ -853,7 +841,12 @@ const Playsheet = ({
           </div>
           <div className="defense-row">
             <span className="defense-name">Combat Maneuver Bonus:</span>
-            <span className="defense-value">{formatModifier(combatStats.cmb)}</span>
+            <div className="attack-value-container">
+              <span className="defense-value">{formatModifier(combatStats.cmb)}</span>
+              {character?.hitPoints?.negLevels > 0 && (
+                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
+              )}
+            </div>
           </div>
           <div className="defense-row">
             <span className="defense-name">Combat Maneuver Defense:</span>
@@ -868,7 +861,7 @@ const Playsheet = ({
             <div className="attack-value-container">
               <span className="save-value">{formatModifier(combatStats.fort)}</span>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-indicator">*</span>
+                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
               )}
             </div>
           </div>
@@ -877,7 +870,7 @@ const Playsheet = ({
             <div className="attack-value-container">
               <span className="save-value">{formatModifier(combatStats.ref)}</span>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-indicator">*</span>
+                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
               )}
             </div>
           </div>
@@ -886,7 +879,7 @@ const Playsheet = ({
             <div className="attack-value-container">
               <span className="save-value">{formatModifier(combatStats.will)}</span>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-indicator">*</span>
+                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
               )}
             </div>
           </div>
@@ -894,10 +887,7 @@ const Playsheet = ({
       </div>
       
       {/* Right Column: Weapon Configuration and Dice Roller */}
-      <div className="playsheet-right-column" style={{
-        width: '100%',
-        overflow: 'hidden'
-      }}>
+      <div className="playsheet-right-column">
         <div className="playsheet-section weapon-settings">
           <h3>Weapon Configuration</h3>
           {/* Primary Weapon Settings */}
@@ -906,36 +896,22 @@ const Playsheet = ({
             <div className="weapon-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label>Weapon Name</label>
+                  <label htmlFor="primaryWeaponName">Weapon Name</label>
                   <input
+                    id="primaryWeaponName"
                     type="text"
                     value={primaryWeapon.name}
                     onChange={(e) => handleWeaponChange(false, 'name', e.target.value)}
                     className="form-control"
                   />
                 </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Ability Damage Multiplier</label>
-                    <select
-                      value={primaryModMultiplier}
-                      onChange={(e) => handleWeaponChange(false, 'modMultiplier', e.target.value)}
-                      className="form-control"
-                    >
-                      <option value="0">No Modifier</option>
-                      <option value="0.5">Half (0.5×)</option>
-                      <option value="1">Normal (1×)</option>
-                      <option value="1.5">One and a Half (1.5×)</option>
-                      <option value="2">Double (2×)</option>
-                    </select>
-                  </div>
-                </div>
               </div>
               
               <div className="form-row">
                 <div className="form-group">
-                  <label>Attack Bonus</label>
+                  <label htmlFor="primaryAttackBonus">Attack Bonus</label>
                   <input
+                    id="primaryAttackBonus"
                     type="number"
                     value={primaryWeapon.attackBonus}
                     onChange={(e) => handleWeaponChange(false, 'attackBonus', e.target.value)}
@@ -944,8 +920,9 @@ const Playsheet = ({
                 </div>
                 
                 <div className="form-group">
-                  <label>Damage Bonus</label>
+                  <label htmlFor="primaryDamageBonus">Damage Bonus</label>
                   <input
+                    id="primaryDamageBonus"
                     type="number"
                     value={primaryWeapon.damageBonus}
                     onChange={(e) => handleWeaponChange(false, 'damageBonus', e.target.value)}
@@ -956,8 +933,9 @@ const Playsheet = ({
               
               <div className="form-row">
                 <div className="form-group">
-                  <label>Attack Ability</label>
+                  <label htmlFor="attackAbilityMod">Attack Ability</label>
                   <select
+                    id="attackAbilityMod"
                     value={attackAbilityMod}
                     onChange={(e) => handleAbilityModChange('attack', e.target.value)}
                     className="form-control"
@@ -972,8 +950,9 @@ const Playsheet = ({
                 </div>
                 
                 <div className="form-group">
-                  <label>Damage Ability</label>
+                  <label htmlFor="damageAbilityMod">Damage Ability</label>
                   <select
+                    id="damageAbilityMod"
                     value={damageAbilityMod}
                     onChange={(e) => handleAbilityModChange('damage', e.target.value)}
                     className="form-control"
@@ -997,36 +976,22 @@ const Playsheet = ({
               <div className="weapon-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Weapon Name</label>
+                    <label htmlFor="offhandWeaponName">Weapon Name</label>
                     <input
+                      id="offhandWeaponName"
                       type="text"
                       value={offhandWeapon.name}
                       onChange={(e) => handleWeaponChange(true, 'name', e.target.value)}
                       className="form-control"
                     />
                   </div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Ability Damage Multiplier</label>
-                      <select
-                        value={offhandModMultiplier}
-                        onChange={(e) => handleWeaponChange(true, 'modMultiplier', e.target.value)}
-                        className="form-control"
-                      >
-                        <option value="0">No Modifier</option>
-                        <option value="0.5">Half (0.5×)</option>
-                        <option value="1">Normal (1×)</option>
-                        <option value="1.5">One and a Half (1.5×)</option>
-                        <option value="2">Double (2×)</option>
-                      </select>
-                    </div>
-                  </div>
                 </div>
                 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Attack Bonus</label>
+                    <label htmlFor="offhandAttackBonus">Attack Bonus</label>
                     <input
+                      id="offhandAttackBonus"
                       type="number"
                       value={offhandWeapon.attackBonus}
                       onChange={(e) => handleWeaponChange(true, 'attackBonus', e.target.value)}
@@ -1035,8 +1000,9 @@ const Playsheet = ({
                   </div>
                   
                   <div className="form-group">
-                    <label>Damage Bonus</label>
+                    <label htmlFor="offhandDamageBonus">Damage Bonus</label>
                     <input
+                      id="offhandDamageBonus"
                       type="number"
                       value={offhandWeapon.damageBonus}
                       onChange={(e) => handleWeaponChange(true, 'damageBonus', e.target.value)}
@@ -1047,8 +1013,9 @@ const Playsheet = ({
                 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Attack Ability</label>
+                    <label htmlFor="offhandAttackAbilityMod">Attack Ability</label>
                     <select
+                      id="offhandAttackAbilityMod"
                       value={offhandAttackAbilityMod}
                       onChange={(e) => handleAbilityModChange('offhandAttack', e.target.value)}
                       className="form-control"
@@ -1063,8 +1030,9 @@ const Playsheet = ({
                   </div>
                   
                   <div className="form-group">
-                    <label>Damage Ability</label>
+                    <label htmlFor="offhandDamageAbilityMod">Damage Ability</label>
                     <select
+                      id="offhandDamageAbilityMod"
                       value={offhandDamageAbilityMod}
                       onChange={(e) => handleAbilityModChange('offhandDamage', e.target.value)}
                       className="form-control"
@@ -1081,8 +1049,9 @@ const Playsheet = ({
                 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Number of Off-hand Attacks</label>
+                    <label htmlFor="offhandAttacksCount">Number of Off-hand Attacks</label>
                     <input
+                      id="offhandAttacksCount"
                       type="number"
                       min="1"
                       max="3"
@@ -1097,6 +1066,14 @@ const Playsheet = ({
           )}
         </div>
         
+        {/* Hit Points Section */}
+        <HitPointTracker
+          character={character}
+          finalStats={finalStats}
+          onHitPointChange={onUpdateHitPoints || (() => console.warn("No hit point update function provided"))}
+          className="playsheet-hp-tracker mini-hp-tracker"
+        />
+
         {character?.hitPoints?.negLevels > 0 && (
           <div className="negative-levels-indicator">
             <div className="negative-levels-warning">
@@ -1106,27 +1083,26 @@ const Playsheet = ({
         )}
 
         {/* Dice Roller Section */}
-        <div className="playsheet-section dice-roller" style={{
-          width: '100%',
-          boxSizing: 'border-box'
-        }}>
+        <div className="playsheet-section dice-roller">
           <h3>Dice Roller</h3>
           
           {/* Weapon selector for dice roller */}
           {twoWeaponFighting && (
             <div className="damage-modifier-select">
-              <button 
-                className={`weapon-selector ${currentDamageModifier === damageModifier ? 'active' : ''}`}
-                onClick={() => handleSelectWeaponDamage(false)}
-              >
-                {primaryWeapon.name} Damage
-              </button>
-              <button 
-                className={`weapon-selector ${currentDamageModifier === offhandDamageModifier ? 'active' : ''}`}
-                onClick={() => handleSelectWeaponDamage(true)}
-              >
-                {offhandWeapon.name} Damage
-              </button>
+              <div className="form-row">
+                <button 
+                  className={`weapon-selector ${currentDamageModifier === damageModifier ? 'active' : ''}`}
+                  onClick={() => handleSelectWeaponDamage(false)}
+                >
+                  {primaryWeapon.name} Damage
+                </button>
+                <button 
+                  className={`weapon-selector ${currentDamageModifier === offhandDamageModifier ? 'active' : ''}`}
+                  onClick={() => handleSelectWeaponDamage(true)}
+                >
+                  {offhandWeapon.name} Damage
+                </button>
+              </div>
             </div>
           )}
           
@@ -1134,12 +1110,9 @@ const Playsheet = ({
           <AnimatedDiceRoller damageModifier={currentDamageModifier} />
         </div>
       </div>
+      
       {/* Combat Abilities - Full Width */}
-      <div className="playsheet-section abilities" style={{
-        gridColumn: '1 / -1',
-        width: '100%',
-        overflow: 'hidden'
-      }}>
+      <div className="playsheet-section abilities">
         <h3>Combat Abilities</h3>
         {combatAbilities.length === 0 ? (
           <p>No combat abilities defined. Add abilities in the Combat Abilities tab.</p>
@@ -1158,8 +1131,9 @@ const Playsheet = ({
                 
                 {ability.isActive && ability.variableInput && (
                   <div className="ability-variable-input">
-                    <label>{ability.inputLabel || 'Value:'}
+                    <label htmlFor={`ability-input-${ability.id}`}>{ability.inputLabel || 'Value:'}
                       <input
+                        id={`ability-input-${ability.id}`}
                         type="number"
                         min={ability.inputMin || 0}
                         max={ability.inputMax || combatStats.baseAttackBonus}
