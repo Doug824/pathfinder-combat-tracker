@@ -1,403 +1,263 @@
 .playsheet {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  
-  /* Make the abilities section span full width */
-  .playsheet-section.abilities {
-    grid-column: 1 / -1;
-  }
-  
-  /* Combat stats sections */
-  .playsheet-section {
-    background-color: var(--bg-secondary);
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: var(--card-shadow);
-    margin-bottom: 20px;
-  }
-  
-  .playsheet-section h3 {
-    margin-top: 0;
-    margin-bottom: 16px;
-    color: var(--highlight-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 8px;
-    font-size: 1.3rem;
-  }
-  
-  /* Enhanced stat display for attack and defense rows */
-  .attack-row, .defense-row, .save-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    background-color: var(--bg-primary);
-  }
-  
-  .attack-row:nth-child(odd), .defense-row:nth-child(odd), .save-row:nth-child(odd) {
-    background-color: var(--bg-tertiary);
-  }
-  
-  .attack-name, .defense-name, .save-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-  }
-  
-  .attack-value, .defense-value, .save-value {
-    font-weight: bold;
-    font-size: 1.6rem;
-    color: var(--highlight-color);
-    min-width: 80px;
-    text-align: center;
-  }
-  
-  /* Damage display */
-  .damage-mod {
-    margin-top: 16px;
-    padding: 12px;
-    background-color: var(--bg-tertiary);
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .damage-label {
-    font-weight: bold;
-    font-size: 1.1rem;
-  }
-  
-  .damage-value {
-    font-weight: bold;
-    font-size: 1.6rem;
-    color: var(--highlight-color);
-  }
-  
-  /* Weapon configuration */
-  .weapon-config {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .offhand-attacks {
-    margin-top: 20px;
-  }
-  
-  .offhand-attacks h4 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 1.1rem;
-  }
-  
-  .primary-weapon, .offhand-weapon {
-    background-color: var(--bg-primary);
-    padding: 15px;
-    border-radius: 6px;
-    box-shadow: var(--card-shadow);
-  }
-  
-  .primary-weapon h4, .offhand-weapon h4 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: var(--highlight-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 8px;
-  }
-  
-  /* Control toggles */
-  .playsheet-controls {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-  
-  .haste-toggle, .twf-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    background-color: var(--bg-primary);
-    padding: 8px 12px;
-    border-radius: 4px;
-  }
-  
-  .haste-toggle input, .twf-toggle input {
-    margin: 0;
-  }
-  
-  /* Combat abilities section */
-  .ability-toggle-row {
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    background-color: var(--bg-primary);
-    transition: background-color 0.2s;
-  }
-  
-  .ability-toggle-row:hover {
-    background-color: var(--bg-tertiary);
-  }
-  
-  .ability-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    width: 100%;
-  }
-  
-  .ability-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-  }
-  
-  .ability-active-effects {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
-  }
-  
-  .ability-effect {
-    padding: 4px 10px;
-    background-color: var(--active-color);
-    color: white;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    font-weight: bold;
-  }
-  
-  /* Attack section */
-  .attack-section {
-    margin-top: 20px;
-    background-color: var(--bg-tertiary);
-    border-radius: 6px;
-    padding: 12px;
-  }
-  
-  .attack-section h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-  }
-  
-  .attack-summary {
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.1rem;
-    padding: 8px;
-    background-color: var(--bg-tertiary);
-    border-radius: 4px;
-    margin-top: 10px;
-  }
-  
-  /* Variable input styling */
-  .ability-variable-input {
-    background-color: var(--bg-secondary);
-    padding: 8px 12px;
-    border-radius: 4px;
-    margin-top: 8px;
-  }
-  
-  .ability-variable-input label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-  }
-  
-  .ability-variable-input input {
-    width: 60px;
-    padding: 4px 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-size: 1rem;
-    text-align: center;
-  }
-  
-    /* Dice Roller Styles */
-  .dice-roller {
-    margin-top: 20px;
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  overflow: visible;
+  -webkit-overflow-scrolling: touch;
+}
 
-  .dice-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
+/* Make the abilities section span full width */
+.playsheet-section.abilities {
+  grid-column: 1 / -1;
+}
 
-  .dice-display {
-    background-color: var(--bg-primary);
-    border-radius: 6px;
-    padding: 15px;
-    margin-top: 10px;
-    text-align: center;
-  }
+/* Combat stats sections */
+.playsheet-section {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 20px;
+  overflow: visible;
+}
 
-  .dice-formula {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: var(--text-primary);
-  }
+.playsheet-section h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--highlight-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+  font-size: 1.3rem;
+}
 
-  .dice-result {
-    background-color: var(--bg-tertiary);
-    border-radius: 6px;
-    padding: 15px;
-    margin-top: 10px;
-  }
+/* Enhanced stat display for attack and defense rows */
+.attack-row, .defense-row, .save-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background-color: var(--bg-primary);
+}
 
-  .result-label {
-    font-weight: bold;
-    margin-right: 10px;
-  }
+.attack-row:nth-child(odd), .defense-row:nth-child(odd), .save-row:nth-child(odd) {
+  background-color: var(--bg-tertiary);
+}
 
-  .result-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--highlight-color);
-    display: block;
-    margin: 10px 0;
-  }
+.attack-name, .defense-name, .save-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
 
-  .individual-rolls {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-top: 5px;
-  }
+.attack-value, .defense-value, .save-value {
+  font-weight: bold;
+  font-size: 1.6rem;
+  color: var(--highlight-color);
+  min-width: 80px;
+  text-align: center;
+}
 
-  .dice-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
+/* Damage display */
+.damage-mod {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: var(--bg-tertiary);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .roll-button, .average-button {
-    flex: 1;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
+.damage-label {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
 
-  .roll-button:hover, .average-button:hover {
-    background-color: var(--button-hover);
-  }
+.damage-value {
+  font-weight: bold;
+  font-size: 1.6rem;
+  color: var(--highlight-color);
+}
 
-  .average-button {
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-  }
+/* Weapon configuration */
+.weapon-config {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 20px;
+}
 
-  .average-button:hover {
-    background-color: var(--border-color);
-  }
+.offhand-attacks {
+  margin-top: 20px;
+}
 
-  .dice-group {
-    position: relative;
-    padding: 10px;
-    background-color: var(--bg-primary);
-    border-radius: 6px;
-    margin-bottom: 10px;
-  }
-  
-  .dice-group-actions {
-    display: flex;
-    align-items: center;
-    margin-left: 5px;
-  }
-  
-  .remove-dice-btn {
-    background-color: var(--error-color);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 16px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-  }
-  
-  .remove-dice-btn:hover {
-    background-color: #ff3333;
-  }
-  
-  .add-dice-btn {
-    background-color: var(--active-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 15px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 15px;
-    width: 100%;
-    transition: background-color 0.2s;
-  }
-  
-  .add-dice-btn:hover {
-    background-color: #5a9c6d;
-  }
-  
-  .dice-group-result {
-    margin-bottom: 5px;
-  }
-  
-  .dice-group-formula {
-    font-weight: bold;
-    margin-right: 5px;
-  }
-  
-  .dice-group-values {
-    color: var(--text-secondary);
-  }
-  
-  .damage-modifier-result {
-    margin-top: 8px;
-    font-weight: bold;
-    color: var(--highlight-color);
-  }
-  
-  .dice-formula {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: var(--text-primary);
-    word-break: break-word;
-  }
-  
-  .individual-rolls {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
+.offhand-attacks h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1.1rem;
+}
 
-  /* Mini HP Tracker for Playsheet */
+.primary-weapon, .offhand-weapon {
+  background-color: var(--bg-primary);
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: var(--card-shadow);
+}
+
+.primary-weapon h4, .offhand-weapon h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--highlight-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+/* Control toggles */
+.playsheet-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.haste-toggle, .twf-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background-color: var(--bg-primary);
+  padding: 8px 12px;
+  border-radius: 4px;
+  min-height: 44px; /* Minimum touch target size */
+}
+
+.haste-toggle input, .twf-toggle input {
+  margin: 0;
+  min-width: 22px;
+  min-height: 22px;
+}
+
+/* Weapon selector buttons */
+.damage-modifier-select {
+  margin-bottom: 15px;
+}
+
+.weapon-selector {
+  background-color: var(--bg-tertiary);
+  border: none;
+  padding: 10px 15px;
+  margin-right: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.weapon-selector.active {
+  background-color: var(--highlight-color);
+  color: white;
+}
+
+/* Combat abilities section */
+.ability-toggle-row {
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background-color: var(--bg-primary);
+  transition: background-color 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ability-toggle-row:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.ability-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex: 1;
+  min-height: 44px; /* Minimum touch target size */
+}
+
+.ability-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.ability-active-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ability-effect {
+  padding: 4px 10px;
+  background-color: var(--active-color);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Attack section */
+.attack-section {
+  margin-top: 20px;
+  background-color: var(--bg-tertiary);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.attack-section h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.attack-summary {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 8px;
+  background-color: var(--bg-tertiary);
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* Variable input styling */
+.ability-variable-input {
+  background-color: var(--bg-secondary);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.ability-variable-input label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.ability-variable-input input {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Mini HP Tracker for Playsheet */
 .mini-hp-tracker {
   margin-bottom: 20px;
 }
@@ -429,97 +289,7 @@
   margin-bottom: 4px;
 }
 
-@media (max-width: 768px) {
-  .mini-hp-tracker .hp-visual-container {
-    flex-direction: row;
-  }
-  
-  .mini-hp-tracker .hp-status {
-    text-align: left;
-  }
-  
-  .mini-hp-tracker .hp-values {
-    justify-content: flex-start;
-  }
-}
-
-.negative-levels-indicator {
-  margin-bottom: 15px;
-}
-
-.negative-levels-warning {
-  position: relative;
-  display: inline-block;
-  padding: 5px 10px;
-  background-color: rgba(var(--error-color-rgb, 192, 57, 43), 0.1);
-  border-left: 4px solid var(--error-color);
-  color: var(--error-color);
-  font-weight: bold;
-  border-radius: 4px;
-}
-
-.negative-levels-warning .tooltip-text {
-  visibility: hidden;
-  width: 200px;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -100px;
-  opacity: 0;
-  transition: opacity 0.3s;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-  font-weight: normal;
-  font-size: 0.9rem;
-}
-
-.negative-levels-warning:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* Styles for attack value container with negative level indicator */
-.attack-value-container {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.negative-level-indicator {
-  color: var(--error-color);
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: help;
-}
-
-/* Add tooltip styles if not already present */
-[title] {
-  position: relative;
-}
-
-[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* Global styles for the negative level warning banner */
+/* Negative levels styling */
 .negative-levels-indicator {
   margin-bottom: 15px;
   padding: 8px 12px;
@@ -537,53 +307,17 @@
   font-size: 0.9rem;
 }
 
-.negative-levels-details {
-  font-size: 0.8rem;
-  font-weight: normal;
-  color: var(--text-secondary);
-  margin-left: 8px;
-}
-
-/* Compact animation for the negative level banner */
-@keyframes pulseWarning {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
-}
-
-.negative-levels-indicator {
-  animation: pulseWarning 2s infinite;
-}
-
-/* Styling for attack value containers with negative level indicators */
-.attack-value-container {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
 .negative-level-indicator {
   color: var(--error-color);
   font-size: 0.8rem;
   font-weight: bold;
 }
 
-/* Negative levels warning styling */
-.negative-levels-indicator {
-  margin: 10px 0;
-  padding: 8px 12px;
-  background-color: rgba(var(--error-color, 192, 57, 43), 0.1);
-  border-left: 3px solid var(--error-color, #C0392B);
-  border-radius: 4px;
-}
-
-.negative-levels-warning {
+/* Attack value containers with negative level indicators */
+.attack-value-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: var(--error-color, #C0392B);
-  font-weight: bold;
+  gap: 4px;
 }
 
 /* Make the attack and defense rows cleaner */
@@ -597,15 +331,6 @@
   background-color: var(--bg-primary);
 }
 
-/* Make the values consistent */
-.attack-value, .defense-value, .save-value {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: var(--highlight-color);
-  min-width: 50px;
-  text-align: right;
-}
-
 /* Position the negative level indicator correctly */
 .save-row .attack-value-container,
 .defense-row .attack-value-container {
@@ -613,14 +338,104 @@
   align-items: center;
   justify-content: flex-end;
 }
-  /* Responsive adjustments */
-  @media (max-width: 992px) {
-    .playsheet {
-      grid-template-columns: 1fr;
-    }
-    
-    .attack-value, .defense-value, .save-value {
-      font-size: 1.4rem;
-      min-width: 60px;
-    }
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .playsheet {
+    grid-template-columns: 1fr;
   }
+  
+  .attack-value, .defense-value, .save-value {
+    font-size: 1.4rem;
+    min-width: 60px;
+  }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Switch to flex layout for better mobile experience */
+  .playsheet {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Make sections more compact on mobile */
+  .playsheet-section {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+  
+  /* Smaller headings */
+  .playsheet-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+  
+  /* Make cards more compact */
+  .attack-row, .defense-row, .save-row {
+    padding: 8px 10px;
+    margin-bottom: 6px;
+  }
+  
+  /* Smaller text on mobile */
+  .attack-name, .defense-name, .save-name {
+    font-size: 0.95rem;
+  }
+  
+  .attack-value, .defense-value, .save-value {
+    font-size: 1.1rem;
+    min-width: auto;
+  }
+  
+  /* Stack control toggles on mobile */
+  .playsheet-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .haste-toggle, .twf-toggle {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  /* Stack form rows on mobile */
+  .weapon-form .form-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* Make ability toggles more touch-friendly */
+  .ability-toggle-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .ability-toggle {
+    width: 100%;
+  }
+  
+  .toggle-switch {
+    margin-left: auto;
+  }
+  
+  /* Make the damage modifier select better on mobile */
+  .damage-modifier-select .form-row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .weapon-selector {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.9rem;
+  }
+  
+  /* Bottom padding to prevent content from being hidden */
+  .playsheet-section.abilities {
+    margin-bottom: 60px;
+  }
+}
