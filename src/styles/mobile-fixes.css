@@ -1,32 +1,76 @@
-/* === BASE SCROLLING FIXES === */
+/* Base layout for all devices */
 html, body {
-    -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
-    max-width: 100vw;
-    position: relative;
-    height: auto;
+    height: 100%;
     margin: 0;
     padding: 0;
-  }
-  
-  /* Prevent content from being hidden under the iOS Safari address bar */
-  body::after {
-    content: '';
-    display: block;
-    height: 50px; /* Safety margin */
-  }
-  
-  /* Make the app container scrollable */
-  .App {
-    min-height: 100%;
-    overflow: visible;
-    position: relative;
-  }
-  
-  .app-content {
-    overflow: visible;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 60px; /* Extra space at bottom for iOS */
+  }
+  
+  /* Remove the problematic fixed positioning for Safari */
+  @supports (-webkit-touch-callout: none) {
+    html, body {
+      /* Remove fixed positioning, it prevents scrolling */
+      position: static;
+      /* Let the page scroll naturally */
+      overflow-y: auto;
+      /* Prevent horizontal overflow */
+      overflow-x: hidden;
+      /* Ensure smooth scrolling */
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .App {
+      /* Allow app to take full height without being fixed */
+      min-height: 100%;
+      /* Enable proper scrolling */
+      overflow-y: visible;
+      /* Prevent horizontal scrolling */
+      overflow-x: hidden;
+      /* Ensure the app fills the width */
+      width: 100%;
+      /* Position normally in document flow */
+      position: relative;
+    }
+  }
+  
+  /* Fix for the iOS bottom bar overlap */
+  .app-content {
+    padding-bottom: 80px; /* Increased bottom padding for iOS */
+  }
+  
+  /* Fix for the playsheet section on mobile */
+  @media (max-width: 768px) {
+    .playsheet-section.abilities {
+      /* Increase bottom margin for the abilities section */
+      margin-bottom: 100px;
+    }
+    
+    /* Add more padding to the bottom of the app content */
+    .app-content {
+      padding-bottom: 120px;
+    }
+    
+    /* Fix for cut-off content in specific sections */
+    .combat-tracker .tab-content,
+    .character-setup,
+    .character-manager {
+      /* More padding at the bottom */
+      padding-bottom: 80px;
+      /* Ensure content is visible */
+      overflow: visible;
+      /* Allow proper scrolling */
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Ensure containers don't have fixed heights that might cut content */
+    .active-abilities,
+    .gear-list,
+    .abilities-list,
+    .buff-list {
+      max-height: none;
+      overflow-y: visible;
+    }
   }
   
   /* === TOUCH TARGET IMPROVEMENTS === */
@@ -162,12 +206,6 @@ html, body {
       gap: 10px;
     }
     
-    /* Stack dice group content */
-    .dice-group-content {
-      flex-direction: column;
-      gap: 8px;
-    }
-    
     /* Full width for toggle controls */
     .twf-toggle, .haste-toggle {
       width: 100%;
@@ -262,65 +300,6 @@ html, body {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
-    }
-  }
-  
-  /* === ANIMATIONS AND TRANSITIONS === */
-  /* Reduce animations for users who prefer reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.001ms !important;
-      transition-duration: 0.001ms !important;
-    }
-  }
-  
-  /* Smoother scrolling for all browsers */
-  .scroll-container {
-    scroll-behavior: smooth;
-  }
-  
-  /* Ensure scrollable containers have momentum scrolling */
-  .buff-list, 
-  .gear-list, 
-  .abilities-list,
-  .overflow-container {
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
-    position: relative;
-  }
-  
-  /* Prevent content from disappearing under fixed elements */
-  main {
-    position: relative;
-    z-index: 1;
-  }
-  
-  /* === SAFARI-SPECIFIC FIXES === */
-  /* These target iOS Safari specifically */
-  @supports (-webkit-touch-callout: none) {
-    html, body {
-      /* Prevent pull-to-refresh but allow overscroll bounce */
-      height: 100%;
-      overflow: auto;
-      position: fixed;
-      width: 100%;
-    }
-    
-    .App {
-      /* Make the app scrollable */
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
-    
-    /* Fix for iOS double-tap zoom */
-    a, button, .clickable {
-      touch-action: manipulation;
     }
   }
   
