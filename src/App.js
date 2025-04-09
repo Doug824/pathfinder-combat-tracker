@@ -98,10 +98,25 @@ function App() {
     // Add event listener
     window.addEventListener('resize', handleResize);
     
+    // Fix iOS Safari scrolling issues
+    document.documentElement.style.height = 'initial';
+    document.documentElement.style.position = 'relative';
+    document.documentElement.style.overflowX = 'hidden';
+    document.documentElement.style.overflowY = 'auto';
+    document.documentElement.style.WebkitOverflowScrolling = 'touch';
+    
+    document.body.style.height = 'initial';
+    document.body.style.position = 'relative';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'visible';
+    document.body.style.WebkitOverflowScrolling = 'touch';
+    
     // Clean up
     return () => {
       window.removeEventListener('resize', handleResize);
-    };
+      document.documentElement.style = '';
+      document.body.style = '';
+    };  
   }, []);
 
   // Effect to handle auto-navigation to setup
