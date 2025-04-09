@@ -1,0 +1,122 @@
+@media (max-width: 768px) {
+    /* Force the tabs container to have visible overflow */
+    .combat-tracker, 
+    .tabs-container {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+      position: relative !important;
+    }
+    
+    /* Ensure the tab content is visible */
+    .tab-content {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+      position: relative !important;
+      padding-bottom: 150px !important; /* Add extra space at bottom */
+    }
+    
+    /* Adjust tab buttons to be more touchable */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .tab-button {
+      flex: 1 0 30%; /* 3 buttons per row */
+      min-height: 50px; /* Ensure enough touch area */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.9rem;
+    }
+    
+    /* Fix for BuffTracker tab */
+    .buff-tracker {
+      overflow: visible !important;
+      height: auto !important;
+      padding-bottom: 100px !important;
+    }
+    
+    .active-buffs {
+      display: flex !important;
+      flex-direction: column !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+    
+    .new-buff-form {
+      overflow: visible !important;
+      height: auto !important;
+    }
+    
+    /* Fix for CombatStatsCalculator tab */
+    .combat-stats {
+      overflow: visible !important;
+      height: auto !important;
+      padding-bottom: 100px !important;
+    }
+    
+    .card-grid-layout {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+    
+    /* Fix for BuffLibrary tab */
+    .buff-library {
+      overflow: visible !important;
+      height: auto !important;
+      padding-bottom: 100px !important;
+    }
+    
+    .buff-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+    
+    /* Fix for CombatAbilities tab */
+    .combat-abilities {
+      overflow: visible !important;
+      height: auto !important;
+      padding-bottom: 100px !important;
+    }
+    
+    .abilities-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+    
+    /* Fix for HitPointTracker tab */
+    .hit-point-tracker {
+      overflow: visible !important;
+      height: auto !important;
+      padding-bottom: 50px !important;
+    }
+    
+    /* Expand all grid layouts to single column */
+    .hp-edit-container,
+    .hp-quick-actions,
+    .effects-grid,
+    .gear-stats-container {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
+    
+    /* Fix specifically for the form areas with overflow issues */
+    .new-buff-form,
+    .new-ability-form,
+    .new-gear-form {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+    }
+  }
