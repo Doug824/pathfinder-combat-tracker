@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import CharacterManager from './components/CharacterManagement/CharacterManager';
+import CampaignManager from './components/Campaign/CampaignManager';
 import CharacterSetup from './pages/CharacterSetup';
 import CombatTracker from './pages/CombatTracker';
 import Navigation from './components/layout/Navigation';
@@ -389,10 +390,7 @@ function AppContent() {
         )}
         
         {currentPage === 'campaigns' && (
-          <div className="campaigns-placeholder">
-            <h2>Campaigns</h2>
-            <p>Campaign management coming soon...</p>
-          </div>
+          <CampaignManager />
         )}
         
         {currentPage === 'setup' && activeCharacter && (
