@@ -28,21 +28,28 @@ const PDFUploader = ({ campaign, currentUser, onUploadComplete, onClose }) => {
     setProgress(0);
 
     try {
-      // Step 1: Upload PDF to Firebase Storage
+      // Step 1: Process PDF locally first (doesn't require Firebase Storage)
       setProgress(20);
-      const fileRef = ref(storage, `campaigns/${campaign.id}/pdfs/${Date.now()}_${file.name}`);
-      const snapshot = await uploadBytes(fileRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-
-      // Step 2: Process PDF and extract creatures
-      setProgress(40);
       const processingResult = await pdfProcessingService.processFile(file);
       
       if (!processingResult.success) {
         throw new Error(processingResult.error);
       }
 
-      setProgress(60);
+      setProgress(40);
+      
+      // Step 2: Try to upload PDF to Firebase Storage (optional)
+      let downloadURL = null;
+      try {
+        const fileRef = ref(storage, `campaigns/${campaign.id}/pdfs/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(fileRef, file);
+        downloadURL = await getDownloadURL(snapshot.ref);
+      } catch (storageError) {
+        console.warn('Firebase Storage upload failed (likely CORS issue):', storageError);
+        // Continue without PDF storage - processing can still work
+      }
+
+      setProgress(80);
       
       // Step 3: Save creatures to Firestore
       if (processingResult.creatures.length > 0) {
@@ -50,11 +57,11 @@ const PDFUploader = ({ campaign, currentUser, onUploadComplete, onClose }) => {
           campaign.id,
           processingResult.creatures,
           currentUser.uid,
-          {
+          downloadURL ? {
             name: file.name,
             url: downloadURL,
             uploadedAt: new Date()
-          }
+          } : null
         );
         
         setProgress(100);
@@ -195,16 +202,16 @@ const PDFUploader = ({ campaign, currentUser, onUploadComplete, onClose }) => {
 
             <div className="processing-steps">
               <div className={`step ${progress >= 20 ? 'completed' : ''}`}>
-                <span className="step-icon">📤</span>
-                <span>Uploading PDF...</span>
-              </div>
-              <div className={`step ${progress >= 40 ? 'completed' : ''}`}>
                 <span className="step-icon">🔍</span>
                 <span>Extracting text...</span>
               </div>
-              <div className={`step ${progress >= 60 ? 'completed' : ''}`}>
+              <div className={`step ${progress >= 40 ? 'completed' : ''}`}>
                 <span className="step-icon">🧠</span>
                 <span>Parsing creatures...</span>
+              </div>
+              <div className={`step ${progress >= 80 ? 'completed' : ''}`}>
+                <span className="step-icon">📤</span>
+                <span>Uploading PDF...</span>
               </div>
               <div className={`step ${progress >= 100 ? 'completed' : ''}`}>
                 <span className="step-icon">💾</span>
