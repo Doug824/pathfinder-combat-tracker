@@ -44,37 +44,46 @@ export const pdfProcessingService = {
       
       // More flexible patterns for different formats
       const statBlockPatterns = [
-        // Pattern 1: Name followed by CR anywhere in the line
-        /([A-Z][a-zA-Z\s]{2,30})\s+CR\s+(\d+(?:\/\d+)?)/gi,
+        // Pattern 1: Name followed by CR - more restrictive
+        /\b([A-Z][a-zA-Z\s]{3,25})\s+CR\s+(\d+(?:\/\d+)?)\b/gi,
         
         // Pattern 2: Name on its own line, followed by lines with stats
-        /^([A-Z][a-zA-Z\s]{2,30})\s*\n.*?(?:AC|Armor Class)\s*(\d+)/gim,
+        /^([A-Z][a-zA-Z\s]{3,25})\s*\n.*?(?:AC|Armor Class)\s*(\d+)/gim,
         
-        // Pattern 3: Look for creature names with AC and HP on same or nearby lines
-        /([A-Z][a-zA-Z\s]{2,30}).*?(?:AC|Armor Class).*?(\d+).*?(?:HP|Hit Points).*?(\d+)/gi,
+        // Pattern 3: Look for creature names with AC and HP on same or nearby lines - more restrictive
+        /\b([A-Z][a-zA-Z\s]{3,25}).*?(?:AC|Armor Class).*?(\d+).*?(?:HP|Hit Points).*?(\d+)/gi,
         
         // Pattern 4: Pathfinder format with size/type
-        /([A-Z][a-zA-Z\s]{2,30})\s+(Small|Medium|Large|Huge|Gargantuan|Tiny)\s+(humanoid|beast|dragon|undead|fiend|celestial|fey|elemental|construct|plant|ooze|aberration|monstrosity|giant)/gi,
+        /\b([A-Z][a-zA-Z\s]{3,25})\s+(Small|Medium|Large|Huge|Gargantuan|Tiny)\s+(humanoid|beast|dragon|undead|fiend|celestial|fey|elemental|construct|plant|ooze|aberration|monstrosity|giant)/gi,
         
-        // Pattern 5: Simple name extraction near stat keywords
-        /([A-Z][a-zA-Z\s]{2,30})(?=.*(?:STR|DEX|CON|INT|WIS|CHA).*\d+)/gi
+        // Pattern 5: Simple name extraction near stat keywords - more restrictive
+        /\b([A-Z][a-zA-Z\s]{3,25})(?=.*(?:STR|DEX|CON|INT|WIS|CHA)\s*\d+)/gi
       ];
       
-      // Try each pattern
+      // Try each pattern with limits to prevent timeouts
       for (let i = 0; i < statBlockPatterns.length; i++) {
         const pattern = statBlockPatterns[i];
         let match;
         let patternMatches = 0;
+        let maxMatches = 50; // Limit matches per pattern
         
-        while ((match = pattern.exec(text)) !== null) {
+        while ((match = pattern.exec(text)) !== null && patternMatches < maxMatches) {
           patternMatches++;
           const creature = this.parseCreatureFromMatch(match, text, i + 1);
           if (creature) {
             statBlocks.push(creature);
           }
+          
+          // Prevent infinite loops
+          if (pattern.lastIndex === match.index) {
+            break;
+          }
         }
         
         console.log(`Pattern ${i + 1} found ${patternMatches} matches`);
+        if (patternMatches >= maxMatches) {
+          console.log(`Pattern ${i + 1} hit match limit, stopping`);
+        }
       }
       
       // If no patterns match, try to extract creatures by looking for common keywords
@@ -100,10 +109,42 @@ export const pdfProcessingService = {
       const name = match[1]?.trim();
       if (!name || name.length < 3 || name.length > 30) return null;
       
+      // Filter out obvious false positives
+      const falsePositives = [
+        'award them a', 'grant them a', 'give them a', 'each melee', 'fort', 'ref', 'will',
+        'burnt offerings', 'b u r n t o f f e r i n g s', 'rise of the runelords',
+        'r u n e l o r d s', 'gamemastery', 'adventure path', 'part', 'credits',
+        'table of contents', 'foreword', 'bestiary', 'appendix', 'index'
+      ];
+      
+      if (falsePositives.some(fp => name.toLowerCase().includes(fp))) {
+        return null;
+      }
+      
+      // Filter out names that are clearly not creatures
+      if (name.match(/^(the|a|an|and|or|but|if|when|where|how|why|what)\s/i)) {
+        return null;
+      }
+      
+      // Filter out names with numbers or special characters that aren't creature names
+      if (name.match(/\d{2,}|\$|©|®|™|page|pp\.|chapter|section/i)) {
+        return null;
+      }
+      
       console.log(`Pattern ${patternNumber} matched: "${name}"`);
       
       // Extract more details from the surrounding text
       const creatureSection = this.extractCreatureSection(name, fullText);
+      
+      // Validate that this section actually contains creature stats
+      const hasStats = creatureSection.match(/\b(STR|DEX|CON|INT|WIS|CHA)\s*\d+/i) || 
+                       creatureSection.match(/\b(AC|Armor Class)\s*\d+/i) ||
+                       creatureSection.match(/\b(HP|Hit Points)\s*\d+/i);
+      
+      if (!hasStats && patternNumber === 1) {
+        // For CR pattern, we need some stats to validate it's actually a creature
+        return null;
+      }
       
       // Get challenge rating from match if available
       let challenge_rating = '1';
