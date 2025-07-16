@@ -390,7 +390,10 @@ function AppContent() {
         )}
         
         {currentPage === 'campaigns' && (
-          <CampaignManager />
+          <CampaignManager 
+            characters={characters}
+            onCreateCharacter={() => setCurrentPage('manager')}
+          />
         )}
         
         {currentPage === 'setup' && activeCharacter && (

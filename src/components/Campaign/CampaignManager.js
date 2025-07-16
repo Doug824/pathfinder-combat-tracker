@@ -7,7 +7,7 @@ import CampaignList from './CampaignList';
 import NotesManager from '../Notes/NotesManager';
 import './Campaign.css';
 
-const CampaignManager = () => {
+const CampaignManager = ({ characters, onCreateCharacter }) => {
   const { currentUser, userRole } = useFirebaseAuth();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,9 +48,9 @@ const CampaignManager = () => {
     }
   };
 
-  const handleJoinCampaign = async (inviteCode) => {
+  const handleJoinCampaign = async (inviteCode, character) => {
     try {
-      const campaign = await campaignService.joinCampaignByCode(currentUser.uid, inviteCode);
+      const campaign = await campaignService.joinCampaignByCode(currentUser.uid, inviteCode, character);
       setCampaigns(prev => [campaign, ...prev]);
       setActiveTab('list');
       return campaign;
@@ -186,6 +186,8 @@ const CampaignManager = () => {
           <JoinCampaignForm 
             onJoinCampaign={handleJoinCampaign}
             onCancel={() => setActiveTab('list')}
+            characters={characters}
+            onCreateCharacter={onCreateCharacter}
           />
         )}
 

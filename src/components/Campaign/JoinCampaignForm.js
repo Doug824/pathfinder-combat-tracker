@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { campaignService } from '../../services/campaignService';
+import CharacterSelection from './CharacterSelection';
 import './Campaign.css';
 
-const JoinCampaignForm = ({ onJoinCampaign, onCancel }) => {
+const JoinCampaignForm = ({ onJoinCampaign, onCancel, characters, onCreateCharacter }) => {
   const [inviteCode, setInviteCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [previewCampaign, setPreviewCampaign] = useState(null);
   const [previewing, setPreviewing] = useState(false);
+  const [showCharacterSelection, setShowCharacterSelection] = useState(false);
 
   const handleChange = (e) => {
     const value = e.target.value.toUpperCase().slice(0, 6);
@@ -40,19 +42,37 @@ const JoinCampaignForm = ({ onJoinCampaign, onCancel }) => {
     }
   };
 
-  const handleJoin = async () => {
+  const handleJoinClick = () => {
+    setShowCharacterSelection(true);
+  };
+
+  const handleCharacterSelect = async (character) => {
     try {
       setLoading(true);
       setError('');
-      await onJoinCampaign(inviteCode);
+      await onJoinCampaign(inviteCode, character);
       // Reset form
       setInviteCode('');
       setPreviewCampaign(null);
+      setShowCharacterSelection(false);
     } catch (err) {
       setError(err.message || 'Failed to join campaign');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCreateNewCharacter = () => {
+    // Store campaign info and redirect to character creation
+    sessionStorage.setItem('pendingCampaignJoin', JSON.stringify({
+      inviteCode,
+      campaign: previewCampaign
+    }));
+    onCreateCharacter();
+  };
+
+  const handleCancelCharacterSelection = () => {
+    setShowCharacterSelection(false);
   };
 
   return (
@@ -114,7 +134,7 @@ const JoinCampaignForm = ({ onJoinCampaign, onCancel }) => {
             
             <div className="preview-actions">
               <button 
-                onClick={handleJoin}
+                onClick={handleJoinClick}
                 disabled={loading}
                 className="join-button"
               >
@@ -125,7 +145,18 @@ const JoinCampaignForm = ({ onJoinCampaign, onCancel }) => {
         </div>
       )}
 
-      <div className="form-info">
+      {showCharacterSelection && previewCampaign && (
+        <CharacterSelection
+          characters={characters}
+          campaignName={previewCampaign.name}
+          onSelectCharacter={handleCharacterSelect}
+          onCreateNew={handleCreateNewCharacter}
+          onCancel={handleCancelCharacterSelection}
+        />
+      )}
+
+      {!showCharacterSelection && (
+        <div className="form-info">
         <h3>How to get an invite code:</h3>
         <ul>
           <li>Ask your Dungeon Master to share the campaign invite code</li>
@@ -133,9 +164,9 @@ const JoinCampaignForm = ({ onJoinCampaign, onCancel }) => {
           <li>Codes are unique to each campaign and can be regenerated</li>
           <li>You'll join as a Player and can create notes immediately</li>
         </ul>
-      </div>
+        </div>
 
-      <div className="form-actions">
+        <div className="form-actions">
         <button 
           type="button" 
           onClick={onCancel}
@@ -144,7 +175,8 @@ const JoinCampaignForm = ({ onJoinCampaign, onCancel }) => {
         >
           Cancel
         </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
