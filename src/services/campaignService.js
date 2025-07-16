@@ -40,6 +40,10 @@ export const campaignService = {
           userId: dmId,
           role: 'dm',
           joinedAt: serverTimestamp(),
+          characterId: null, // DMs don't need characters
+          characterName: null,
+          characterClass: null,
+          characterLevel: null,
           isActive: true
         }],
         tags: ['NPC', 'Location', 'Clue', 'Quest', 'Item', 'Lore']
@@ -126,7 +130,7 @@ export const campaignService = {
   },
 
   // Join campaign by invite code
-  async joinCampaignByCode(userId, inviteCode) {
+  async joinCampaignByCode(userId, inviteCode, characterData = null) {
     try {
       const q = query(
         collection(db, 'campaigns'),
@@ -153,6 +157,10 @@ export const campaignService = {
         userId,
         role: 'player',
         joinedAt: serverTimestamp(),
+        characterId: characterData?.id || null,
+        characterName: characterData?.name || null,
+        characterClass: characterData?.characterClass || null,
+        characterLevel: characterData?.level || null,
         isActive: true
       };
 
@@ -196,6 +204,37 @@ export const campaignService = {
       return true;
     } catch (error) {
       console.error('Error leaving campaign:', error);
+      throw error;
+    }
+  },
+
+  // Update member's character assignment
+  async updateMemberCharacter(campaignId, userId, characterData) {
+    try {
+      const campaign = await this.getCampaign(campaignId);
+      
+      // Find the member and update their character info
+      const updatedMembers = campaign.members.map(member => {
+        if (member.userId === userId) {
+          return {
+            ...member,
+            characterId: characterData?.id || null,
+            characterName: characterData?.name || null,
+            characterClass: characterData?.characterClass || null,
+            characterLevel: characterData?.level || null
+          };
+        }
+        return member;
+      });
+
+      await updateDoc(doc(db, 'campaigns', campaignId), {
+        members: updatedMembers,
+        updatedAt: serverTimestamp()
+      });
+
+      return await this.getCampaign(campaignId);
+    } catch (error) {
+      console.error('Error updating member character:', error);
       throw error;
     }
   },
@@ -274,5 +313,20 @@ export const campaignService = {
     
     const member = campaign.members.find(member => member.userId === userId);
     return member ? member.role : null;
+  },
+
+  // Get member's character information
+  getMemberCharacter(campaign, userId) {
+    if (!campaign) return null;
+    
+    const member = campaign.members.find(member => member.userId === userId);
+    if (!member) return null;
+    
+    return {
+      characterId: member.characterId,
+      characterName: member.characterName,
+      characterClass: member.characterClass,
+      characterLevel: member.characterLevel
+    };
   }
 };
