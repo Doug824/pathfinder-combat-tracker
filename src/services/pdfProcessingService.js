@@ -1,8 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
-// Set up the worker for PDF.js
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Set up the worker for PDF.js - use local worker to avoid CORS issues
+GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.min.js`;
 
 export const pdfProcessingService = {
   // Extract text from PDF file
