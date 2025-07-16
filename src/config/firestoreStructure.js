@@ -36,7 +36,10 @@ const firestoreStructure = {
           userId: 'string',
           role: 'dm|player',
           joinedAt: 'timestamp',
-          characterName: 'string', // Optional
+          characterId: 'string', // Reference to user's character
+          characterName: 'string', // Character name for display
+          characterClass: 'string', // Character class for display
+          characterLevel: 'number', // Character level for display
           isActive: true
         }
       ],
