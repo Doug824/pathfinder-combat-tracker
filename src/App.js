@@ -4,11 +4,11 @@ import CharacterSetup from './pages/CharacterSetup';
 import CombatTracker from './pages/CombatTracker';
 import Navigation from './components/layout/Navigation';
 import ThemeToggle from './components/common/ThemeToggle';
-import LoginPage from './pages/LoginPage';
+import AuthPage from './components/Auth/AuthPage';
+import { FirebaseAuthProvider, useFirebaseAuth } from './contexts/FirebaseAuthContext';
 
 // Hook imports
 import useCharacterStorage from './hooks/useCharacterStorage';
-import useAuth from './hooks/useAuth';
 
 // Asset imports
 import logoIcon from './assets/HerosLedgerLogo.png';
@@ -19,21 +19,19 @@ import './styles/fantasy-styles.css';
 import './styles/mobile-fixes.css';
 
 
-function App() {
-  // Authentication
+function AppContent() {
+  // Firebase Authentication
   const {
-    user,
-    loading,
-    register,
-    login,
+    currentUser,
+    userRole,
     logout,
-    isAuthenticated
-  } = useAuth();
+    loading
+  } = useFirebaseAuth();
   
   // State for tracking screen size
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Character storage ( depends on the user)
+  // Character storage (depends on the user)
   const {
     characters,
     activeCharacterId,
@@ -50,7 +48,7 @@ function App() {
     updateCombatSettings,
     updateSavedBuffs,
     updateHitPoints
-  } = useCharacterStorage(user);
+  } = useCharacterStorage(currentUser);
   
   // State for current page
   const [currentPage, setCurrentPage] = useState('manager');
@@ -268,19 +266,9 @@ function App() {
     }
   };
   
-  // Handle user login
-  const handleLogin = (username, password) => {
-    return login(username, password);
-  };
-  
-  // Handle user registration
-  const handleRegister = (username, password) => {
-    return register(username, password);
-  };
-  
   // Handle user logout
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     // Reset to manager page when logging out
     setCurrentPage('manager');
   };
@@ -291,10 +279,10 @@ function App() {
   }
   
   // If not authenticated, show login page
-  if (!isAuthenticated) {
+  if (!currentUser) {
     return (
       <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-        <LoginPage onLogin={handleLogin} onRegister={handleRegister} />
+        <AuthPage />
       </div>
     );
   }
@@ -348,7 +336,10 @@ function App() {
             justifyContent: isMobile ? 'center' : 'flex-end'
           }}>
             <div className="user-info">
-              <span className="username">{user.username}</span>
+              <span className="username">
+                {currentUser.displayName || currentUser.email}
+                {userRole && <span className="user-role">({userRole})</span>}
+              </span>
               <button onClick={handleLogout} className="logout-button">
                 Logout
               </button>
@@ -397,6 +388,13 @@ function App() {
           />
         )}
         
+        {currentPage === 'campaigns' && (
+          <div className="campaigns-placeholder">
+            <h2>Campaigns</h2>
+            <p>Campaign management coming soon...</p>
+          </div>
+        )}
+        
         {currentPage === 'setup' && activeCharacter && (
           <CharacterSetup 
             character={activeCharacter}
@@ -425,7 +423,7 @@ function App() {
         )}
         
         {/* Fallback if somehow nothing matches */}
-        {!(['manager', 'setup', 'combat'].includes(currentPage)) && (
+        {!(['manager', 'campaigns', 'setup', 'combat'].includes(currentPage)) && (
           <div className="error-message">
             <h2>Navigation Error</h2>
             <p>Invalid page: {currentPage}</p>
@@ -436,6 +434,15 @@ function App() {
         )}
       </main>
     </div>
+  );
+}
+
+// Main App component wrapped with Firebase Auth Provider
+function App() {
+  return (
+    <FirebaseAuthProvider>
+      <AppContent />
+    </FirebaseAuthProvider>
   );
 }
 

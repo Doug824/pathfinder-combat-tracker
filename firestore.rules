@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isUser(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function getCampaign(campaignId) {
+      return get(/databases/$(database)/documents/campaigns/$(campaignId)).data;
+    }
+    
+    function isDM(campaignId) {
+      return isAuthenticated() && getCampaign(campaignId).dmId == request.auth.uid;
+    }
+    
+    function isCampaignMember(campaignId) {
+      return isAuthenticated() && 
+        request.auth.uid in getCampaign(campaignId).members.map(m => m.userId);
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isUser(userId);
+      allow create: if isUser(userId);
+      allow update: if isUser(userId);
+    }
+    
+    // Campaigns collection
+    match /campaigns/{campaignId} {
+      allow read: if isCampaignMember(campaignId);
+      allow create: if isAuthenticated();
+      allow update: if isDM(campaignId);
+      allow delete: if isDM(campaignId);
+      
+      // Notes subcollection
+      match /notes/{noteId} {
+        allow read: if isCampaignMember(campaignId) && (
+          resource.data.type == 'shared' ||
+          (resource.data.type == 'personal' && resource.data.authorId == request.auth.uid) ||
+          (resource.data.type == 'dm' && isDM(campaignId))
+        );
+        allow create: if isCampaignMember(campaignId);
+        allow update: if isCampaignMember(campaignId) && (
+          resource.data.authorId == request.auth.uid ||
+          isDM(campaignId)
+        );
+        allow delete: if resource.data.authorId == request.auth.uid || isDM(campaignId);
+      }
+      
+      // Sessions subcollection
+      match /sessions/{sessionId} {
+        allow read: if isCampaignMember(campaignId);
+        allow write: if isDM(campaignId);
+      }
+      
+      // Handouts subcollection
+      match /handouts/{handoutId} {
+        allow read: if isCampaignMember(campaignId) && (
+          resource.data.isRevealed ||
+          request.auth.uid in resource.data.revealedTo ||
+          isDM(campaignId)
+        );
+        allow write: if isDM(campaignId);
+      }
+    }
+  }
+}

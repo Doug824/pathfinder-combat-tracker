@@ -3,6 +3,7 @@ import React from 'react';
 const Navigation = ({ currentPage, setCurrentPage, activeCharacter, isMobile }) => {
   const pages = [
     { id: 'manager', label: 'Character Manager', alwaysShow: true },
+    { id: 'campaigns', label: 'Campaigns', alwaysShow: true },
     { id: 'setup', label: 'Character Setup', requiresCharacter: true },
     { id: 'combat', label: 'Combat Tracker', requiresCharacter: true }
   ];
