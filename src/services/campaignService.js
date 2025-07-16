@@ -91,7 +91,29 @@ export const campaignService = {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() };
+        const campaignData = { id: docSnap.id, ...docSnap.data() };
+        
+        // Migration: Add character fields to existing members if they don't exist
+        if (campaignData.members) {
+          const updatedMembers = campaignData.members.map(member => ({
+            ...member,
+            characterId: member.characterId || null,
+            characterName: member.characterName || null,
+            characterClass: member.characterClass || null,
+            characterLevel: member.characterLevel || null
+          }));
+          
+          // Update campaign if migration was needed
+          if (JSON.stringify(updatedMembers) !== JSON.stringify(campaignData.members)) {
+            await updateDoc(docRef, {
+              members: updatedMembers,
+              updatedAt: serverTimestamp()
+            });
+            campaignData.members = updatedMembers;
+          }
+        }
+        
+        return campaignData;
       } else {
         throw new Error('Campaign not found');
       }
