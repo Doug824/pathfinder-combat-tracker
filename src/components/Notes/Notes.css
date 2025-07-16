@@ -385,6 +385,33 @@
   border: 1px solid var(--border-color);
 }
 
+.note-tag.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.note-tag.clickable:hover {
+  background: var(--highlight-color);
+  color: var(--button-text);
+  transform: translateY(-1px);
+}
+
+/* Note Categories */
+.note-category {
+  margin-bottom: 0.5rem;
+}
+
+.category-label {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
 .note-revealed {
   margin-bottom: 1rem;
 }
@@ -495,13 +522,14 @@
 }
 
 .note-editor {
-  background: var(--bg-color);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   max-width: 600px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .note-editor-header {

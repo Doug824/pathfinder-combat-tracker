@@ -10,11 +10,40 @@ const NoteCard = ({
   onDelete, 
   onReveal,
   onAddReaction,
-  onRemoveReaction
+  onRemoveReaction,
+  onTagClick
 }) => {
   const [showActions, setShowActions] = useState(false);
   const [showReactions, setShowReactions] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const getCategoryIcon = (category) => {
+    const icons = {
+      'npcs': '👤',
+      'locations': '🏰',
+      'items': '⚔️',
+      'quests': '📜',
+      'lore': '📚',
+      'organizations': '🏛️',
+      'events': '⚡',
+      'other': '📋'
+    };
+    return icons[category] || '📝';
+  };
+
+  const getCategoryName = (category) => {
+    const names = {
+      'npcs': 'NPCs',
+      'locations': 'Locations',
+      'items': 'Items',
+      'quests': 'Quests',
+      'lore': 'Lore',
+      'organizations': 'Organizations',
+      'events': 'Events',
+      'other': 'Other'
+    };
+    return names[category] || 'General';
+  };
 
   const canEdit = notesService.canEditNote(note, currentUser.uid, userRole);
   const canDelete = notesService.canDeleteNote(note, currentUser.uid, userRole);
@@ -164,10 +193,22 @@ const NoteCard = ({
         <p>{note.content}</p>
       </div>
 
+      {note.category && (
+        <div className="note-category">
+          <span className="category-label">
+            {getCategoryIcon(note.category)} {getCategoryName(note.category)}
+          </span>
+        </div>
+      )}
+
       {note.tags && note.tags.length > 0 && (
         <div className="note-tags">
           {note.tags.map(tag => (
-            <span key={tag} className="note-tag">
+            <span 
+              key={tag} 
+              className="note-tag clickable"
+              onClick={() => onTagClick && onTagClick(tag)}
+            >
               {tag}
             </span>
           ))}

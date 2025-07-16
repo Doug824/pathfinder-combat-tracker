@@ -65,20 +65,22 @@ export const campaignService = {
   // Get campaigns for a user
   async getUserCampaigns(userId) {
     try {
+      // Get all campaigns and filter client-side since array-contains-any with objects is complex
       const q = query(
         collection(db, 'campaigns'),
-        where('members', 'array-contains-any', [
-          { userId, role: 'dm' },
-          { userId, role: 'player' }
-        ]),
         orderBy('updatedAt', 'desc')
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
+      const allCampaigns = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+
+      // Filter campaigns where user is a member
+      return allCampaigns.filter(campaign => 
+        campaign.members.some(member => member.userId === userId)
+      );
     } catch (error) {
       console.error('Error getting user campaigns:', error);
       throw error;

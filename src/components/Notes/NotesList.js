@@ -10,7 +10,8 @@ const NotesList = ({
   onDeleteNote, 
   onRevealNote,
   onAddReaction,
-  onRemoveReaction
+  onRemoveReaction,
+  onTagClick
 }) => {
   const groupedNotes = {
     personal: notes.filter(note => note.type === 'personal'),
@@ -71,6 +72,7 @@ const NotesList = ({
               onReveal={onRevealNote}
               onAddReaction={onAddReaction}
               onRemoveReaction={onRemoveReaction}
+              onTagClick={onTagClick}
             />
           ))}
         </div>

@@ -14,6 +14,7 @@ const NoteEditor = ({
     title: '',
     content: '',
     type: 'personal',
+    category: '',
     tags: []
   });
   const [loading, setLoading] = useState(false);
@@ -22,12 +23,25 @@ const NoteEditor = ({
 
   const isEditing = !!note;
 
+  const categoryOptions = [
+    { value: '', label: 'No Category' },
+    { value: 'npcs', label: 'NPCs', icon: '👤' },
+    { value: 'locations', label: 'Locations', icon: '🏰' },
+    { value: 'items', label: 'Items', icon: '⚔️' },
+    { value: 'quests', label: 'Quests', icon: '📜' },
+    { value: 'lore', label: 'Lore', icon: '📚' },
+    { value: 'organizations', label: 'Organizations', icon: '🏛️' },
+    { value: 'events', label: 'Events', icon: '⚡' },
+    { value: 'other', label: 'Other', icon: '📋' }
+  ];
+
   useEffect(() => {
     if (note) {
       setFormData({
         title: note.title || '',
         content: note.content || '',
         type: note.type || 'personal',
+        category: note.category || '',
         tags: note.tags || []
       });
     }
@@ -188,6 +202,23 @@ const NoteEditor = ({
                 </label>
               ))}
             </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              disabled={loading}
+            >
+              {categoryOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.icon ? `${option.icon} ${option.label}` : option.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="form-group">

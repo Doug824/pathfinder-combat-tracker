@@ -17,6 +17,7 @@ const NotesFilters = ({
   const clearFilters = () => {
     onFiltersChange({
       type: 'all',
+      category: '',
       tag: '',
       search: ''
     });
@@ -36,7 +37,19 @@ const NotesFilters = ({
     return options;
   };
 
-  const hasActiveFilters = filters.type !== 'all' || filters.tag || filters.search;
+  const getCategoryOptions = () => [
+    { value: '', label: 'All Categories' },
+    { value: 'npcs', label: 'NPCs', icon: '👤' },
+    { value: 'locations', label: 'Locations', icon: '🏰' },
+    { value: 'items', label: 'Items', icon: '⚔️' },
+    { value: 'quests', label: 'Quests', icon: '📜' },
+    { value: 'lore', label: 'Lore', icon: '📚' },
+    { value: 'organizations', label: 'Organizations', icon: '🏛️' },
+    { value: 'events', label: 'Events', icon: '⚡' },
+    { value: 'other', label: 'Other', icon: '📋' }
+  ];
+
+  const hasActiveFilters = filters.type !== 'all' || filters.category || filters.tag || filters.search;
 
   return (
     <div className="notes-filters">
@@ -52,6 +65,22 @@ const NotesFilters = ({
             {getFilterOptions().map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="category-filter">Category:</label>
+          <select
+            id="category-filter"
+            value={filters.category}
+            onChange={(e) => handleFilterChange('category', e.target.value)}
+            className="filter-select"
+          >
+            {getCategoryOptions().map(option => (
+              <option key={option.value} value={option.value}>
+                {option.icon ? `${option.icon} ${option.label}` : option.label}
               </option>
             ))}
           </select>

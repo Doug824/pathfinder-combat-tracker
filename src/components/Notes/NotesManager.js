@@ -18,6 +18,7 @@ const NotesManager = ({ campaign }) => {
   const [editingNote, setEditingNote] = useState(null);
   const [filters, setFilters] = useState({
     type: 'all',
+    category: '',
     tag: '',
     search: ''
   });
@@ -56,6 +57,11 @@ const NotesManager = ({ campaign }) => {
     // Filter by type
     if (filters.type !== 'all') {
       filtered = filtered.filter(note => note.type === filters.type);
+    }
+
+    // Filter by category
+    if (filters.category) {
+      filtered = filtered.filter(note => note.category === filters.category);
     }
 
     // Filter by tag
@@ -157,6 +163,13 @@ const NotesManager = ({ campaign }) => {
     setFilters(newFilters);
   };
 
+  const handleTagClick = (tag) => {
+    setFilters(prev => ({
+      ...prev,
+      tag: prev.tag === tag ? '' : tag // Toggle tag filter
+    }));
+  };
+
   const getAvailableTags = () => {
     const allTags = notes.flatMap(note => note.tags || []);
     return [...new Set(allTags)].sort();
@@ -225,6 +238,7 @@ const NotesManager = ({ campaign }) => {
           onRevealNote={handleRevealNote}
           onAddReaction={handleAddReaction}
           onRemoveReaction={handleRemoveReaction}
+          onTagClick={handleTagClick}
         />
       </div>
 
