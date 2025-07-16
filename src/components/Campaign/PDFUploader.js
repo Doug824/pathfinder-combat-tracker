@@ -38,16 +38,10 @@ const PDFUploader = ({ campaign, currentUser, onUploadComplete, onClose }) => {
 
       setProgress(40);
       
-      // Step 2: Try to upload PDF to Firebase Storage (optional)
+      // Step 2: Skip Firebase Storage upload for now (CORS issues in localhost)
+      // TODO: Re-enable when Firebase Storage is properly configured
       let downloadURL = null;
-      try {
-        const fileRef = ref(storage, `campaigns/${campaign.id}/pdfs/${Date.now()}_${file.name}`);
-        const snapshot = await uploadBytes(fileRef, file);
-        downloadURL = await getDownloadURL(snapshot.ref);
-      } catch (storageError) {
-        console.warn('Firebase Storage upload failed (likely CORS issue):', storageError);
-        // Continue without PDF storage - processing can still work
-      }
+      console.log('Skipping Firebase Storage upload due to CORS issues in localhost environment');
 
       setProgress(80);
       
@@ -211,7 +205,7 @@ const PDFUploader = ({ campaign, currentUser, onUploadComplete, onClose }) => {
               </div>
               <div className={`step ${progress >= 80 ? 'completed' : ''}`}>
                 <span className="step-icon">📤</span>
-                <span>Uploading PDF...</span>
+                <span>Processing complete...</span>
               </div>
               <div className={`step ${progress >= 100 ? 'completed' : ''}`}>
                 <span className="step-icon">💾</span>
