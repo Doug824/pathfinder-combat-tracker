@@ -5,6 +5,7 @@ import { campaignService } from '../../services/campaignService';
 import PDFUploader from './PDFUploader';
 import CreatureCard from './CreatureCard';
 import CreatureEditor from './CreatureEditor';
+import TemplateManager from './TemplateManager';
 import './Campaign.css';
 
 const CampaignBestiary = ({ campaign }) => {
@@ -16,6 +17,7 @@ const CampaignBestiary = ({ campaign }) => {
   const [showUploader, setShowUploader] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [editingCreature, setEditingCreature] = useState(null);
+  const [showTemplateManager, setShowTemplateManager] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     type: '',
@@ -202,6 +204,12 @@ const CampaignBestiary = ({ campaign }) => {
             >
               📄 Upload PDF
             </button>
+            <button 
+              className="template-manager-button"
+              onClick={() => setShowTemplateManager(true)}
+            >
+              🔧 Templates
+            </button>
           </div>
         )}
       </div>
@@ -309,6 +317,13 @@ const CampaignBestiary = ({ campaign }) => {
             setShowEditor(false);
             setEditingCreature(null);
           }}
+        />
+      )}
+
+      {showTemplateManager && (
+        <TemplateManager
+          campaign={campaign}
+          onClose={() => setShowTemplateManager(false)}
         />
       )}
     </div>
