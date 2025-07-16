@@ -156,26 +156,28 @@ const JoinCampaignForm = ({ onJoinCampaign, onCancel, characters, onCreateCharac
       )}
 
       {!showCharacterSelection && (
-        <div className="form-info">
-        <h3>How to get an invite code:</h3>
-        <ul>
-          <li>Ask your Dungeon Master to share the campaign invite code</li>
-          <li>The DM can find the code in their campaign management page</li>
-          <li>Codes are unique to each campaign and can be regenerated</li>
-          <li>You'll join as a Player and can create notes immediately</li>
-        </ul>
-        </div>
+        <>
+          <div className="form-info">
+            <h3>How to get an invite code:</h3>
+            <ul>
+              <li>Ask your Dungeon Master to share the campaign invite code</li>
+              <li>The DM can find the code in their campaign management page</li>
+              <li>Codes are unique to each campaign and can be regenerated</li>
+              <li>You'll join as a Player and can create notes immediately</li>
+            </ul>
+          </div>
 
-        <div className="form-actions">
-        <button 
-          type="button" 
-          onClick={onCancel}
-          className="cancel-button"
-          disabled={loading}
-        >
-          Cancel
-        </button>
-        </div>
+          <div className="form-actions">
+            <button 
+              type="button" 
+              onClick={onCancel}
+              className="cancel-button"
+              disabled={loading}
+            >
+              Cancel
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

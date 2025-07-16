@@ -3,20 +3,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, 
-    var(--primary-color, #8B4513) 0%, 
-    var(--secondary-color, #654321) 100%);
+  background: var(--bg-primary);
   padding: 1rem;
 }
 
 .auth-form {
-  background: var(--bg-color, #ffffff);
+  background: var(--bg-secondary);
   border-radius: 12px;
   padding: 2rem;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border-color, #e0e0e0);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
 }
 
 .auth-header {
@@ -25,14 +23,14 @@
 }
 
 .auth-header h2 {
-  color: var(--text-color, #333333);
+  color: var(--text-primary);
   margin: 0 0 0.5rem 0;
   font-size: 1.8rem;
   font-weight: 600;
 }
 
 .auth-header p {
-  color: var(--text-secondary, #666666);
+  color: var(--text-secondary);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -58,7 +56,7 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: var(--text-color, #333333);
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -66,19 +64,19 @@
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--border-color, #ddd);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
   font-size: 1rem;
-  background: var(--input-bg, #ffffff);
-  color: var(--text-color, #333333);
+  background: var(--input-bg);
+  color: var(--input-text);
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--primary-color, #8B4513);
-  box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
+  border-color: var(--input-focus-border);
+  box-shadow: var(--focus-ring);
 }
 
 .form-group input:disabled {
@@ -108,12 +106,12 @@
 }
 
 .auth-button.primary {
-  background: var(--primary-color, #8B4513);
-  color: white;
+  background: var(--button-bg);
+  color: var(--button-text);
 }
 
 .auth-button.primary:hover:not(:disabled) {
-  background: var(--primary-hover, #7a3f12);
+  background: var(--button-hover);
   transform: translateY(-1px);
 }
 

@@ -231,7 +231,7 @@ label {
   margin-bottom: var(--space-xs);
   font-weight: 500;
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 /* Selects styling */

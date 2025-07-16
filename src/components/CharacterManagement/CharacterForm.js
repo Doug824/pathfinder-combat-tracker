@@ -194,8 +194,8 @@ const CharacterForm = ({ character, onSaveCharacter, onCancel }) => {
         </div>
         
         <div className="form-actions">
-          <button type="submit" className="btn-save">Save Character</button>
-          <button type="button" className="btn-cancel" onClick={onCancel}>Cancel</button>
+          <button type="submit" className="save-button">Save Character</button>
+          <button type="button" className="btn" onClick={onCancel}>Cancel</button>
         </div>
       </form>
     </div>

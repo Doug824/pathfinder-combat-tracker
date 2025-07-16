@@ -25,6 +25,7 @@ export const campaignService = {
   // Create a new campaign (DM only)
   async createCampaign(dmId, campaignData) {
     try {
+      const now = new Date();
       const campaign = {
         ...campaignData,
         dmId,
@@ -39,7 +40,7 @@ export const campaignService = {
         members: [{
           userId: dmId,
           role: 'dm',
-          joinedAt: serverTimestamp(),
+          joinedAt: now,
           characterId: null, // DMs don't need characters
           characterName: null,
           characterClass: null,
@@ -178,7 +179,7 @@ export const campaignService = {
       const newMember = {
         userId,
         role: 'player',
-        joinedAt: serverTimestamp(),
+        joinedAt: new Date(),
         characterId: characterData?.id || null,
         characterName: characterData?.name || null,
         characterClass: characterData?.characterClass || null,

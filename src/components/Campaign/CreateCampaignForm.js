@@ -118,7 +118,7 @@ const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
           </button>
           <button 
             type="submit" 
-            className="create-button"
+            className="save-button"
             disabled={loading || !formData.name.trim()}
           >
             {loading ? 'Creating...' : 'Create Campaign'}
