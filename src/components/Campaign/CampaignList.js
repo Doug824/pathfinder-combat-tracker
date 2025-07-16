@@ -8,7 +8,8 @@ const CampaignList = ({
   currentUser, 
   onLeaveCampaign, 
   onDeleteCampaign, 
-  onUpdateCampaign 
+  onUpdateCampaign,
+  onEnterCampaign 
 }) => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
 
@@ -56,6 +57,7 @@ const CampaignList = ({
             onLeave={onLeaveCampaign}
             onDelete={onDeleteCampaign}
             onUpdate={onUpdateCampaign}
+            onEnterCampaign={onEnterCampaign}
           />
         ))}
       </div>
@@ -129,8 +131,9 @@ const CampaignList = ({
                 <button 
                   className="enter-campaign-button"
                   onClick={() => {
-                    // TODO: Navigate to campaign notes
-                    console.log('Enter campaign:', selectedCampaign.id);
+                    // Close modal and navigate to notes
+                    handleCloseCampaign();
+                    onEnterCampaign(selectedCampaign);
                   }}
                 >
                   Enter Campaign

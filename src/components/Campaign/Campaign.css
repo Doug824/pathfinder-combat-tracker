@@ -763,3 +763,36 @@
 [data-theme="dark"] .campaign-form {
   background: var(--bg-color);
 }
+
+/* Campaign Breadcrumb */
+.campaign-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.back-button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.back-button:hover {
+  background: var(--primary-hover);
+}
+
+.campaign-breadcrumb h3 {
+  color: var(--text-color);
+  margin: 0;
+  font-size: 1.2rem;
+}

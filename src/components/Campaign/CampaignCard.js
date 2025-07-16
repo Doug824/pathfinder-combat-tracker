@@ -8,7 +8,8 @@ const CampaignCard = ({
   onSelect, 
   onLeave, 
   onDelete, 
-  onUpdate 
+  onUpdate,
+  onEnterCampaign 
 }) => {
   const [showActions, setShowActions] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -130,7 +131,7 @@ const CampaignCard = ({
       <div className="campaign-card-footer">
         <button 
           className="enter-button"
-          onClick={() => onSelect(campaign)}
+          onClick={() => onEnterCampaign(campaign)}
         >
           Enter Campaign
         </button>

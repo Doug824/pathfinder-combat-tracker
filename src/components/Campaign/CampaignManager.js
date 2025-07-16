@@ -4,6 +4,7 @@ import { campaignService } from '../../services/campaignService';
 import CreateCampaignForm from './CreateCampaignForm';
 import JoinCampaignForm from './JoinCampaignForm';
 import CampaignList from './CampaignList';
+import NotesManager from '../Notes/NotesManager';
 import './Campaign.css';
 
 const CampaignManager = () => {
@@ -12,6 +13,7 @@ const CampaignManager = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('list');
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
 
   // Load user's campaigns
   useEffect(() => {
@@ -91,6 +93,16 @@ const CampaignManager = () => {
     }
   };
 
+  const handleEnterCampaign = (campaign) => {
+    setSelectedCampaign(campaign);
+    setActiveTab('notes');
+  };
+
+  const handleBackToCampaigns = () => {
+    setSelectedCampaign(null);
+    setActiveTab('list');
+  };
+
   if (loading) {
     return (
       <div className="campaign-manager">
@@ -116,26 +128,40 @@ const CampaignManager = () => {
         </div>
       )}
 
-      <div className="campaign-tabs">
-        <button 
-          className={`tab-button ${activeTab === 'list' ? 'active' : ''}`}
-          onClick={() => setActiveTab('list')}
-        >
-          My Campaigns ({campaigns.length})
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'create' ? 'active' : ''}`}
-          onClick={() => setActiveTab('create')}
-        >
-          Create Campaign
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'join' ? 'active' : ''}`}
-          onClick={() => setActiveTab('join')}
-        >
-          Join Campaign
-        </button>
-      </div>
+      {activeTab !== 'notes' && (
+        <div className="campaign-tabs">
+          <button 
+            className={`tab-button ${activeTab === 'list' ? 'active' : ''}`}
+            onClick={() => setActiveTab('list')}
+          >
+            My Campaigns ({campaigns.length})
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'create' ? 'active' : ''}`}
+            onClick={() => setActiveTab('create')}
+          >
+            Create Campaign
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'join' ? 'active' : ''}`}
+            onClick={() => setActiveTab('join')}
+          >
+            Join Campaign
+          </button>
+        </div>
+      )}
+
+      {activeTab === 'notes' && selectedCampaign && (
+        <div className="campaign-breadcrumb">
+          <button 
+            className="back-button"
+            onClick={handleBackToCampaigns}
+          >
+            ← Back to Campaigns
+          </button>
+          <h3>{selectedCampaign.name}</h3>
+        </div>
+      )}
 
       <div className="campaign-content">
         {activeTab === 'list' && (
@@ -145,6 +171,7 @@ const CampaignManager = () => {
             onLeaveCampaign={handleLeaveCampaign}
             onDeleteCampaign={handleDeleteCampaign}
             onUpdateCampaign={handleUpdateCampaign}
+            onEnterCampaign={handleEnterCampaign}
           />
         )}
 
@@ -160,6 +187,10 @@ const CampaignManager = () => {
             onJoinCampaign={handleJoinCampaign}
             onCancel={() => setActiveTab('list')}
           />
+        )}
+
+        {activeTab === 'notes' && selectedCampaign && (
+          <NotesManager campaign={selectedCampaign} />
         )}
       </div>
     </div>
