@@ -1239,7 +1239,7 @@
 }
 
 /* Template Manager */
-.template-manager {
+.template-manager-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -1253,7 +1253,7 @@
   padding: 2rem;
 }
 
-.template-manager > .template-header {
+.template-manager-content {
   background: var(--bg-secondary);
   border-radius: 12px;
   width: 95%;

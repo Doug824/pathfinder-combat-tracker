@@ -141,11 +141,18 @@ const TemplateManager = ({ campaign, onClose }) => {
 
   const handleDuplicateCreature = async (creature) => {
     try {
+      // Create a clean copy of the creature without Firebase-specific fields
+      const {
+        id,
+        uploadedAt,
+        createdAt,
+        updatedAt,
+        ...cleanCreature
+      } = creature;
+      
       const duplicatedCreature = {
-        ...creature,
+        ...cleanCreature,
         name: `${creature.name} (Copy)`,
-        id: undefined, // Remove ID so it gets a new one
-        uploadedAt: undefined,
         appliedTemplates: creature.appliedTemplates || []
       };
       
@@ -164,30 +171,33 @@ const TemplateManager = ({ campaign, onClose }) => {
 
   if (loading) {
     return (
-      <div className="template-manager">
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading templates...</p>
+      <div className="template-manager-overlay">
+        <div className="template-manager-content">
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Loading templates...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="template-manager">
-      <div className="template-header">
-        <h2>Template Manager</h2>
-        <button className="close-button" onClick={onClose}>×</button>
-      </div>
-
-      {error && (
-        <div className="error-message">
-          <p>{error}</p>
-          <button onClick={() => setError('')}>Dismiss</button>
+    <div className="template-manager-overlay">
+      <div className="template-manager-content">
+        <div className="template-header">
+          <h2>Template Manager</h2>
+          <button className="close-button" onClick={onClose}>×</button>
         </div>
-      )}
 
-      <div className="template-content">
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+            <button onClick={() => setError('')}>Dismiss</button>
+          </div>
+        )}
+
+        <div className="template-content">
         <div className="template-section">
           <div className="section-header">
             <h3>Creature Templates</h3>
@@ -272,8 +282,10 @@ const TemplateManager = ({ campaign, onClose }) => {
           )}
         </div>
 
-        <div className="creatures-section">
-          <h3>Campaign Creatures</h3>
+        <div className="template-section">
+          <div className="section-header">
+            <h3>Campaign Creatures</h3>
+          </div>
           {creatures.length === 0 ? (
             <div className="empty-state">
               <p>No creatures in campaign bestiary yet.</p>
@@ -291,22 +303,24 @@ const TemplateManager = ({ campaign, onClose }) => {
                       >
                         Duplicate
                       </button>
-                      <div className="template-apply-dropdown">
-                        <button className="apply-template-button">
-                          Apply Template ▼
-                        </button>
-                        <div className="template-dropdown-content">
-                          {templates.map(template => (
-                            <button
-                              key={template.id}
-                              onClick={() => handleApplyTemplate(template, creature)}
-                              className="template-option"
-                            >
-                              {template.name}
-                            </button>
-                          ))}
+                      {templates.length > 0 && (
+                        <div className="template-apply-dropdown">
+                          <button className="apply-template-button">
+                            Apply Template ▼
+                          </button>
+                          <div className="template-dropdown-content">
+                            {templates.map(template => (
+                              <button
+                                key={template.id}
+                                onClick={() => handleApplyTemplate(template, creature)}
+                                className="template-option"
+                              >
+                                {template.name}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                   <div className="creature-stats">
@@ -386,7 +400,7 @@ const TemplateManager = ({ campaign, onClose }) => {
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
