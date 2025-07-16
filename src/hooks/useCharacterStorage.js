@@ -7,11 +7,21 @@ const useCharacterStorage = (user) => {
   
   // Storage keys based on user
   const getCharactersKey = () => {
-    return user ? `pathfinderCharacters_${user.username}` : 'pathfinderCharacters_guest';
+    if (user) {
+      // Handle both Firebase user (uid) and legacy user (username)
+      const userId = user.uid || user.username || 'guest';
+      return `pathfinderCharacters_${userId}`;
+    }
+    return 'pathfinderCharacters_guest';
   };
   
   const getActiveCharacterKey = () => {
-    return user ? `activeCharacterId_${user.username}` : 'activeCharacterId_guest';
+    if (user) {
+      // Handle both Firebase user (uid) and legacy user (username)  
+      const userId = user.uid || user.username || 'guest';
+      return `activeCharacterId_${userId}`;
+    }
+    return 'activeCharacterId_guest';
   };
   
   // Load characters from localStorage on initial mount or when user changes
