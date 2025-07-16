@@ -40,36 +40,54 @@ export const pdfProcessingService = {
     const statBlocks = [];
     
     try {
-      // Pattern to match D&D/Pathfinder stat blocks
+      console.log('Starting stat block parsing...');
+      
+      // More flexible patterns for different formats
       const statBlockPatterns = [
-        // Basic creature pattern: Name, size type, AC, HP, etc.
-        /([A-Z][a-z\s]+)\n([A-Z][a-z\s]+)\s+([a-z\s]+)\nArmor Class\s+(\d+).*?\nHit Points\s+(\d+)/gim,
+        // Pattern 1: Name followed by CR anywhere in the line
+        /([A-Z][a-zA-Z\s]{2,30})\s+CR\s+(\d+(?:\/\d+)?)/gi,
         
-        // Alternative pattern for different formats
-        /^([A-Z][A-Z\s]+)\s*\n.*?AC\s*(\d+).*?HP\s*(\d+)/gim,
+        // Pattern 2: Name on its own line, followed by lines with stats
+        /^([A-Z][a-zA-Z\s]{2,30})\s*\n.*?(?:AC|Armor Class)\s*(\d+)/gim,
         
-        // Pathfinder specific pattern
-        /^([A-Z][a-z\s]+)\s+CR\s+(\d+(?:\/\d+)?)/gim
+        // Pattern 3: Look for creature names with AC and HP on same or nearby lines
+        /([A-Z][a-zA-Z\s]{2,30}).*?(?:AC|Armor Class).*?(\d+).*?(?:HP|Hit Points).*?(\d+)/gi,
+        
+        // Pattern 4: Pathfinder format with size/type
+        /([A-Z][a-zA-Z\s]{2,30})\s+(Small|Medium|Large|Huge|Gargantuan|Tiny)\s+(humanoid|beast|dragon|undead|fiend|celestial|fey|elemental|construct|plant|ooze|aberration|monstrosity|giant)/gi,
+        
+        // Pattern 5: Simple name extraction near stat keywords
+        /([A-Z][a-zA-Z\s]{2,30})(?=.*(?:STR|DEX|CON|INT|WIS|CHA).*\d+)/gi
       ];
       
       // Try each pattern
-      for (const pattern of statBlockPatterns) {
+      for (let i = 0; i < statBlockPatterns.length; i++) {
+        const pattern = statBlockPatterns[i];
         let match;
+        let patternMatches = 0;
+        
         while ((match = pattern.exec(text)) !== null) {
-          const creature = this.parseCreatureFromMatch(match, text);
+          patternMatches++;
+          const creature = this.parseCreatureFromMatch(match, text, i + 1);
           if (creature) {
             statBlocks.push(creature);
           }
         }
+        
+        console.log(`Pattern ${i + 1} found ${patternMatches} matches`);
       }
       
       // If no patterns match, try to extract creatures by looking for common keywords
       if (statBlocks.length === 0) {
+        console.log('No patterns matched, trying keyword extraction...');
         const keywordCreatures = this.extractByKeywords(text);
         statBlocks.push(...keywordCreatures);
       }
       
-      return this.deduplicateCreatures(statBlocks);
+      const deduplicated = this.deduplicateCreatures(statBlocks);
+      console.log(`Final creature count after deduplication: ${deduplicated.length}`);
+      
+      return deduplicated;
     } catch (error) {
       console.error('Error parsing stat blocks:', error);
       return [];
@@ -77,19 +95,40 @@ export const pdfProcessingService = {
   },
 
   // Parse creature from regex match
-  parseCreatureFromMatch(match, fullText) {
+  parseCreatureFromMatch(match, fullText, patternNumber) {
     try {
       const name = match[1]?.trim();
-      if (!name) return null;
+      if (!name || name.length < 3 || name.length > 30) return null;
+      
+      console.log(`Pattern ${patternNumber} matched: "${name}"`);
       
       // Extract more details from the surrounding text
       const creatureSection = this.extractCreatureSection(name, fullText);
       
-      return {
+      // Get challenge rating from match if available
+      let challenge_rating = '1';
+      if (match[2] && patternNumber === 1) {
+        challenge_rating = match[2];
+      } else {
+        challenge_rating = this.extractCR(creatureSection) || '1';
+      }
+      
+      // Get size/type from match if available (pattern 4)
+      let size = 'medium';
+      let type = 'humanoid';
+      if (patternNumber === 4 && match[2] && match[3]) {
+        size = match[2].toLowerCase();
+        type = match[3].toLowerCase();
+      } else {
+        size = this.extractSize(creatureSection) || 'medium';
+        type = this.extractType(creatureSection) || 'humanoid';
+      }
+      
+      const creature = {
         name,
-        type: this.extractType(creatureSection) || 'humanoid',
-        size: this.extractSize(creatureSection) || 'medium',
-        challenge_rating: this.extractCR(creatureSection) || '1',
+        type,
+        size,
+        challenge_rating,
         armor_class: this.extractAC(creatureSection) || 10,
         hit_points: this.extractHP(creatureSection) || 10,
         speed: this.extractSpeed(creatureSection) || '30 ft.',
@@ -99,6 +138,9 @@ export const pdfProcessingService = {
         description: creatureSection.substring(0, 500), // First 500 chars as description
         tags: this.generateTags(creatureSection)
       };
+      
+      console.log(`Created creature: ${creature.name} (${creature.type}, CR ${creature.challenge_rating})`);
+      return creature;
     } catch (error) {
       console.error('Error parsing creature from match:', error);
       return null;
@@ -123,21 +165,54 @@ export const pdfProcessingService = {
   // Extract by common keywords when patterns fail
   extractByKeywords(text) {
     const creatures = [];
-    const keywords = ['AC', 'Hit Points', 'Speed', 'STR', 'DEX', 'CON', 'Challenge'];
+    const keywords = ['AC', 'Hit Points', 'Speed', 'STR', 'DEX', 'CON', 'Challenge', 'HP', 'Armor Class'];
     
-    // Split text into potential creature sections
-    const sections = text.split(/\n\s*\n/);
+    console.log('Trying keyword extraction...');
     
-    for (const section of sections) {
-      const keywordCount = keywords.filter(keyword => section.includes(keyword)).length;
+    // Split text into potential creature sections using multiple delimiters
+    const sections = text.split(/\n\s*\n|\n\n|\f/);
+    
+    console.log(`Split text into ${sections.length} sections`);
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      if (section.length < 50) continue; // Skip very short sections
+      
+      const keywordCount = keywords.filter(keyword => 
+        section.toLowerCase().includes(keyword.toLowerCase())
+      ).length;
+      
+      console.log(`Section ${i}: ${keywordCount} keywords found`);
       
       // If section contains multiple stat block keywords, it's likely a creature
-      if (keywordCount >= 3) {
-        const lines = section.split('\n');
-        const name = lines[0]?.trim();
+      if (keywordCount >= 2) { // Lower threshold
+        const lines = section.split('\n').filter(line => line.trim());
+        
+        // Try to find a creature name - look for capitalized words
+        let name = null;
+        for (const line of lines.slice(0, 5)) { // Check first 5 lines
+          const trimmed = line.trim();
+          if (trimmed.match(/^[A-Z][a-zA-Z\s]{2,30}$/) && 
+              !trimmed.includes(':') && 
+              !trimmed.includes('AC') && 
+              !trimmed.includes('HP')) {
+            name = trimmed;
+            break;
+          }
+        }
+        
+        if (!name) {
+          // If no clear name found, try to extract from first line
+          const firstLine = lines[0]?.trim();
+          if (firstLine && firstLine.length > 2 && firstLine.length < 50) {
+            name = firstLine.replace(/[^a-zA-Z\s]/g, '').trim();
+          }
+        }
         
         if (name && name.length > 2 && name.length < 50) {
-          creatures.push({
+          console.log(`Found potential creature: "${name}"`);
+          
+          const creature = {
             name,
             type: this.extractType(section) || 'humanoid',
             size: this.extractSize(section) || 'medium',
@@ -146,13 +221,18 @@ export const pdfProcessingService = {
             hit_points: this.extractHP(section) || 10,
             speed: this.extractSpeed(section) || '30 ft.',
             stats: this.extractStats(section),
+            abilities: this.extractAbilities(section),
+            actions: this.extractActions(section),
             description: section.substring(0, 300),
             tags: this.generateTags(section)
-          });
+          };
+          
+          creatures.push(creature);
         }
       }
     }
     
+    console.log(`Keyword extraction found ${creatures.length} creatures`);
     return creatures;
   },
 
@@ -284,7 +364,17 @@ export const pdfProcessingService = {
   async processFile(file) {
     try {
       const text = await this.extractTextFromPDF(file);
+      
+      // Debug logging
+      console.log('Extracted text length:', text.length);
+      console.log('First 2000 characters:', text.substring(0, 2000));
+      
       const creatures = this.parseStatBlocks(text);
+      
+      console.log('Found creatures:', creatures.length);
+      if (creatures.length > 0) {
+        console.log('First creature:', creatures[0]);
+      }
       
       return {
         success: true,
