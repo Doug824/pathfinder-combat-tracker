@@ -41,33 +41,47 @@ export const pdfProcessingService = {
     
     try {
       console.log('Starting stat block parsing...');
+      console.log('Text length:', text.length);
       
-      // First, try to find the bestiary or appendix section
-      const bestiarySection = this.findBestiarySection(text);
-      const searchText = bestiarySection || text;
-      
-      console.log(`Using ${bestiarySection ? 'bestiary section' : 'full text'} for creature extraction`);
-      console.log(`Search text length: ${searchText.length}`);
-      
-      // Look for complete stat blocks - more structured approach
+      // Look for stat blocks throughout the text but with better filtering
       const statBlockPatterns = [
-        // Pattern 1: Complete stat block format (Name, CR, then stats)
-        /([A-Z][a-zA-Z\s]{3,25})\s+CR\s+(\d+(?:\/\d+)?)\s*\n.*?(?:AC|Armor Class)\s*(\d+).*?(?:HP|Hit Points)\s*(\d+)/gis,
+        // Pattern 1: Name + CR (most reliable indicator)
+        /\b([A-Z][a-zA-Z\s]{3,25})\s+CR\s+(\d+(?:\/\d+)?)\b/gi,
         
-        // Pattern 2: Name followed by size/type and AC/HP
-        /([A-Z][a-zA-Z\s]{3,25})\s+(Small|Medium|Large|Huge|Gargantuan|Tiny)\s+(humanoid|beast|dragon|undead|fiend|celestial|fey|elemental|construct|plant|ooze|aberration|monstrosity|giant).*?(?:AC|Armor Class)\s*(\d+).*?(?:HP|Hit Points)\s*(\d+)/gis
+        // Pattern 2: Size + Type + Name pattern (like "Medium humanoid Tsuto")
+        /\b(Small|Medium|Large|Huge|Gargantuan|Tiny)\s+(humanoid|beast|dragon|undead|fiend|celestial|fey|elemental|construct|plant|ooze|aberration|monstrosity|giant)\s+([A-Z][a-zA-Z\s]{3,25})/gi,
+        
+        // Pattern 3: Name followed by parenthetical info like "Goblin (fighter 2)"
+        /\b([A-Z][a-zA-Z\s]{3,25})\s+\([^)]*(?:fighter|cleric|wizard|rogue|ranger|barbarian|bard|druid|paladin|sorcerer|monk)[^)]*\)/gi
       ];
       
-      // Try structured patterns first
+      // Try each pattern
       for (let i = 0; i < statBlockPatterns.length; i++) {
         const pattern = statBlockPatterns[i];
         let match;
         let patternMatches = 0;
-        let maxMatches = 25; // Lower limit for more targeted search
+        let maxMatches = 30;
         
-        while ((match = pattern.exec(searchText)) !== null && patternMatches < maxMatches) {
+        while ((match = pattern.exec(text)) !== null && patternMatches < maxMatches) {
           patternMatches++;
-          const creature = this.parseStructuredCreature(match, searchText, i + 1);
+          
+          let creatureName, challengeRating = '1', size = 'medium', type = 'humanoid';
+          
+          if (i === 0) {
+            // Pattern 1: Name + CR
+            creatureName = match[1];
+            challengeRating = match[2];
+          } else if (i === 1) {
+            // Pattern 2: Size + Type + Name
+            size = match[1].toLowerCase();
+            type = match[2].toLowerCase();
+            creatureName = match[3];
+          } else if (i === 2) {
+            // Pattern 3: Name + class info
+            creatureName = match[1];
+          }
+          
+          const creature = this.parseCreatureFromName(creatureName, text, challengeRating, size, type);
           if (creature) {
             statBlocks.push(creature);
           }
@@ -78,28 +92,90 @@ export const pdfProcessingService = {
           }
         }
         
-        console.log(`Structured pattern ${i + 1} found ${patternMatches} matches`);
+        console.log(`Pattern ${i + 1} found ${patternMatches} matches`);
       }
       
-      // If we found creatures in structured format, use those
-      if (statBlocks.length > 0) {
-        console.log('Found creatures using structured patterns');
-        const deduplicated = this.deduplicateCreatures(statBlocks);
-        console.log(`Final creature count after deduplication: ${deduplicated.length}`);
-        return deduplicated;
-      }
-      
-      // Fallback to original patterns but only on bestiary section
-      console.log('No structured patterns matched, trying fallback patterns...');
-      const fallbackCreatures = this.extractCreaturesFromSection(searchText);
-      
-      const deduplicated = this.deduplicateCreatures(fallbackCreatures);
+      const deduplicated = this.deduplicateCreatures(statBlocks);
       console.log(`Final creature count after deduplication: ${deduplicated.length}`);
       
       return deduplicated;
     } catch (error) {
       console.error('Error parsing stat blocks:', error);
       return [];
+    }
+  },
+
+  // Parse creature from name with better validation
+  parseCreatureFromName(name, fullText, challengeRating = '1', size = 'medium', type = 'humanoid') {
+    try {
+      if (!name || name.length < 3 || name.length > 25) return null;
+      
+      name = name.trim();
+      
+      // Enhanced false positive filters
+      const falsePositives = [
+        // Common false positives from your PDF
+        'each time a', 'when a', 'if a', 'as a', 'like a', 'such a', 'once a',
+        'award them a', 'grant them a', 'give them a', 'allow them a',
+        'each melee', 'each ranged', 'each attack', 'each round',
+        'burnt offerings', 'rise of the runelords', 'gamemastery',
+        'adventure path', 'table of contents', 'foreword', 'credits',
+        'fort', 'ref', 'will', 'str', 'dex', 'con', 'int', 'wis', 'cha',
+        // Adventure-specific text
+        'sandpoint', 'thassilon', 'pathfinder', 'paizo'
+      ];
+      
+      if (falsePositives.some(fp => name.toLowerCase().includes(fp))) {
+        return null;
+      }
+      
+      // Filter out obvious non-creature names
+      if (name.match(/^(the|a|an|and|or|but|if|when|where|how|why|what|this|that|these|those)\s/i)) {
+        return null;
+      }
+      
+      // Filter out names that are clearly not creatures
+      if (name.match(/\d{2,}|\$|©|®|™|page|pp\.|chapter|section|table|figure/i)) {
+        return null;
+      }
+      
+      console.log(`Parsing creature: "${name}"`);
+      
+      // Get the section around this creature name
+      const creatureSection = this.extractCreatureSection(name, fullText);
+      
+      // Validate this looks like a creature by checking for stat-like content
+      const hasCreatureIndicators = creatureSection.match(/\b(AC|Armor Class|HP|Hit Points|STR|DEX|CON|INT|WIS|CHA|Fort|Ref|Will|Melee|Ranged|Speed)\s*:?\s*\d+/i);
+      
+      if (!hasCreatureIndicators) {
+        console.log(`Rejected "${name}" - no creature indicators found`);
+        return null;
+      }
+      
+      // Extract stats from the creature section
+      const extractedCR = this.extractCR(creatureSection);
+      const finalCR = extractedCR || challengeRating;
+      
+      const creature = {
+        name,
+        type: this.extractType(creatureSection) || type,
+        size: this.extractSize(creatureSection) || size,
+        challenge_rating: finalCR,
+        armor_class: this.extractAC(creatureSection) || 10,
+        hit_points: this.extractHP(creatureSection) || 10,
+        speed: this.extractSpeed(creatureSection) || '30 ft.',
+        stats: this.extractStats(creatureSection),
+        abilities: this.extractAbilities(creatureSection),
+        actions: this.extractActions(creatureSection),
+        description: this.extractDescription(creatureSection),
+        tags: this.generateTags(creatureSection)
+      };
+      
+      console.log(`Created creature: ${creature.name} (${creature.type}, CR ${creature.challenge_rating})`);
+      return creature;
+    } catch (error) {
+      console.error('Error parsing creature from name:', error);
+      return null;
     }
   },
 
