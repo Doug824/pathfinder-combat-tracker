@@ -5,6 +5,7 @@ import CreateCampaignForm from './CreateCampaignForm';
 import JoinCampaignForm from './JoinCampaignForm';
 import CampaignList from './CampaignList';
 import NotesManager from '../Notes/NotesManager';
+import CampaignBestiary from './CampaignBestiary';
 import './Campaign.css';
 
 const CampaignManager = ({ characters, onCreateCharacter }) => {
@@ -128,7 +129,7 @@ const CampaignManager = ({ characters, onCreateCharacter }) => {
         </div>
       )}
 
-      {activeTab !== 'notes' && (
+      {activeTab !== 'notes' && activeTab !== 'bestiary' && (
         <div className="campaign-tabs">
           <button 
             className={`tab-button ${activeTab === 'list' ? 'active' : ''}`}
@@ -151,15 +152,32 @@ const CampaignManager = ({ characters, onCreateCharacter }) => {
         </div>
       )}
 
-      {activeTab === 'notes' && selectedCampaign && (
-        <div className="campaign-breadcrumb">
-          <button 
-            className="back-button"
-            onClick={handleBackToCampaigns}
-          >
-            ← Back to Campaigns
-          </button>
-          <h3>{selectedCampaign.name}</h3>
+      {(activeTab === 'notes' || activeTab === 'bestiary') && selectedCampaign && (
+        <div className="campaign-navigation">
+          <div className="campaign-breadcrumb">
+            <button 
+              className="back-button"
+              onClick={handleBackToCampaigns}
+            >
+              ← Back to Campaigns
+            </button>
+            <h3>{selectedCampaign.name}</h3>
+          </div>
+          
+          <div className="campaign-tabs">
+            <button 
+              className={`tab-button ${activeTab === 'notes' ? 'active' : ''}`}
+              onClick={() => setActiveTab('notes')}
+            >
+              📝 Notes
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'bestiary' ? 'active' : ''}`}
+              onClick={() => setActiveTab('bestiary')}
+            >
+              🐉 Bestiary
+            </button>
+          </div>
         </div>
       )}
 
@@ -193,6 +211,10 @@ const CampaignManager = ({ characters, onCreateCharacter }) => {
 
         {activeTab === 'notes' && selectedCampaign && (
           <NotesManager campaign={selectedCampaign} />
+        )}
+
+        {activeTab === 'bestiary' && selectedCampaign && (
+          <CampaignBestiary campaign={selectedCampaign} />
         )}
       </div>
     </div>
