@@ -183,21 +183,22 @@ const TemplateManager = ({ campaign, onClose }) => {
   }
 
   return (
-    <div className="template-manager-overlay">
-      <div className="template-manager-content">
-        <div className="template-header">
-          <h2>Template Manager</h2>
-          <button className="close-button" onClick={onClose}>×</button>
-        </div>
-
-        {error && (
-          <div className="error-message">
-            <p>{error}</p>
-            <button onClick={() => setError('')}>Dismiss</button>
+    <>
+      <div className="template-manager-overlay">
+        <div className="template-manager-content">
+          <div className="template-header">
+            <h2>Template Manager</h2>
+            <button className="close-button" onClick={onClose}>×</button>
           </div>
-        )}
 
-        <div className="template-content">
+          {error && (
+            <div className="error-message">
+              <p>{error}</p>
+              <button onClick={() => setError('')}>Dismiss</button>
+            </div>
+          )}
+
+          <div className="template-content">
         <div className="template-section">
           <div className="section-header">
             <h3>Creature Templates</h3>
@@ -401,7 +402,7 @@ const TemplateManager = ({ campaign, onClose }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
