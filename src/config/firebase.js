@@ -14,6 +14,15 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
+// Validate Firebase configuration
+const requiredFields = ['apiKey', 'authDomain', 'projectId', 'appId'];
+const missingFields = requiredFields.filter(field => !firebaseConfig[field]);
+
+if (missingFields.length > 0) {
+  console.error('Missing Firebase configuration:', missingFields);
+  console.error('Please check your .env.local file and ensure all required Firebase environment variables are set.');
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

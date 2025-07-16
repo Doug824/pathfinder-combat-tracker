@@ -6,6 +6,7 @@ import CombatTracker from './pages/CombatTracker';
 import Navigation from './components/layout/Navigation';
 import ThemeToggle from './components/common/ThemeToggle';
 import AuthPage from './components/Auth/AuthPage';
+import ErrorBoundary from './components/ErrorBoundary';
 import { FirebaseAuthProvider, useFirebaseAuth } from './contexts/FirebaseAuthContext';
 
 // Hook imports
@@ -441,9 +442,11 @@ function AppContent() {
 // Main App component wrapped with Firebase Auth Provider
 function App() {
   return (
-    <FirebaseAuthProvider>
-      <AppContent />
-    </FirebaseAuthProvider>
+    <ErrorBoundary>
+      <FirebaseAuthProvider>
+        <AppContent />
+      </FirebaseAuthProvider>
+    </ErrorBoundary>
   );
 }
 
