@@ -418,8 +418,20 @@
   border-radius: 6px;
 }
 
+.member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .member-name {
   color: var(--text-color);
+  font-weight: 500;
+}
+
+.member-character {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 .member-role {

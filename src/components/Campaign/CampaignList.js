@@ -116,9 +116,16 @@ const CampaignList = ({
                 <div className="members-list">
                   {selectedCampaign.members.map(member => (
                     <div key={member.userId} className="member-item">
-                      <span className="member-name">
-                        {member.characterName || 'Unknown'}
-                      </span>
+                      <div className="member-info">
+                        <span className="member-name">
+                          {member.characterName || 'No Character'}
+                        </span>
+                        {member.characterClass && member.characterLevel && (
+                          <span className="member-character">
+                            Level {member.characterLevel} {member.characterClass}
+                          </span>
+                        )}
+                      </div>
                       <span className={`member-role ${member.role}`}>
                         {member.role.toUpperCase()}
                       </span>

@@ -9,6 +9,7 @@ import './Notes.css';
 
 const NotesManager = ({ campaign }) => {
   const { currentUser } = useFirebaseAuth();
+  const [userCharacter, setUserCharacter] = useState(null);
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,14 @@ const NotesManager = ({ campaign }) => {
   });
 
   const userRole = campaignService.getUserRole(campaign, currentUser.uid);
+
+  // Get user's character information
+  useEffect(() => {
+    if (campaign && currentUser) {
+      const characterInfo = campaignService.getMemberCharacter(campaign, currentUser.uid);
+      setUserCharacter(characterInfo);
+    }
+  }, [campaign, currentUser]);
 
   // Real-time notes subscription
   useEffect(() => {
@@ -170,13 +179,26 @@ const NotesManager = ({ campaign }) => {
         <div className="notes-title">
           <h2>Campaign Notes</h2>
           <p>{campaign.name}</p>
+          {userCharacter && userCharacter.characterName && (
+            <div className="character-context">
+              <span className="character-label">Playing as:</span>
+              <span className="character-name">{userCharacter.characterName}</span>
+              {userCharacter.characterClass && userCharacter.characterLevel && (
+                <span className="character-details">
+                  Level {userCharacter.characterLevel} {userCharacter.characterClass}
+                </span>
+              )}
+            </div>
+          )}
         </div>
-        <button 
-          className="new-note-button"
-          onClick={handleNewNote}
-        >
-          + New Note
-        </button>
+        <div className="notes-actions">
+          <button 
+            className="new-note-button"
+            onClick={handleNewNote}
+          >
+            + New Note
+          </button>
+        </div>
       </div>
 
       {error && (

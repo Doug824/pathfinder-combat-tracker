@@ -24,6 +24,36 @@
   font-size: 1.1rem;
 }
 
+.character-context {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.character-label {
+  color: var(--text-secondary);
+}
+
+.character-name {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.character-details {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.notes-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .new-note-button {
   background: var(--primary-color);
   color: white;
