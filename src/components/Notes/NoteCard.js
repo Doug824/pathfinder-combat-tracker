@@ -72,16 +72,6 @@ const NoteCard = ({
     }
   };
 
-  const handleReactionClick = async (emoji) => {
-    const userReactions = note.reactions?.[emoji] || [];
-    const hasReacted = userReactions.includes(currentUser.uid);
-
-    if (hasReacted) {
-      await onRemoveReaction(note.id, emoji);
-    } else {
-      await onAddReaction(note.id, emoji);
-    }
-  };
 
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
@@ -115,26 +105,6 @@ const NoteCard = ({
     }
   };
 
-  const renderReactions = () => {
-    const reactions = note.reactions || {};
-    const reactionEntries = Object.entries(reactions);
-    
-    if (reactionEntries.length === 0) return null;
-
-    return (
-      <div className="note-reactions">
-        {reactionEntries.map(([emoji, users]) => (
-          <button
-            key={emoji}
-            className={`reaction-button ${users.includes(currentUser.uid) ? 'active' : ''}`}
-            onClick={() => handleReactionClick(emoji)}
-          >
-            {emoji} {users.length}
-          </button>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <div className="note-card">
@@ -224,32 +194,6 @@ const NoteCard = ({
         </div>
       )}
 
-      <div className="note-footer">
-        {renderReactions()}
-        
-        <div className="note-footer-actions">
-          <button
-            className="reaction-trigger"
-            onClick={() => setShowReactions(!showReactions)}
-          >
-            😊 React
-          </button>
-          
-          {showReactions && (
-            <div className="reactions-picker">
-              {['👍', '👎', '❤️', '😄', '😮', '😢', '😡', '🤔', '💡', '❓'].map(emoji => (
-                <button
-                  key={emoji}
-                  className="emoji-button"
-                  onClick={() => handleReactionClick(emoji)}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 };
