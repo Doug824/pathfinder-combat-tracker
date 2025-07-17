@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import { notesService } from '../../services/notesService';
 import { campaignService } from '../../services/campaignService';
-import NotesList from './NotesList';
+import NotesSidebar from './NotesSidebar';
+import NotesListPanel from './NotesListPanel';
+import NotesViewerPanel from './NotesViewerPanel';
 import NoteEditor from './NoteEditor';
-import NotesFilters from './NotesFilters';
 import './Notes.css';
 
 const NotesManager = ({ campaign }) => {
@@ -16,12 +17,10 @@ const NotesManager = ({ campaign }) => {
   const [error, setError] = useState(null);
   const [showEditor, setShowEditor] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
-  const [filters, setFilters] = useState({
-    type: 'all',
-    category: '',
-    tag: '',
-    search: ''
-  });
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const userRole = campaignService.getUserRole(campaign, currentUser.uid);
 
@@ -54,35 +53,24 @@ const NotesManager = ({ campaign }) => {
   useEffect(() => {
     let filtered = [...notes];
 
-    // Filter by type
-    if (filters.type !== 'all') {
-      filtered = filtered.filter(note => note.type === filters.type);
-    }
-
-    // Filter by category
-    if (filters.category) {
-      filtered = filtered.filter(note => note.category === filters.category);
-    }
-
-    // Filter by tag
-    if (filters.tag) {
-      filtered = filtered.filter(note => 
-        note.tags && note.tags.includes(filters.tag)
-      );
-    }
-
-    // Filter by search term
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter(note => 
-        note.title.toLowerCase().includes(searchLower) ||
-        note.content.toLowerCase().includes(searchLower) ||
-        (note.tags && note.tags.some(tag => tag.toLowerCase().includes(searchLower)))
-      );
+    // Filter by selected category and subcategory
+    if (selectedCategory === 'type') {
+      // Filter by note type
+      if (selectedSubcategory) {
+        filtered = filtered.filter(note => note.type === selectedSubcategory);
+      }
+    } else if (selectedCategory) {
+      // Filter by category
+      filtered = filtered.filter(note => note.category === selectedCategory);
+      
+      // Filter by subcategory if selected
+      if (selectedSubcategory) {
+        filtered = filtered.filter(note => note.subcategory === selectedSubcategory);
+      }
     }
 
     setFilteredNotes(filtered);
-  }, [notes, filters]);
+  }, [notes, selectedCategory, selectedSubcategory]);
 
   const handleCreateNote = async (noteData) => {
     try {
@@ -144,15 +132,22 @@ const NotesManager = ({ campaign }) => {
     setShowEditor(false);
   };
 
-  const handleFiltersChange = (newFilters) => {
-    setFilters(newFilters);
+  const handleCategorySelect = (category, subcategory) => {
+    setSelectedCategory(category);
+    setSelectedSubcategory(subcategory);
+    setSelectedNote(null); // Clear selected note when changing category
+  };
+
+  const handleNoteSelect = (note) => {
+    setSelectedNote(note);
+  };
+
+  const handleCloseViewer = () => {
+    setSelectedNote(null);
   };
 
   const handleTagClick = (tag) => {
-    setFilters(prev => ({
-      ...prev,
-      tag: prev.tag === tag ? '' : tag // Toggle tag filter
-    }));
+    setSearchQuery(tag);
   };
 
   const getAvailableTags = () => {
@@ -173,32 +168,6 @@ const NotesManager = ({ campaign }) => {
 
   return (
     <div className="notes-manager">
-      <div className="notes-header">
-        <div className="notes-title">
-          <h2>Campaign Notes</h2>
-          <p>{campaign.name}</p>
-          {userCharacter && userCharacter.characterName && (
-            <div className="character-context">
-              <span className="character-label">Playing as:</span>
-              <span className="character-name">{userCharacter.characterName}</span>
-              {userCharacter.characterClass && userCharacter.characterLevel && (
-                <span className="character-details">
-                  Level {userCharacter.characterLevel} {userCharacter.characterClass}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="notes-actions">
-          <button 
-            className="new-note-button"
-            onClick={handleNewNote}
-          >
-            + New Note
-          </button>
-        </div>
-      </div>
-
       {error && (
         <div className="error-message">
           <p>{error}</p>
@@ -206,22 +175,33 @@ const NotesManager = ({ campaign }) => {
         </div>
       )}
 
-      <NotesFilters 
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-        availableTags={getAvailableTags()}
-        userRole={userRole}
-      />
+      <div className="notes-layout">
+        <NotesSidebar
+          notes={notes}
+          selectedCategory={selectedCategory}
+          selectedSubcategory={selectedSubcategory}
+          onCategorySelect={handleCategorySelect}
+          userRole={userRole}
+        />
 
-      <div className="notes-content">
-        <NotesList
+        <NotesListPanel
           notes={filteredNotes}
+          selectedNote={selectedNote}
+          onNoteSelect={handleNoteSelect}
+          onNewNote={handleNewNote}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+
+        <NotesViewerPanel
+          note={selectedNote}
           currentUser={currentUser}
           userRole={userRole}
-          onEditNote={handleEditNote}
-          onDeleteNote={handleDeleteNote}
-          onRevealNote={handleRevealNote}
+          onEdit={handleEditNote}
+          onDelete={handleDeleteNote}
+          onReveal={handleRevealNote}
           onTagClick={handleTagClick}
+          onClose={handleCloseViewer}
         />
       </div>
 
