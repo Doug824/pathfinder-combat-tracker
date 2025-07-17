@@ -44,8 +44,13 @@ const LoginForm = ({ onToggleMode }) => {
   return (
     <div className="auth-form">
       <div className="auth-header">
+        <img 
+          src="/logo.png" 
+          alt="Hero's Ledger Logo" 
+          className="auth-logo"
+        />
         <h2>Welcome Back</h2>
-        <p>Sign in to access your campaigns</p>
+        <p>Sign in to access your legendary campaigns</p>
       </div>
 
       {error && (

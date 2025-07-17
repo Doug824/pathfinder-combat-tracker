@@ -3,49 +3,262 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
-  transition: background-color 0.3s, color 0.3s;
+  transition: all 0.3s ease;
+  background: var(--gradient-background);
+  min-height: 100vh;
+  position: relative;
 }
 
-/* Light Mode (Default) */
+/* Epic Fantasy Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.epic-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Epic Fantasy Animations */
+@keyframes heroGlow {
+  0% { box-shadow: 0 0 5px rgba(26, 35, 126, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(26, 35, 126, 0.8); }
+  100% { box-shadow: 0 0 5px rgba(26, 35, 126, 0.5); }
+}
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.hero-glow {
+  animation: heroGlow 3s ease-in-out infinite;
+}
+
+.gentle-float {
+  animation: gentleFloat 6s ease-in-out infinite;
+}
+
+.shimmer-effect {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Loading Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Epic Button Enhancements */
+.epic-button {
+  position: relative;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(26, 35, 126, 0.3);
+  overflow: hidden;
+}
+
+.epic-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.epic-button:hover::before {
+  left: 100%;
+}
+
+.epic-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(26, 35, 126, 0.5);
+}
+
+/* Light Mode (Default) - EPIC PATHFINDER THEME */
 .light-mode {
-  --bg-primary: #F9F5E3;
-  --bg-secondary: #E3CDA4;
-  --bg-tertiary: #D4A017;
-  --text-primary: #3E2723;
-  --text-secondary: #5A4030;
-  --border-color: #D4A017;
-  --button-bg: #C0392B;
-  --button-text: #F9F5E3;
-  --button-hover: #A63125;
-  --card-shadow: 0 2px 5px rgba(62,39,35,0.2);
-  --highlight-color: #C0392B;
-  --error-color: #C0392B;
-  --success-color: #4A7C59;
-  --active-color: #4A7C59;
-  --inactive-color: #7F7F7F;
-  --tab-active-bg: #F9F5E3;
-  --tab-inactive-bg: #E3CDA4;
+  /* Background Colors - Rich parchment and mystical tones */
+  --bg-primary: #FBF8F3;
+  --bg-secondary: #F5F0E8;
+  --bg-tertiary: #E8DDD0;
+  --bg-quaternary: #D4C5B0;
+  
+  /* Text Colors - Deep, readable fantasy tones */
+  --text-primary: #2D1B0E;
+  --text-secondary: #5D4037;
+  --text-tertiary: #8D6E63;
+  --text-accent: #1A237E;
+  
+  /* Brand Colors - Epic fantasy palette */
+  --primary-color: #1A237E;
+  --primary-hover: #000051;
+  --primary-light: #534BAE;
+  
+  --secondary-color: #B8860B;
+  --secondary-hover: #8B6914;
+  --secondary-light: #DAA520;
+  
+  --accent-color: #B71C1C;
+  --accent-hover: #8B0000;
+  --accent-light: #D32F2F;
+  
+  /* Status Colors - Magical themed */
+  --success-color: #1B5E20;
+  --success-hover: #2E7D32;
+  --success-light: #4CAF50;
+  
+  --warning-color: #E65100;
+  --warning-hover: #BF360C;
+  --warning-light: #FF9800;
+  
+  --error-color: #C62828;
+  --error-hover: #AD1457;
+  --error-light: #F44336;
+  
+  --info-color: #1565C0;
+  --info-hover: #0D47A1;
+  --info-light: #2196F3;
+  
+  /* Interactive Elements */
+  --border-color: #D4C5B0;
+  --border-hover: #B8860B;
+  --border-focus: #1A237E;
+  
+  --button-bg: #1A237E;
+  --button-text: #FFFFFF;
+  --button-hover: #000051;
+  --button-shadow: 0 4px 8px rgba(26, 35, 126, 0.3);
+  
+  /* Card & Panel Effects */
+  --card-shadow: 0 4px 12px rgba(45, 27, 14, 0.1);
+  --card-shadow-hover: 0 8px 24px rgba(45, 27, 14, 0.15);
+  --card-border: 1px solid rgba(212, 197, 176, 0.5);
+  
+  /* Gradient Backgrounds */
+  --gradient-primary: linear-gradient(135deg, #1A237E 0%, #534BAE 100%);
+  --gradient-secondary: linear-gradient(135deg, #B8860B 0%, #DAA520 100%);
+  --gradient-accent: linear-gradient(135deg, #B71C1C 0%, #D32F2F 100%);
+  --gradient-background: linear-gradient(135deg, #FBF8F3 0%, #F5F0E8 100%);
+  
+  /* Legacy Support */
+  --highlight-color: #1A237E;
+  --active-color: #1B5E20;
+  --inactive-color: #8D6E63;
+  --tab-active-bg: #FBF8F3;
+  --tab-inactive-bg: #E8DDD0;
 }
 
-/* Dark Mode */
+/* Dark Mode - EPIC NIGHT ADVENTURE THEME */
 .dark-mode {
-  --bg-primary: #1C1C1C;
-  --bg-secondary: #2D2D2D;
-  --bg-tertiary: #3C3C3C;
-  --text-primary: #F9F5E3;
-  --text-secondary: #E3CDA4;
-  --border-color: #D4A017;
-  --button-bg: #C0392B;
-  --button-text: #F9F5E3;
-  --button-hover: #A63125;
-  --card-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  --highlight-color: #C0392B;
-  --error-color: #E74C3C;
-  --success-color: #4A7C59;
-  --active-color: #4A7C59;
-  --inactive-color: #777777;
-  --tab-active-bg: #1C1C1C;
-  --tab-inactive-bg: #2D2D2D;
+  /* Background Colors - Deep mystical darkness */
+  --bg-primary: #0A0A0F;
+  --bg-secondary: #1A1A24;
+  --bg-tertiary: #2A2A3A;
+  --bg-quaternary: #3A3A4A;
+  
+  /* Text Colors - Mystical light tones */
+  --text-primary: #E8E3D3;
+  --text-secondary: #C4B5A0;
+  --text-tertiary: #A0958A;
+  --text-accent: #7C4DFF;
+  
+  /* Brand Colors - Glowing magical palette */
+  --primary-color: #7C4DFF;
+  --primary-hover: #651FFF;
+  --primary-light: #B085FF;
+  
+  --secondary-color: #FFD700;
+  --secondary-hover: #FFC107;
+  --secondary-light: #FFEB3B;
+  
+  --accent-color: #FF6B6B;
+  --accent-hover: #FF5252;
+  --accent-light: #FF8A80;
+  
+  /* Status Colors - Glowing variants */
+  --success-color: #4CAF50;
+  --success-hover: #66BB6A;
+  --success-light: #81C784;
+  
+  --warning-color: #FF9800;
+  --warning-hover: #FFB74D;
+  --warning-light: #FFCC02;
+  
+  --error-color: #F44336;
+  --error-hover: #EF5350;
+  --error-light: #E57373;
+  
+  --info-color: #2196F3;
+  --info-hover: #42A5F5;
+  --info-light: #64B5F6;
+  
+  /* Interactive Elements */
+  --border-color: #3A3A4A;
+  --border-hover: #FFD700;
+  --border-focus: #7C4DFF;
+  
+  --button-bg: #7C4DFF;
+  --button-text: #FFFFFF;
+  --button-hover: #651FFF;
+  --button-shadow: 0 4px 8px rgba(124, 77, 255, 0.4);
+  
+  /* Card & Panel Effects */
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --card-border: 1px solid rgba(58, 58, 74, 0.5);
+  
+  /* Gradient Backgrounds */
+  --gradient-primary: linear-gradient(135deg, #7C4DFF 0%, #B085FF 100%);
+  --gradient-secondary: linear-gradient(135deg, #FFD700 0%, #FFEB3B 100%);
+  --gradient-accent: linear-gradient(135deg, #FF6B6B 0%, #FF8A80 100%);
+  --gradient-background: linear-gradient(135deg, #0A0A0F 0%, #1A1A24 100%);
+  
+  /* Legacy Support */
+  --highlight-color: #7C4DFF;
+  --active-color: #4CAF50;
+  --inactive-color: #A0958A;
+  --tab-active-bg: #0A0A0F;
+  --tab-inactive-bg: #2A2A3A;
 }
 
 /* Apply theme variables */
@@ -79,14 +292,24 @@ body {
 .app-title h1 {
   margin: 0;
   color: var(--highlight-color);
-  font-size: 1.8rem;
+  font-size: 2.2rem;
+  font-family: 'Cinzel Decorative', serif;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .app-tagline {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text-secondary);
   font-style: italic;
+  font-family: 'Cinzel', serif;
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
 /* Make it responsive */
@@ -114,13 +337,15 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid var(--highlight-color);
+  border-bottom: 3px solid var(--highlight-color);
   padding-bottom: 10px;
   margin-bottom: 30px;
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  padding: 15px 20px;
-  box-shadow: var(--card-shadow);
+  background: var(--gradient-secondary);
+  border-radius: 12px;
+  padding: 20px 25px;
+  box-shadow: var(--card-shadow-hover);
+  position: relative;
+  overflow: hidden;
 }
 
 .App-header h1 {
@@ -156,22 +381,27 @@ body {
 .nav-button {
   background: var(--bg-secondary);
   color: var(--text-primary);
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
+  border: 2px solid transparent;
+  padding: 10px 18px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s, color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav-button:hover:not(:disabled) {
   background: var(--bg-tertiary);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
 }
 
 .nav-item.active .nav-button {
-  background: var(--highlight-color);
+  background: var(--gradient-primary);
   color: var(--button-text);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
 }
 
 .nav-button:disabled {
