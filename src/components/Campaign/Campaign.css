@@ -552,25 +552,24 @@
 .ability-scores {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 0.2rem;
-  margin-top: 0.5rem;
-  font-size: 0.6rem;
+  gap: 0.3rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .ability-score {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.15rem;
+  padding: 0.3rem;
   background: var(--bg-tertiary);
-  border-radius: 2px;
-  font-size: 0.55rem;
+  border-radius: 4px;
   min-width: 0;
-  overflow: hidden;
+  text-align: center;
 }
 
 .ability-name {
-  font-size: 0.5rem;
+  font-size: 0.65rem;
   color: var(--text-secondary);
   font-weight: 500;
   white-space: nowrap;
@@ -579,12 +578,12 @@
 .ability-value {
   font-weight: bold;
   color: var(--text-primary);
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   white-space: nowrap;
 }
 
 .ability-modifier {
-  font-size: 0.5rem;
+  font-size: 0.65rem;
   color: var(--text-secondary);
   white-space: nowrap;
 }
@@ -967,7 +966,7 @@
   
   .ability-scores {
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.15rem;
+    gap: 0.25rem;
   }
   
   .stats-grid {

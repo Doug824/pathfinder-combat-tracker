@@ -303,7 +303,7 @@ const TemplateManager = ({ campaign, onClose }) => {
                             className="duplicate-button"
                             title="Duplicate Creature"
                           >
-                            📋
+                            ⧉
                           </button>
                           {templates.length > 0 && (
                             <div className="template-apply-dropdown">

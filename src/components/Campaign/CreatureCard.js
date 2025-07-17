@@ -153,18 +153,21 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
           )}
         </div>
 
-        {creature.stats && (
-          <div className="ability-scores">
-            {Object.entries(creature.stats).map(([stat, value]) => (
+      </div>
+
+      {creature.stats && (
+        <div className="ability-scores">
+          {['str', 'dex', 'con', 'int', 'wis', 'cha'].map(stat => (
+            creature.stats[stat] && (
               <div key={stat} className="ability-score">
                 <span className="ability-name">{stat.toUpperCase()}</span>
-                <span className="ability-value">{value}</span>
-                <span className="ability-modifier">{formatStatModifier(value)}</span>
+                <span className="ability-value">{creature.stats[stat]}</span>
+                <span className="ability-modifier">{formatStatModifier(creature.stats[stat])}</span>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            )
+          ))}
+        </div>
+      )}
 
       {creature.tags && creature.tags.length > 0 && (
         <div className="creature-tags">
