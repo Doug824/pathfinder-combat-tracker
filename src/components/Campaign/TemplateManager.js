@@ -5,7 +5,7 @@ import TemplateEditor from './TemplateEditor';
 import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import './Campaign.css';
 
-const TemplateManager = ({ campaign, onClose }) => {
+const TemplateManager = ({ campaign, onClose, onCreatureCreated }) => {
   const { currentUser } = useFirebaseAuth();
   const [templates, setTemplates] = useState([]);
   const [creatures, setCreatures] = useState([]);
@@ -131,6 +131,11 @@ const TemplateManager = ({ campaign, onClose }) => {
       setCreatures(prev => [savedCreature, ...prev]);
       setShowApplyModal(false);
       setSelectedCreature(null);
+      
+      // Refresh the main bestiary
+      if (onCreatureCreated) {
+        onCreatureCreated();
+      }
     } catch (err) {
       console.error('Error applying template:', err);
       setError('Failed to apply template to creature');
@@ -163,6 +168,11 @@ const TemplateManager = ({ campaign, onClose }) => {
       );
       
       setCreatures(prev => [savedCreature, ...prev]);
+      
+      // Refresh the main bestiary
+      if (onCreatureCreated) {
+        onCreatureCreated();
+      }
     } catch (err) {
       console.error('Error duplicating creature:', err);
       setError('Failed to duplicate creature');

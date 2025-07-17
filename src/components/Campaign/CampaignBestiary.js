@@ -324,6 +324,7 @@ const CampaignBestiary = ({ campaign }) => {
         <TemplateManager
           campaign={campaign}
           onClose={() => setShowTemplateManager(false)}
+          onCreatureCreated={loadCreatures}
         />
       )}
     </div>
