@@ -447,11 +447,28 @@ export const pdfProcessingService = {
     // Get text starting from creature name
     const startText = text.substring(nameIndex);
     
-    // Find the end of this creature (next creature name or end of text)
-    const nextCreatureMatch = startText.substring(100).match(/^[A-Z][a-z\s]+\n.*?AC\s*\d+/m);
-    const endIndex = nextCreatureMatch ? nextCreatureMatch.index + 100 : Math.min(startText.length, 2000);
+    // Find the end of this creature - look for next creature or section boundary
+    const boundaries = [
+      /\n\s*[A-Z][a-zA-Z\s]+\s+CR\s+\d+/m,           // Next creature with CR
+      /\n\s*[A-Z][A-Z\s]+\n/m,                        // All caps section headers
+      /\n\s*\d+\s*$/m,                                // Page numbers
+      /\n\s*APPENDIX/m,                               // Appendix sections
+      /\n\s*INDEX/m,                                  // Index
+      /\n\s*LEGAL/m                                   // Legal section
+    ];
     
-    return startText.substring(0, endIndex);
+    let endIndex = Math.min(startText.length, 3000); // Increased max length
+    
+    for (const boundary of boundaries) {
+      const match = startText.substring(100).match(boundary); // Skip first 100 chars
+      if (match && match.index < endIndex - 100) {
+        endIndex = match.index + 100;
+      }
+    }
+    
+    const section = startText.substring(0, endIndex);
+    console.log(`Creature section for "${name}": ${section.length} characters`);
+    return section;
   },
 
   // Extract by common keywords when patterns fail
@@ -563,11 +580,44 @@ export const pdfProcessingService = {
     const stats = {};
     const statNames = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
     
-    for (const stat of statNames) {
-      const match = text.match(new RegExp(`${stat}\\s*(\\d+)`, 'i'));
-      stats[stat.toLowerCase()] = match ? parseInt(match[1]) : 10;
+    // First try to find a comma-separated stat line like "Str 12, Dex 14, Con 14, Int 10, Wis 8, Cha 13"
+    const commaStatMatch = text.match(/(?:Str|STR)\s*(\d+)(?:,\s*|\s+)(?:Dex|DEX)\s*(\d+)(?:,\s*|\s+)(?:Con|CON)\s*(\d+)(?:,\s*|\s+)(?:Int|INT)\s*(\d+)(?:,\s*|\s+)(?:Wis|WIS)\s*(\d+)(?:,\s*|\s+)(?:Cha|CHA)\s*(\d+)/i);
+    
+    if (commaStatMatch) {
+      stats.str = parseInt(commaStatMatch[1]) || 10;
+      stats.dex = parseInt(commaStatMatch[2]) || 10;
+      stats.con = parseInt(commaStatMatch[3]) || 10;
+      stats.int = parseInt(commaStatMatch[4]) || 10;
+      stats.wis = parseInt(commaStatMatch[5]) || 10;
+      stats.cha = parseInt(commaStatMatch[6]) || 10;
+      console.log('Found comma-separated stats:', stats);
+      return stats;
     }
     
+    // Fallback to individual stat extraction
+    for (const stat of statNames) {
+      // Try multiple patterns for each stat
+      const patterns = [
+        new RegExp(`${stat}\\s*(\\d+)`, 'i'),                    // STR 12
+        new RegExp(`${stat}\\s*:\\s*(\\d+)`, 'i'),               // STR: 12
+        new RegExp(`${stat}\\s*=\\s*(\\d+)`, 'i'),               // STR = 12
+        new RegExp(`${stat}\\s+(\\d+)\\s*,`, 'i'),               // STR 12,
+        new RegExp(`${stat}\\s+(\\d+)\\s*\\(`, 'i')              // STR 12 (
+      ];
+      
+      let value = 10; // default
+      for (const pattern of patterns) {
+        const match = text.match(pattern);
+        if (match) {
+          value = parseInt(match[1]);
+          break;
+        }
+      }
+      
+      stats[stat.toLowerCase()] = value;
+    }
+    
+    console.log('Extracted stats:', stats);
     return stats;
   },
 
