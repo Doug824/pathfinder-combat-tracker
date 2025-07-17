@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getCampaignIcon, getCharacterIcon, getStoryIcon, getItemIcon, getSessionIcon } from '../../utils/epicIcons';
 import './Notes.css';
 
 const NotesSidebar = ({ 
@@ -20,7 +21,7 @@ const NotesSidebar = ({
   const categoryStructure = {
     world: {
       name: 'World & Locations',
-      icon: '🌍',
+      icon: getCampaignIcon('world'),
       subcategories: {
         regions: 'Regions',
         cities: 'Cities & Towns',
@@ -30,7 +31,7 @@ const NotesSidebar = ({
     },
     people: {
       name: 'People',
-      icon: '👤',
+      icon: getCharacterIcon('player'),
       subcategories: {
         npcs: 'NPCs',
         allies: 'Allies',
@@ -40,7 +41,7 @@ const NotesSidebar = ({
     },
     story: {
       name: 'Story',
-      icon: '📜',
+      icon: getStoryIcon('main'),
       subcategories: {
         main: 'Main Quest',
         side: 'Side Quests',
@@ -50,7 +51,7 @@ const NotesSidebar = ({
     },
     knowledge: {
       name: 'Knowledge',
-      icon: '📚',
+      icon: getCampaignIcon('library'),
       subcategories: {
         lore: 'Lore',
         history: 'History',
@@ -60,7 +61,7 @@ const NotesSidebar = ({
     },
     items: {
       name: 'Items',
-      icon: '💎',
+      icon: getItemIcon('treasure'),
       subcategories: {
         magic: 'Magic Items',
         treasure: 'Treasure',
@@ -69,7 +70,7 @@ const NotesSidebar = ({
     },
     sessions: {
       name: 'Sessions',
-      icon: '🎲',
+      icon: getSessionIcon('session'),
       subcategories: {
         notes: 'Session Notes',
         combat: 'Combat Records',

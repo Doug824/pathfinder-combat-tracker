@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getCreatureIcon } from '../../utils/epicIcons';
 import './Campaign.css';
 
 const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
@@ -9,23 +10,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
   const canDelete = userRole === 'dm';
 
   const getTypeIcon = (type) => {
-    const icons = {
-      'dragon': '🐉',
-      'humanoid': '👤',
-      'beast': '🐺',
-      'undead': '💀',
-      'fiend': '👹',
-      'celestial': '😇',
-      'fey': '🧚',
-      'elemental': '🔥',
-      'construct': '🤖',
-      'plant': '🌱',
-      'ooze': '💧',
-      'giant': '🏔️',
-      'monstrosity': '🦅',
-      'aberration': '🐙'
-    };
-    return icons[type?.toLowerCase()] || '❓';
+    return getCreatureIcon(type);
   };
 
   const getSizeColor = (size) => {

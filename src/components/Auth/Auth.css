@@ -213,6 +213,34 @@
   opacity: 0.6;
 }
 
+/* Back to Landing Button */
+.auth-back-to-landing {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+}
+
+.back-to-landing-btn {
+  background: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Cinzel', serif;
+}
+
+.back-to-landing-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 35, 126, 0.3);
+}
+
 /* Dark theme support */
 [data-theme="dark"] .auth-form {
   background: var(--bg-color);
