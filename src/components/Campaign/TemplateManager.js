@@ -199,151 +199,153 @@ const TemplateManager = ({ campaign, onClose }) => {
           )}
 
           <div className="template-content">
-        <div className="template-section">
-          <div className="section-header">
-            <h3>Creature Templates</h3>
-            <div className="section-actions">
-              <button 
-                className="create-button"
-                onClick={handleCreateTemplate}
-              >
-                Create Template
-              </button>
-              {templates.length === 0 && (
-                <button 
-                  className="default-button"
-                  onClick={handleCreateDefaultTemplates}
-                >
-                  Add Default Templates
-                </button>
-              )}
-            </div>
-          </div>
-
-          {templates.length === 0 ? (
-            <div className="empty-state">
-              <p>No templates created yet. Create your first template or add default templates to get started.</p>
-            </div>
-          ) : (
-            <div className="templates-grid">
-              {templates.map(template => (
-                <div key={template.id} className="template-card">
-                  <div className="template-card-header">
-                    <h4>{template.name}</h4>
-                    <div className="template-actions">
-                      <button 
-                        onClick={() => handleEditTemplate(template)}
-                        className="edit-button"
-                      >
-                        Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteTemplate(template.id)}
-                        className="delete-button"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                  <p className="template-description">{template.description}</p>
-                  <div className="template-stats">
-                    <div className="stat-item">
-                      <span className="stat-label">CR:</span>
-                      <span className="stat-value">
-                        {template.modifications?.challengeRatingModifier > 0 ? '+' : ''}
-                        {template.modifications?.challengeRatingModifier || 0}
-                      </span>
-                    </div>
-                    <div className="stat-item">
-                      <span className="stat-label">HP:</span>
-                      <span className="stat-value">
-                        {template.modifications?.hitPointsModifier > 0 ? '+' : ''}
-                        {template.modifications?.hitPointsModifier || 0}
-                      </span>
-                    </div>
-                    <div className="stat-item">
-                      <span className="stat-label">AC:</span>
-                      <span className="stat-value">
-                        {template.modifications?.armorClassModifier > 0 ? '+' : ''}
-                        {template.modifications?.armorClassModifier || 0}
-                      </span>
-                    </div>
-                  </div>
-                  {template.modifications?.addedAbilities?.length > 0 && (
-                    <div className="template-abilities">
-                      <span className="abilities-label">Abilities:</span>
-                      <span className="abilities-count">
-                        {template.modifications.addedAbilities.length}
-                      </span>
-                    </div>
+            <div className="template-section">
+              <div className="section-header">
+                <h3>Creature Templates</h3>
+                <div className="section-actions">
+                  <button 
+                    className="create-button"
+                    onClick={handleCreateTemplate}
+                  >
+                    Create Template
+                  </button>
+                  {templates.length === 0 && (
+                    <button 
+                      className="default-button"
+                      onClick={handleCreateDefaultTemplates}
+                    >
+                      Add Default Templates
+                    </button>
                   )}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
 
-        <div className="template-section">
-          <div className="section-header">
-            <h3>Campaign Creatures</h3>
-          </div>
-          {creatures.length === 0 ? (
-            <div className="empty-state">
-              <p>No creatures in campaign bestiary yet.</p>
-            </div>
-          ) : (
-            <div className="creatures-grid">
-              {creatures.map(creature => (
-                <div key={creature.id} className="creature-card">
-                  <div className="creature-card-header">
-                    <h4>{creature.name}</h4>
-                    <div className="creature-actions">
-                      <button 
-                        onClick={() => handleDuplicateCreature(creature)}
-                        className="duplicate-button"
-                      >
-                        Duplicate
-                      </button>
-                      {templates.length > 0 && (
-                        <div className="template-apply-dropdown">
-                          <button className="apply-template-button">
-                            Apply Template ▼
+              {templates.length === 0 ? (
+                <div className="empty-state">
+                  <p>No templates created yet. Create your first template or add default templates to get started.</p>
+                </div>
+              ) : (
+                <div className="templates-grid">
+                  {templates.map(template => (
+                    <div key={template.id} className="template-card">
+                      <div className="template-card-header">
+                        <h4>{template.name}</h4>
+                        <div className="template-actions">
+                          <button 
+                            onClick={() => handleEditTemplate(template)}
+                            className="edit-button"
+                          >
+                            Edit
                           </button>
-                          <div className="template-dropdown-content">
-                            {templates.map(template => (
-                              <button
-                                key={template.id}
-                                onClick={() => handleApplyTemplate(template, creature)}
-                                className="template-option"
-                              >
-                                {template.name}
-                              </button>
-                            ))}
-                          </div>
+                          <button 
+                            onClick={() => handleDeleteTemplate(template.id)}
+                            className="delete-button"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                      <p className="template-description">{template.description}</p>
+                      <div className="template-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">CR:</span>
+                          <span className="stat-value">
+                            {template.modifications?.challengeRatingModifier > 0 ? '+' : ''}
+                            {template.modifications?.challengeRatingModifier || 0}
+                          </span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">HP:</span>
+                          <span className="stat-value">
+                            {template.modifications?.hitPointsModifier > 0 ? '+' : ''}
+                            {template.modifications?.hitPointsModifier || 0}
+                          </span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">AC:</span>
+                          <span className="stat-value">
+                            {template.modifications?.armorClassModifier > 0 ? '+' : ''}
+                            {template.modifications?.armorClassModifier || 0}
+                          </span>
+                        </div>
+                      </div>
+                      {template.modifications?.addedAbilities?.length > 0 && (
+                        <div className="template-abilities">
+                          <span className="abilities-label">Abilities:</span>
+                          <span className="abilities-count">
+                            {template.modifications.addedAbilities.length}
+                          </span>
                         </div>
                       )}
                     </div>
-                  </div>
-                  <div className="creature-stats">
-                    <span className="creature-type">{creature.type}</span>
-                    <span className="creature-cr">CR {creature.challenge_rating}</span>
-                    <span className="creature-ac">AC {creature.armor_class}</span>
-                    <span className="creature-hp">HP {creature.hit_points}</span>
-                  </div>
-                  {creature.appliedTemplates?.length > 0 && (
-                    <div className="applied-templates">
-                      <span className="templates-label">Templates:</span>
-                      {creature.appliedTemplates.map((appliedTemplate, index) => (
-                        <span key={index} className="applied-template-tag">
-                          {appliedTemplate.templateName}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          )}
+
+            <div className="template-section">
+              <div className="section-header">
+                <h3>Campaign Creatures</h3>
+              </div>
+              {creatures.length === 0 ? (
+                <div className="empty-state">
+                  <p>No creatures in campaign bestiary yet.</p>
+                </div>
+              ) : (
+                <div className="creatures-grid">
+                  {creatures.map(creature => (
+                    <div key={creature.id} className="creature-card">
+                      <div className="creature-card-header">
+                        <h4>{creature.name}</h4>
+                        <div className="creature-actions">
+                          <button 
+                            onClick={() => handleDuplicateCreature(creature)}
+                            className="duplicate-button"
+                          >
+                            Duplicate
+                          </button>
+                          {templates.length > 0 && (
+                            <div className="template-apply-dropdown">
+                              <button className="apply-template-button">
+                                Apply Template ▼
+                              </button>
+                              <div className="template-dropdown-content">
+                                {templates.map(template => (
+                                  <button
+                                    key={template.id}
+                                    onClick={() => handleApplyTemplate(template, creature)}
+                                    className="template-option"
+                                  >
+                                    {template.name}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="creature-stats">
+                        <span className="creature-type">{creature.type}</span>
+                        <span className="creature-cr">CR {creature.challenge_rating}</span>
+                        <span className="creature-ac">AC {creature.armor_class}</span>
+                        <span className="creature-hp">HP {creature.hit_points}</span>
+                      </div>
+                      {creature.appliedTemplates?.length > 0 && (
+                        <div className="applied-templates">
+                          <span className="templates-label">Templates:</span>
+                          {creature.appliedTemplates.map((appliedTemplate, index) => (
+                            <span key={index} className="applied-template-tag">
+                              {appliedTemplate.templateName}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -401,7 +403,7 @@ const TemplateManager = ({ campaign, onClose }) => {
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
