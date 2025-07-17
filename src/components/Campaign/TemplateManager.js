@@ -301,8 +301,9 @@ const TemplateManager = ({ campaign, onClose }) => {
                           <button 
                             onClick={() => handleDuplicateCreature(creature)}
                             className="duplicate-button"
+                            title="Duplicate Creature"
                           >
-                            Duplicate
+                            📋
                           </button>
                           {templates.length > 0 && (
                             <div className="template-apply-dropdown">
