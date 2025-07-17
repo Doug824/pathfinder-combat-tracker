@@ -25,13 +25,15 @@ const NoteEditor = ({
 
   const categoryOptions = [
     { value: '', label: 'No Category' },
+    { value: 'world', label: 'World & Locations', icon: '🌍' },
     { value: 'npcs', label: 'NPCs', icon: '👤' },
-    { value: 'locations', label: 'Locations', icon: '🏰' },
-    { value: 'items', label: 'Items', icon: '⚔️' },
-    { value: 'quests', label: 'Quests', icon: '📜' },
-    { value: 'lore', label: 'Lore', icon: '📚' },
-    { value: 'organizations', label: 'Organizations', icon: '🏛️' },
-    { value: 'events', label: 'Events', icon: '⚡' },
+    { value: 'organizations', label: 'Organizations & Factions', icon: '🏛️' },
+    { value: 'story', label: 'Story & Narrative', icon: '📜' },
+    { value: 'quests', label: 'Quests & Missions', icon: '⚔️' },
+    { value: 'lore', label: 'Knowledge & Lore', icon: '📚' },
+    { value: 'items', label: 'Items & Treasure', icon: '💎' },
+    { value: 'sessions', label: 'Session Records', icon: '🎲' },
+    { value: 'mysteries', label: 'Mysteries & Secrets', icon: '🔍' },
     { value: 'other', label: 'Other', icon: '📋' }
   ];
 

@@ -9,8 +9,6 @@ const NotesList = ({
   onEditNote, 
   onDeleteNote, 
   onRevealNote,
-  onAddReaction,
-  onRemoveReaction,
   onTagClick
 }) => {
   const groupedNotes = {
@@ -70,8 +68,6 @@ const NotesList = ({
               onEdit={onEditNote}
               onDelete={onDeleteNote}
               onReveal={onRevealNote}
-              onAddReaction={onAddReaction}
-              onRemoveReaction={onRemoveReaction}
               onTagClick={onTagClick}
             />
           ))}

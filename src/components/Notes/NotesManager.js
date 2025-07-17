@@ -128,21 +128,6 @@ const NotesManager = ({ campaign }) => {
     }
   };
 
-  const handleAddReaction = async (noteId, emoji) => {
-    try {
-      await notesService.addReaction(campaign.id, noteId, emoji, currentUser.uid);
-    } catch (err) {
-      setError('Failed to add reaction. Please try again.');
-    }
-  };
-
-  const handleRemoveReaction = async (noteId, emoji) => {
-    try {
-      await notesService.removeReaction(campaign.id, noteId, emoji, currentUser.uid);
-    } catch (err) {
-      setError('Failed to remove reaction. Please try again.');
-    }
-  };
 
   const handleEditNote = (note) => {
     setEditingNote(note);
@@ -236,8 +221,6 @@ const NotesManager = ({ campaign }) => {
           onEditNote={handleEditNote}
           onDeleteNote={handleDeleteNote}
           onRevealNote={handleRevealNote}
-          onAddReaction={handleAddReaction}
-          onRemoveReaction={handleRemoveReaction}
           onTagClick={handleTagClick}
         />
       </div>

@@ -9,23 +9,22 @@ const NoteCard = ({
   onEdit, 
   onDelete, 
   onReveal,
-  onAddReaction,
-  onRemoveReaction,
   onTagClick
 }) => {
   const [showActions, setShowActions] = useState(false);
-  const [showReactions, setShowReactions] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const getCategoryIcon = (category) => {
     const icons = {
+      'world': '🌍',
       'npcs': '👤',
-      'locations': '🏰',
-      'items': '⚔️',
-      'quests': '📜',
-      'lore': '📚',
       'organizations': '🏛️',
-      'events': '⚡',
+      'story': '📜',
+      'quests': '⚔️',
+      'lore': '📚',
+      'items': '💎',
+      'sessions': '🎲',
+      'mysteries': '🔍',
       'other': '📋'
     };
     return icons[category] || '📝';
@@ -33,13 +32,15 @@ const NoteCard = ({
 
   const getCategoryName = (category) => {
     const names = {
+      'world': 'World & Locations',
       'npcs': 'NPCs',
-      'locations': 'Locations',
-      'items': 'Items',
-      'quests': 'Quests',
-      'lore': 'Lore',
-      'organizations': 'Organizations',
-      'events': 'Events',
+      'organizations': 'Organizations & Factions',
+      'story': 'Story & Narrative',
+      'quests': 'Quests & Missions',
+      'lore': 'Knowledge & Lore',
+      'items': 'Items & Treasure',
+      'sessions': 'Session Records',
+      'mysteries': 'Mysteries & Secrets',
       'other': 'Other'
     };
     return names[category] || 'General';
