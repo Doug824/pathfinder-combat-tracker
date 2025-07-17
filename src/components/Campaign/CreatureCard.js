@@ -43,7 +43,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
   const getCRColor = (cr) => {
     const crNum = parseCR(cr);
     if (crNum <= 1) return '#4CAF50';
-    if (crNum <= 5) return '#FFC107';
+    if (crNum <= 5) return '#2196F3';
     if (crNum <= 10) return '#FF9800';
     if (crNum <= 20) return '#FF5722';
     return '#9C27B0';
