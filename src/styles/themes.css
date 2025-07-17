@@ -1,91 +1,195 @@
-/* Light Mode (Default) */
+/* Light Mode (Default) - EPIC PATHFINDER THEME */
 :root {
-    --bg-primary: #F8F5F0;
-    --bg-secondary: #E3CDA4;
-    --bg-tertiary: #D4A017;
-    --text-primary: #3E2723;
-    --text-secondary: #5A4030;
-    --border-color: #D4A017;
-    --button-bg: #C0392B;
-    --button-text: #F9F5E3;
-    --button-hover: #A63125;
-    --card-shadow: 0 2px 5px rgba(62,39,35,0.2);
-    --highlight-color: #C0392B;
-    --error-color: #C0392B;
-    --success-color: #4A7C59;
-    --active-color: #4A7C59;
-    --inactive-color: #7F7F7F;
-    --tab-active-bg: #F9F5E3;
-    --tab-inactive-bg: #E3CDA4;
-    --focus-ring: 0 0 0 3px rgba(192, 57, 43, 0.5);
+    /* Background Colors - Rich parchment and mystical tones */
+    --bg-primary: #FBF8F3;
+    --bg-secondary: #F5F0E8;
+    --bg-tertiary: #E8DDD0;
+    --bg-quaternary: #D4C5B0;
+    
+    /* Text Colors - Deep, readable fantasy tones */
+    --text-primary: #2D1B0E;
+    --text-secondary: #5D4037;
+    --text-tertiary: #8D6E63;
+    --text-accent: #1A237E;
+    
+    /* Brand Colors - Epic fantasy palette */
+    --primary-color: #1A237E;
+    --primary-hover: #000051;
+    --primary-light: #534BAE;
+    
+    --secondary-color: #B8860B;
+    --secondary-hover: #8B6914;
+    --secondary-light: #DAA520;
+    
+    --accent-color: #B71C1C;
+    --accent-hover: #8B0000;
+    --accent-light: #D32F2F;
+    
+    /* Status Colors - Magical themed */
+    --success-color: #1B5E20;
+    --success-hover: #2E7D32;
+    --success-light: #4CAF50;
+    
+    --warning-color: #E65100;
+    --warning-hover: #BF360C;
+    --warning-light: #FF9800;
+    
+    --error-color: #C62828;
+    --error-hover: #AD1457;
+    --error-light: #F44336;
+    
+    --info-color: #1565C0;
+    --info-hover: #0D47A1;
+    --info-light: #2196F3;
+    
+    /* Interactive Elements */
+    --border-color: #D4C5B0;
+    --border-hover: #B8860B;
+    --border-focus: #1A237E;
+    
+    --button-bg: #1A237E;
+    --button-text: #FFFFFF;
+    --button-hover: #000051;
+    --button-shadow: 0 4px 8px rgba(26, 35, 126, 0.3);
+    
+    /* Card & Panel Effects */
+    --card-shadow: 0 4px 12px rgba(45, 27, 14, 0.1);
+    --card-shadow-hover: 0 8px 24px rgba(45, 27, 14, 0.15);
+    --card-border: 1px solid rgba(212, 197, 176, 0.5);
+    
+    /* Gradient Backgrounds */
+    --gradient-primary: linear-gradient(135deg, #1A237E 0%, #534BAE 100%);
+    --gradient-secondary: linear-gradient(135deg, #B8860B 0%, #DAA520 100%);
+    --gradient-accent: linear-gradient(135deg, #B71C1C 0%, #D32F2F 100%);
+    --gradient-background: linear-gradient(135deg, #FBF8F3 0%, #F5F0E8 100%);
+    
+    /* Legacy Support */
+    --highlight-color: #1A237E;
+    --active-color: #1B5E20;
+    --inactive-color: #8D6E63;
+    --tab-active-bg: #FBF8F3;
+    --tab-inactive-bg: #E8DDD0;
+    --focus-ring: 0 0 0 3px rgba(26, 35, 126, 0.15);
     
     /* Additional theme colors for enhanced UI */
     --input-bg: #FFFFFF;
-    --input-border: #D1C4A9;
-    --input-text: #3E2723;
-    --input-placeholder: #8D7B66;
-    --input-hover-border: #BBA888;
-    --input-focus-border: #D4A017;
+    --input-border: #D4C5B0;
+    --input-text: #2D1B0E;
+    --input-placeholder: #8D6E63;
+    --input-hover-border: #B8860B;
+    --input-focus-border: #1A237E;
     
-    --panel-header-bg: linear-gradient(to bottom, #E3CDA4, #D4A017);
-    --panel-header-text: #3E2723;
-    --panel-body-bg: #F8F5F0;
+    --panel-header-bg: var(--gradient-secondary);
+    --panel-header-text: #2D1B0E;
+    --panel-body-bg: #FBF8F3;
     
-    --tooltip-bg: #3E2723;
-    --tooltip-text: #F8F5F0;
+    --tooltip-bg: #2D1B0E;
+    --tooltip-text: #FBF8F3;
     
     --notification-info-bg: #E3F2FD;
     --notification-info-text: #0D47A1;
     --notification-success-bg: #E8F5E9;
     --notification-success-text: #2E7D32;
     --notification-warning-bg: #FFF8E1;
-    --notification-warning-text: #F57F17;
+    --notification-warning-text: #E65100;
     --notification-error-bg: #FFEBEE;
     --notification-error-text: #C62828;
     
     /* Dice colors */
-    --dice-bg: #F8F5F0;
-    --dice-text: #3E2723;
-    --dice-border: #D4A017;
-    --dice-result-bg: #E3CDA4;
-    --dice-result-highlight: #C0392B;
+    --dice-bg: #FBF8F3;
+    --dice-text: #2D1B0E;
+    --dice-border: #B8860B;
+    --dice-result-bg: #F5F0E8;
+    --dice-result-highlight: #1A237E;
   }
   
-  /* Dark Mode */
+  /* Dark Mode - EPIC NIGHT ADVENTURE THEME */
   .dark-mode {
-    --bg-primary: #1C1C1C;
-    --bg-secondary: #2D2D2D;
-    --bg-tertiary: #3C3C3C;
-    --text-primary: #F9F5E3;
-    --text-secondary: #E3CDA4;
-    --border-color: #D4A017;
-    --button-bg: #C0392B;
-    --button-text: #F9F5E3;
-    --button-hover: #A63125;
-    --card-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    --highlight-color: #C0392B;
-    --error-color: #E74C3C;
-    --success-color: #4A7C59;
-    --active-color: #4A7C59;
-    --inactive-color: #777777;
-    --tab-active-bg: #1C1C1C;
-    --tab-inactive-bg: #2D2D2D;
-    --focus-ring: 0 0 0 3px rgba(192, 57, 43, 0.5);
+    /* Background Colors - Deep mystical darkness */
+    --bg-primary: #0A0A0F;
+    --bg-secondary: #1A1A24;
+    --bg-tertiary: #2A2A3A;
+    --bg-quaternary: #3A3A4A;
+    
+    /* Text Colors - Mystical light tones */
+    --text-primary: #E8E3D3;
+    --text-secondary: #C4B5A0;
+    --text-tertiary: #A0958A;
+    --text-accent: #7C4DFF;
+    
+    /* Brand Colors - Glowing magical palette */
+    --primary-color: #7C4DFF;
+    --primary-hover: #651FFF;
+    --primary-light: #B085FF;
+    
+    --secondary-color: #FFD700;
+    --secondary-hover: #FFC107;
+    --secondary-light: #FFEB3B;
+    
+    --accent-color: #FF6B6B;
+    --accent-hover: #FF5252;
+    --accent-light: #FF8A80;
+    
+    /* Status Colors - Glowing variants */
+    --success-color: #4CAF50;
+    --success-hover: #66BB6A;
+    --success-light: #81C784;
+    
+    --warning-color: #FF9800;
+    --warning-hover: #FFB74D;
+    --warning-light: #FFCC02;
+    
+    --error-color: #F44336;
+    --error-hover: #EF5350;
+    --error-light: #E57373;
+    
+    --info-color: #2196F3;
+    --info-hover: #42A5F5;
+    --info-light: #64B5F6;
+    
+    /* Interactive Elements */
+    --border-color: #3A3A4A;
+    --border-hover: #FFD700;
+    --border-focus: #7C4DFF;
+    
+    --button-bg: #7C4DFF;
+    --button-text: #FFFFFF;
+    --button-hover: #651FFF;
+    --button-shadow: 0 4px 8px rgba(124, 77, 255, 0.4);
+    
+    /* Card & Panel Effects */
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --card-border: 1px solid rgba(58, 58, 74, 0.5);
+    
+    /* Gradient Backgrounds */
+    --gradient-primary: linear-gradient(135deg, #7C4DFF 0%, #B085FF 100%);
+    --gradient-secondary: linear-gradient(135deg, #FFD700 0%, #FFEB3B 100%);
+    --gradient-accent: linear-gradient(135deg, #FF6B6B 0%, #FF8A80 100%);
+    --gradient-background: linear-gradient(135deg, #0A0A0F 0%, #1A1A24 100%);
+    
+    /* Legacy Support */
+    --highlight-color: #7C4DFF;
+    --active-color: #4CAF50;
+    --inactive-color: #A0958A;
+    --tab-active-bg: #0A0A0F;
+    --tab-inactive-bg: #2A2A3A;
+    --focus-ring: 0 0 0 3px rgba(124, 77, 255, 0.15);
     
     /* Additional theme colors for enhanced UI */
-    --input-bg: #2D2D2D;
-    --input-border: #3C3C3C;
-    --input-text: #F9F5E3;
-    --input-placeholder: #AAAAAA;
-    --input-hover-border: #4D4D4D;
-    --input-focus-border: #D4A017;
+    --input-bg: #1A1A24;
+    --input-border: #3A3A4A;
+    --input-text: #E8E3D3;
+    --input-placeholder: #A0958A;
+    --input-hover-border: #FFD700;
+    --input-focus-border: #7C4DFF;
     
-    --panel-header-bg: linear-gradient(to bottom, #3C3C3C, #2D2D2D);
-    --panel-header-text: #F9F5E3;
-    --panel-body-bg: #1C1C1C;
+    --panel-header-bg: var(--gradient-secondary);
+    --panel-header-text: #2D1B0E;
+    --panel-body-bg: #0A0A0F;
     
-    --tooltip-bg: #F9F5E3;
-    --tooltip-text: #1C1C1C;
+    --tooltip-bg: #E8E3D3;
+    --tooltip-text: #0A0A0F;
     
     --notification-info-bg: #1A2937;
     --notification-info-text: #90CAF9;
@@ -97,11 +201,11 @@
     --notification-error-text: #EF9A9A;
     
     /* Dice colors */
-    --dice-bg: #2D2D2D;
-    --dice-text: #F9F5E3;
-    --dice-border: #D4A017;
-    --dice-result-bg: #3C3C3C;
-    --dice-result-highlight: #C0392B;
+    --dice-bg: #0A0A0F;
+    --dice-text: #E8E3D3;
+    --dice-border: #FFD700;
+    --dice-result-bg: #1A1A24;
+    --dice-result-highlight: #7C4DFF;
   }
   
   /* Fantasy-themed color accents - can be used for specific UI elements */

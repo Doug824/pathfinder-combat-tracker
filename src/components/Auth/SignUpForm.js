@@ -55,8 +55,13 @@ const SignUpForm = ({ onToggleMode }) => {
   return (
     <div className="auth-form">
       <div className="auth-header">
+        <img 
+          src="/logo.png" 
+          alt="Hero's Ledger Logo" 
+          className="auth-logo"
+        />
         <h2>Join Hero's Ledger</h2>
-        <p>Create your account to start managing campaigns</p>
+        <p>Create your account to start managing epic campaigns</p>
       </div>
 
       {error && (

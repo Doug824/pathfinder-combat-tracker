@@ -1,7 +1,7 @@
 /* Hero Landing Page Styles */
 .hero-landing {
   min-height: 100vh;
-  background: var(--gradient-background);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8F6F0 50%, #F0EDE6 100%);
   overflow-x: hidden;
 }
 
@@ -191,15 +191,15 @@
 }
 
 .character-card-demo {
-  top: 120px;
-  right: 20px;
+  top: 80px;
+  right: 0;
   z-index: 2;
   animation: gentleFloat 6s ease-in-out infinite 2s;
 }
 
 .note-card-demo {
-  top: 240px;
-  left: 40px;
+  top: 160px;
+  left: 20px;
   z-index: 1;
   animation: gentleFloat 6s ease-in-out infinite 4s;
 }
@@ -259,6 +259,19 @@
   color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.4;
+  margin-top: 1rem;
+}
+
+.stat-line {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.abilities {
+  margin-top: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.85rem;
 }
 
 /* Features Section */
@@ -458,7 +471,7 @@
 /* Testimonials Section */
 .testimonials-section {
   padding: 6rem 2rem;
-  background: var(--bg-secondary);
+  background: linear-gradient(135deg, #F8F6F0 0%, #F0EDE6 100%);
 }
 
 .testimonials-grid {

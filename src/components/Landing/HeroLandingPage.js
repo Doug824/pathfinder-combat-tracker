@@ -58,10 +58,10 @@ const HeroLandingPage = ({ onGetStarted }) => {
   ];
 
   const stats = [
-    { value: '10,000+', label: 'Adventures Created' },
-    { value: '50,000+', label: 'Creatures Managed' },
-    { value: '5,000+', label: 'Active DMs' },
-    { value: '99.9%', label: 'Uptime' }
+    { value: 'Beta', label: 'Development Stage' },
+    { value: 'Free', label: 'Forever' },
+    { value: 'Open', label: 'Source' },
+    { value: 'Epic', label: 'Adventures' }
   ];
 
   return (
@@ -89,8 +89,8 @@ const HeroLandingPage = ({ onGetStarted }) => {
               className="epic-button hero-cta"
               onClick={onGetStarted}
             >
-              <span className="button-icon">{getUIIcon('forward')}</span>
-              Begin Your Legend
+              <span className="button-icon">⚔️</span>
+              Begin Your Adventure
             </button>
             
             <button className="demo-button">
@@ -120,6 +120,17 @@ const HeroLandingPage = ({ onGetStarted }) => {
                 <span className="cr-badge">CR 17</span>
                 <span className="hp-badge">546 HP</span>
               </div>
+              <div className="card-content">
+                <div className="stat-line">
+                  <strong>AC:</strong> 22 | <strong>Speed:</strong> 40 ft, fly 80 ft
+                </div>
+                <div className="stat-line">
+                  <strong>STR:</strong> 30 | <strong>DEX:</strong> 10 | <strong>CON:</strong> 29
+                </div>
+                <div className="abilities">
+                  <strong>Fire Breath:</strong> 70 ft cone, 91 (26d6) fire damage
+                </div>
+              </div>
             </div>
             
             <div className="hero-card character-card-demo">
@@ -131,15 +142,25 @@ const HeroLandingPage = ({ onGetStarted }) => {
                 <span className="level-badge">Level 12</span>
                 <span className="class-badge">Wizard</span>
               </div>
+              <div className="card-content">
+                <div className="stat-line">
+                  <strong>HP:</strong> 78/78 | <strong>AC:</strong> 15 | <strong>Speed:</strong> 30 ft
+                </div>
+                <div className="stat-line">
+                  <strong>Spells:</strong> Fireball, Lightning Bolt, Counterspell
+                </div>
+              </div>
             </div>
             
             <div className="hero-card note-card-demo">
               <div className="card-header">
-                <span className="card-icon">{getStoryIcon('mystery')}</span>
+                <span className="card-icon">📜</span>
                 <h3>The Lost Crown</h3>
               </div>
               <div className="card-content">
-                <p>Ancient artifact hidden in...</p>
+                <p><strong>Location:</strong> Shadowfell Ruins</p>
+                <p><strong>Clue:</strong> "Where shadows dance and ancients weep, the crown of kings lies buried deep."</p>
+                <p><strong>Reward:</strong> +3 Crown of Command</p>
               </div>
             </div>
           </div>
@@ -244,7 +265,7 @@ const HeroLandingPage = ({ onGetStarted }) => {
               className="epic-button cta-primary"
               onClick={onGetStarted}
             >
-              <span className="button-icon">{getDiceIcon('d20')}</span>
+              <span className="button-icon">🎲</span>
               Start Your Adventure
             </button>
             
