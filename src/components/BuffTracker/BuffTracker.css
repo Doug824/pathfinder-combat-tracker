@@ -78,7 +78,7 @@
   }
   
   .remove-buff-btn {
-    background: linear-gradient(to bottom, var(--error-color), #a32920);
+    background: var(--gradient-accent);
     color: white;
     border: none;
     border-radius: 4px;
@@ -90,13 +90,13 @@
   }
   
   .remove-buff-btn:hover {
-    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+    background: var(--error-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }
   
   .save-buff-btn {
-    background: linear-gradient(to bottom, var(--highlight-color), #882018);
+    background: var(--gradient-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -108,7 +108,7 @@
   }
   
   .save-buff-btn:hover {
-    background: linear-gradient(to bottom, #d54a3c, #a6281d);
+    background: var(--primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }
@@ -193,7 +193,7 @@
   }
   
   .add-buff-button {
-    background: linear-gradient(to bottom, var(--highlight-color), #882018);
+    background: var(--gradient-primary);
     color: white;
     border: none;
     width: 100%;
@@ -206,7 +206,7 @@
   }
   
   .add-buff-button:hover {
-    background: linear-gradient(to bottom, #d56c3c, #a6281d);
+    background: var(--primary-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   }

@@ -213,13 +213,112 @@ const HeroLandingPage = ({ onGetStarted }) => {
                   <div className="mockup-title">Hero's Ledger</div>
                 </div>
                 <div className="mockup-content">
-                  <div className="mockup-feature">
-                    <span className="feature-icon">{features[activeFeature].icon}</span>
-                    <div className="feature-text">
-                      <h4>{features[activeFeature].title}</h4>
-                      <p>Experience the power of organized campaign management</p>
+                  {activeFeature === 0 && (
+                    <div className="detailed-example campaign-example">
+                      <div className="example-header">
+                        <h4>◉ World & Locations</h4>
+                        <span className="note-count">12 notes</span>
+                      </div>
+                      <div className="example-item">
+                        <span className="item-icon">▲</span>
+                        <div className="item-details">
+                          <strong>Shadowfell Ruins</strong>
+                          <p>Ancient fortress where the Crown of Kings lies hidden...</p>
+                        </div>
+                      </div>
+                      <div className="example-item">
+                        <span className="item-icon">▦</span>
+                        <div className="item-details">
+                          <strong>Waterdeep</strong>
+                          <p>The City of Splendors, hub of trade and intrigue...</p>
+                        </div>
+                      </div>
+                      <div className="example-item">
+                        <span className="item-icon">■</span>
+                        <div className="item-details">
+                          <strong>Temple of Bahamut</strong>
+                          <p>Sacred sanctuary offering aid to worthy adventurers...</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
+                  
+                  {activeFeature === 1 && (
+                    <div className="detailed-example creature-example">
+                      <div className="creature-card-example">
+                        <div className="creature-header">
+                          <span className="creature-icon">⚡</span>
+                          <h4>Ancient Red Dragon</h4>
+                          <span className="cr-badge">CR 17</span>
+                        </div>
+                        <div className="creature-stats">
+                          <div className="stat-block">
+                            <strong>AC:</strong> 22 | <strong>HP:</strong> 546 | <strong>Speed:</strong> 40 ft, fly 80 ft
+                          </div>
+                          <div className="abilities-block">
+                            <strong>Fire Breath (Recharge 5-6):</strong> 70-foot cone, DC 24 Dex save, 91 (26d6) fire damage
+                          </div>
+                          <div className="template-applied">
+                            <span className="template-tag">🏔️ Mountain Dwelling</span>
+                            <span className="template-tag">⚡ Storm Infused</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {activeFeature === 2 && (
+                    <div className="detailed-example character-example">
+                      <div className="character-sheet-preview">
+                        <h4>◉ Valeria Stormcaller - Level 12 Wizard</h4>
+                        <div className="character-stats-grid">
+                          <div className="stat-group">
+                            <strong>Stats:</strong> STR 8, DEX 14, CON 16, INT 20, WIS 13, CHA 12
+                          </div>
+                          <div className="stat-group">
+                            <strong>Combat:</strong> AC 15, HP 78/78, Speed 30 ft
+                          </div>
+                          <div className="stat-group">
+                            <strong>Active Buffs:</strong> Mage Armor, Shield, Haste
+                          </div>
+                          <div className="spell-slots">
+                            <strong>Spell Slots:</strong> 1st ●●●● 2nd ●●● 3rd ●●● 4th ●●● 5th ●● 6th ●
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {activeFeature === 3 && (
+                    <div className="detailed-example collaboration-example">
+                      <div className="collaboration-panel">
+                        <h4>◎ Campaign Members</h4>
+                        <div className="member-list">
+                          <div className="member-item">
+                            <span className="member-icon">◉</span>
+                            <span className="member-name">Marcus (DM)</span>
+                            <span className="member-status online">Online</span>
+                          </div>
+                          <div className="member-item">
+                            <span className="member-icon">○</span>
+                            <span className="member-name">Sarah (Rogue)</span>
+                            <span className="member-status online">Online</span>
+                          </div>
+                          <div className="member-item">
+                            <span className="member-icon">○</span>
+                            <span className="member-name">Alex (Cleric)</span>
+                            <span className="member-status away">Away</span>
+                          </div>
+                        </div>
+                        <div className="recent-activity">
+                          <strong>Recent Updates:</strong>
+                          <p>• Marcus updated "Dragon's Lair" encounter</p>
+                          <p>• Sarah added note about "Mysterious Key"</p>
+                          <p>• New creature "Shadow Assassin" added</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -271,16 +370,16 @@ const HeroLandingPage = ({ onGetStarted }) => {
             
             <div className="cta-features">
               <div className="cta-feature">
-                <span className="feature-icon">{getUIIcon('success')}</span>
-                <span>Free to start</span>
+                <span className="feature-icon">✓</span>
+                <span>Professional campaign tools</span>
               </div>
               <div className="cta-feature">
-                <span className="feature-icon">{getUIIcon('success')}</span>
-                <span>No credit card required</span>
+                <span className="feature-icon">✓</span>
+                <span>Advanced creature management</span>
               </div>
               <div className="cta-feature">
-                <span className="feature-icon">{getUIIcon('success')}</span>
-                <span>Ready in minutes</span>
+                <span className="feature-icon">✓</span>
+                <span>Real-time collaboration</span>
               </div>
             </div>
           </div>

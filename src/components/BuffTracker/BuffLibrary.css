@@ -33,7 +33,7 @@
   }
   
   .create-package-btn {
-    background: linear-gradient(to bottom, var(--button-bg), #a6281d);
+    background: var(--gradient-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -43,7 +43,7 @@
   }
   
   .create-package-btn:hover {
-    background: linear-gradient(to bottom, #d54a3c, #b3392e);
+    background: var(--primary-hover);
     transform: translateY(-2px);
   }
   
@@ -100,7 +100,7 @@
   }
   
   .save-package-btn {
-    background: linear-gradient(to bottom, var(--highlight-color), #882018);
+    background: var(--gradient-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -111,7 +111,7 @@
   }
   
   .save-package-btn:hover {
-    background: linear-gradient(to bottom, #d54a3c, #a6281d);
+    background: var(--primary-hover);
     transform: translateY(-2px);
   }
   
@@ -254,7 +254,7 @@
   
   .apply-buff-btn,
   .apply-package-btn {
-    background: linear-gradient(to bottom, var(--active-color), #3a6c49);
+    background: var(--gradient-secondary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -266,12 +266,12 @@
   
   .apply-buff-btn:hover,
   .apply-package-btn:hover {
-    background: linear-gradient(to bottom, #5aac79, #4a7c59);
+    background: var(--secondary-hover);
     transform: translateY(-2px);
   }
   
   .remove-buff-btn {
-    background: linear-gradient(to bottom, var(--error-color), #a32920);
+    background: var(--gradient-accent);
     color: white;
     border: none;
     border-radius: 4px;
@@ -282,7 +282,7 @@
   }
   
   .remove-buff-btn:hover {
-    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+    background: var(--error-hover);
     transform: translateY(-2px);
   }
   

@@ -257,7 +257,7 @@
 }
 
 .heal-btn:hover {
-  background-color: #5a9c6d;
+  background-color: var(--success-hover);
   transform: translateY(-2px);
 }
 
@@ -267,17 +267,17 @@
 }
 
 .temp-hp-btn:hover {
-  background-color: #5a9c6d;
+  background-color: var(--active-hover);
   transform: translateY(-2px);
 }
 
 .nonlethal-btn {
-  background-color: #FF6347;
+  background-color: var(--warning-color);
   color: white;
 }
 
 .nonlethal-btn:hover {
-  background-color: #E55347;
+  background-color: var(--warning-hover);
   transform: translateY(-2px);
 }
 
