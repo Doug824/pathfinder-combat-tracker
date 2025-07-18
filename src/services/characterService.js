@@ -37,17 +37,24 @@ export const characterService = {
   // Get all characters for a user
   async getUserCharacters(userId) {
     try {
+      // Simplified query without orderBy to avoid index requirement
       const q = query(
         collection(db, 'characters'),
-        where('userId', '==', userId),
-        orderBy('updatedAt', 'desc')
+        where('userId', '==', userId)
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
+      const characters = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      
+      // Sort on client side by updatedAt
+      return characters.sort((a, b) => {
+        const aTime = a.updatedAt?.toDate?.() || new Date(0);
+        const bTime = b.updatedAt?.toDate?.() || new Date(0);
+        return bTime - aTime;
+      });
     } catch (error) {
       console.error('Error getting user characters:', error);
       throw error;
@@ -136,10 +143,24 @@ export const characterService = {
   async updateUserPreferences(userId, updates) {
     try {
       const docRef = doc(db, 'userPreferences', userId);
-      await updateDoc(docRef, {
-        ...updates,
-        updatedAt: serverTimestamp()
-      });
+      
+      // Try to update first, if document doesn't exist, create it
+      try {
+        await updateDoc(docRef, {
+          ...updates,
+          updatedAt: serverTimestamp()
+        });
+      } catch (updateError) {
+        // If document doesn't exist, create it
+        await setDoc(docRef, {
+          userId,
+          activeCharacterId: null,
+          theme: 'dark',
+          ...updates,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+      }
       
       return await this.getUserPreferences(userId);
     } catch (error) {
