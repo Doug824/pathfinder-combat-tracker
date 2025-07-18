@@ -119,8 +119,10 @@
     border-radius: 8px;
     padding: 24px;
     box-shadow: var(--card-shadow);
-    min-width: 100%;
+    width: 100%;
+    max-width: 1400px;
     box-sizing: border-box;
+    margin: 0 auto;
   }
   
   .new-buff-form h3 {
@@ -183,17 +185,56 @@
     color: var(--text-primary);
   }
   
+  .stat-effects {
+    position: relative;
+    margin-top: 20px;
+    padding: 0 20px;
+    width: 100%;
+    min-height: 400px;
+    box-sizing: border-box;
+  }
+
   .stat-effects h4 {
-    margin: 15px 0 10px 0;
-    padding-top: 10px;
-    border-top: 1px solid var(--border-color);
+    margin: 0 0 15px 0;
     font-size: 1rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+  }
+
+  .effects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .attribute-section {
+    position: absolute;
+    left: 10%;
+    top: 0;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    width: 35%;
+    box-sizing: border-box;
+  }
+
+  .combat-section {
+    position: absolute;
+    right: 10%;
+    top: 0;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    width: 35%;
+    box-sizing: border-box;
   }
   
   .stat-effect-row {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
     gap: 15px;
   }
   
@@ -201,12 +242,15 @@
     width: 140px;
     margin-bottom: 0;
     flex-shrink: 0;
+    font-weight: 500;
   }
   
   .stat-effect-row input {
     width: 80px !important;
     text-align: center;
     flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 8px;
   }
   
   .add-buff-button {
@@ -234,6 +278,22 @@
       grid-template-columns: 1fr;
     }
     
+    .stat-effects {
+      position: static;
+      min-height: auto;
+    }
+
+    .attribute-section {
+      position: static;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .combat-section {
+      position: static;
+      width: 100%;
+    }
+    
     .duration-container,
     .bonus-type-container {
       flex-direction: column;
@@ -244,5 +304,9 @@
     .duration-type-select,
     .bonus-type-select {
       width: 100% !important;
+    }
+    
+    .stat-effect-row label {
+      width: 120px;
     }
   }

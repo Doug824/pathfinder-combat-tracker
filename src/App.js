@@ -39,6 +39,8 @@ function AppContent() {
     characters,
     activeCharacterId,
     activeCharacter,
+    loading: charactersLoading,
+    error: charactersError,
     createCharacter,
     updateCharacter,
     deleteCharacter,
@@ -50,7 +52,8 @@ function AppContent() {
     updateWeapons,
     updateCombatSettings,
     updateSavedBuffs,
-    updateHitPoints
+    updateHitPoints,
+    refreshCharacters
   } = useCharacterStorage(currentUser);
   
   // State for current page
@@ -169,18 +172,25 @@ function AppContent() {
     }
   }, [activeCharacter]);
   
-  // Toggle dark mode and store preference
+  // Load theme preference from Firebase when user changes
   useEffect(() => {
-    const savedTheme = localStorage.getItem('darkMode');
-    if (savedTheme) {
-      setDarkMode(savedTheme === 'true');
-    } else {
-      // Default to dark mode
-      setDarkMode(true);
-      // Save the preference
-      localStorage.setItem('darkMode', 'true');
-    }
-  }, []);
+    const loadTheme = async () => {
+      if (currentUser?.uid) {
+        try {
+          const { themeService } = await import('./services/themeService');
+          const theme = await themeService.getUserTheme(currentUser.uid);
+          setDarkMode(theme === 'dark');
+        } catch (error) {
+          console.error('Error loading theme:', error);
+          setDarkMode(true); // Default to dark mode
+        }
+      } else {
+        setDarkMode(true); // Default to dark mode for non-authenticated users
+      }
+    };
+    
+    loadTheme();
+  }, [currentUser]);
   
   // Apply theme class to body
   useEffect(() => {
@@ -189,11 +199,21 @@ function AppContent() {
     } else {
       document.body.classList.remove('dark-mode');
     }
-    localStorage.setItem('darkMode', darkMode.toString());
   }, [darkMode]);
 
-  const handleThemeToggle = () => {
-    setDarkMode(!darkMode);
+  const handleThemeToggle = async () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    
+    // Save theme preference to Firebase
+    if (currentUser?.uid) {
+      try {
+        const { themeService } = await import('./services/themeService');
+        await themeService.updateUserTheme(currentUser.uid, newDarkMode ? 'dark' : 'light');
+      } catch (error) {
+        console.error('Error saving theme preference:', error);
+      }
+    }
   };
   
   // Improved stats change handler
@@ -296,11 +316,29 @@ function AppContent() {
     return <div className="loading">Loading...</div>;
   }
   
+  // Show loading while characters are being loaded for authenticated users
+  if (currentUser && charactersLoading) {
+    return <div className="loading">Loading characters...</div>;
+  }
+  
   // If not authenticated, show login page
   if (!currentUser) {
     return (
       <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
         <AuthPage />
+      </div>
+    );
+  }
+  
+  // Show error if character loading failed
+  if (charactersError) {
+    return (
+      <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+        <div className="error-container">
+          <h2>Error Loading Characters</h2>
+          <p>{charactersError}</p>
+          <button onClick={refreshCharacters}>Retry</button>
+        </div>
       </div>
     );
   }

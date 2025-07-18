@@ -240,81 +240,85 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
         </div>
         
         <div className="stat-effects">
-          <h4>Attribute Bonuses/Penalties</h4>
-          <div className="effects-grid">
-            {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
-              <div key={stat} className="stat-effect-row">
-                <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}:</label>
+          <div className="attribute-section">
+            <h4>Attribute Bonuses/Penalties</h4>
+            <div className="effects-grid">
+              {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
+                <div key={stat} className="stat-effect-row">
+                  <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}:</label>
+                  <input 
+                    type="number" 
+                    value={newBuff.effects[stat]}
+                    onChange={(e) => handleEffectChange(stat, e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="combat-section">
+            <h4>Combat Bonuses/Penalties</h4>
+            <div className="effects-grid">
+              <div className="stat-effect-row">
+                <label>Attack Bonus:</label>
                 <input 
                   type="number" 
-                  value={newBuff.effects[stat]}
-                  onChange={(e) => handleEffectChange(stat, e.target.value)}
+                  value={newBuff.effects.attackBonus}
+                  onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
                   className="form-control"
                 />
               </div>
-            ))}
-          </div>
-          
-          <h4>Combat Bonuses/Penalties</h4>
-          <div className="effects-grid">
-            <div className="stat-effect-row">
-              <label>Attack Bonus:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects.attackBonus}
-                onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
-                className="form-control"
-              />
-            </div>
-            
-            <div className="stat-effect-row">
-              <label>AC:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects.ac}
-                onChange={(e) => handleEffectChange('ac', e.target.value)}
-                className="form-control"
-              />
-            </div>
-            
-            <div className="stat-effect-row">
-              <label>Fortitude:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects.fortitude}
-                onChange={(e) => handleEffectChange('fortitude', e.target.value)}
-                className="form-control"
-              />
-            </div>
-            
-            <div className="stat-effect-row">
-              <label>Reflex:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects.reflex}
-                onChange={(e) => handleEffectChange('reflex', e.target.value)}
-                className="form-control"
-              />
-            </div>
-            
-            <div className="stat-effect-row">
-              <label>Will:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects.will}
-                onChange={(e) => handleEffectChange('will', e.target.value)}
-                className="form-control"
-              />
-            </div>
-            
-            <div className="stat-effect-row">
-              <label>Natural Armor:</label>
-              <input 
-                type="number" 
-                value={newBuff.effects.naturalArmor}
-                onChange={(e) => handleEffectChange('naturalArmor', e.target.value)}
-                className="form-control"
-              />
+              
+              <div className="stat-effect-row">
+                <label>AC:</label>
+                <input 
+                  type="number" 
+                  value={newBuff.effects.ac}
+                  onChange={(e) => handleEffectChange('ac', e.target.value)}
+                  className="form-control"
+                />
+              </div>
+              
+              <div className="stat-effect-row">
+                <label>Fortitude:</label>
+                <input 
+                  type="number" 
+                  value={newBuff.effects.fortitude}
+                  onChange={(e) => handleEffectChange('fortitude', e.target.value)}
+                  className="form-control"
+                />
+              </div>
+              
+              <div className="stat-effect-row">
+                <label>Reflex:</label>
+                <input 
+                  type="number" 
+                  value={newBuff.effects.reflex}
+                  onChange={(e) => handleEffectChange('reflex', e.target.value)}
+                  className="form-control"
+                />
+              </div>
+              
+              <div className="stat-effect-row">
+                <label>Will:</label>
+                <input 
+                  type="number" 
+                  value={newBuff.effects.will}
+                  onChange={(e) => handleEffectChange('will', e.target.value)}
+                  className="form-control"
+                />
+              </div>
+              
+              <div className="stat-effect-row">
+                <label>Natural Armor:</label>
+                <input 
+                  type="number" 
+                  value={newBuff.effects.naturalArmor}
+                  onChange={(e) => handleEffectChange('naturalArmor', e.target.value)}
+                  className="form-control"
+                />
+              </div>
             </div>
           </div>
         </div>
