@@ -1,0 +1,210 @@
+/* Contextual Themes for Different App Sections */
+
+/* Base app background overlay */
+.app-content {
+  position: relative;
+  background: var(--gradient-background);
+  min-height: 100vh;
+}
+
+.app-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-context-manager);
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Combat Section - Red/Orange themed for battle */
+.app-content.context-combat::before {
+  background: var(--bg-context-combat);
+  opacity: 0.9;
+}
+
+.context-combat .character-manager,
+.context-combat .combat-tracker {
+  background: rgba(var(--bg-secondary), 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  box-shadow: 0 8px 32px rgba(183, 28, 28, 0.15);
+}
+
+/* Campaigns/Notes Section - Warm tavern themed */
+.app-content.context-campaigns::before {
+  background: var(--bg-context-tavern);
+  opacity: 0.9;
+}
+
+.context-campaigns .campaign-manager,
+.context-campaigns .notes-manager {
+  background: rgba(var(--bg-secondary), 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(184, 134, 11, 0.15);
+}
+
+/* Adventure/Creatures Section - Green forest themed */
+.app-content.context-creatures::before {
+  background: var(--bg-context-adventure);
+  opacity: 0.9;
+}
+
+.context-creatures .bestiary,
+.context-creatures .creature-manager {
+  background: rgba(var(--bg-secondary), 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  box-shadow: 0 8px 32px rgba(27, 94, 32, 0.15);
+}
+
+/* Character Manager - Default purple/blue mystical theme */
+.app-content.context-manager::before {
+  background: var(--bg-context-manager);
+  opacity: 0.8;
+}
+
+.context-manager .character-manager,
+.context-manager .character-setup {
+  background: rgba(var(--bg-secondary), 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(124, 77, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(26, 35, 126, 0.15);
+}
+
+/* Enhanced card styling for different contexts */
+.context-combat .card,
+.context-combat .buff-card,
+.context-combat .creature-card {
+  border-left: 4px solid var(--error-color);
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.05) 0%, var(--bg-primary) 100%);
+}
+
+.context-campaigns .card,
+.context-campaigns .note-card,
+.context-campaigns .campaign-card {
+  border-left: 4px solid var(--secondary-color);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, var(--bg-primary) 100%);
+}
+
+.context-creatures .card,
+.context-creatures .creature-card,
+.context-creatures .template-card {
+  border-left: 4px solid var(--success-color);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, var(--bg-primary) 100%);
+}
+
+.context-manager .card,
+.context-manager .character-card {
+  border-left: 4px solid var(--primary-color);
+  background: linear-gradient(135deg, rgba(124, 77, 255, 0.05) 0%, var(--bg-primary) 100%);
+}
+
+/* Button theming for different contexts */
+.context-combat .epic-button,
+.context-combat .primary-button {
+  background: var(--gradient-accent);
+  border-color: var(--error-color);
+}
+
+.context-combat .epic-button:hover,
+.context-combat .primary-button:hover {
+  background: var(--error-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(244, 67, 54, 0.3);
+}
+
+.context-campaigns .epic-button,
+.context-campaigns .primary-button {
+  background: var(--gradient-secondary);
+  border-color: var(--secondary-color);
+}
+
+.context-campaigns .epic-button:hover,
+.context-campaigns .primary-button:hover {
+  background: var(--secondary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.context-creatures .epic-button,
+.context-creatures .primary-button {
+  background: linear-gradient(135deg, var(--success-color) 0%, var(--success-light) 100%);
+  border-color: var(--success-color);
+}
+
+.context-creatures .epic-button:hover,
+.context-creatures .primary-button:hover {
+  background: var(--success-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+.context-manager .epic-button,
+.context-manager .primary-button {
+  background: var(--gradient-primary);
+  border-color: var(--primary-color);
+}
+
+.context-manager .epic-button:hover,
+.context-manager .primary-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(124, 77, 255, 0.3);
+}
+
+/* Navigation highlighting for active contexts */
+.context-combat .nav-item.active[data-page="combat"] {
+  background: linear-gradient(135deg, var(--error-color) 0%, var(--error-light) 100%);
+  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+}
+
+.context-campaigns .nav-item.active[data-page="campaigns"] {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.context-manager .nav-item.active[data-page="manager"] {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  box-shadow: 0 4px 15px rgba(124, 77, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-content::before {
+    opacity: 0.6;
+  }
+  
+  .context-combat .character-manager,
+  .context-campaigns .campaign-manager,
+  .context-creatures .bestiary,
+  .context-manager .character-manager {
+    border-radius: 8px;
+    margin: 0.5rem;
+  }
+}
+
+/* Animation for context switching */
+.app-content {
+  transition: all 0.5s ease-in-out;
+}
+
+.app-content::before {
+  transition: all 0.5s ease-in-out;
+}
+
+.context-switching {
+  opacity: 0.8;
+}
+
+.context-switching::before {
+  opacity: 0.4;
+}

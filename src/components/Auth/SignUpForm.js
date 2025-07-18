@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
+import logoIcon from '../../assets/HerosLedgerLogo.png';
 import './Auth.css';
 
 const SignUpForm = ({ onToggleMode }) => {
@@ -56,7 +57,7 @@ const SignUpForm = ({ onToggleMode }) => {
     <div className="auth-form">
       <div className="auth-header">
         <img 
-          src="/logo.png" 
+          src={logoIcon} 
           alt="Hero's Ledger Logo" 
           className="auth-logo"
         />

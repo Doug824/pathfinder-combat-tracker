@@ -1,4 +1,5 @@
 import React from 'react';
+import './Navigation.css';
 
 const Navigation = ({ currentPage, setCurrentPage, activeCharacter, isMobile }) => {
   const pages = [
@@ -24,20 +25,8 @@ const Navigation = ({ currentPage, setCurrentPage, activeCharacter, isMobile }) 
   const mobileView = window.innerWidth <= 768;
 
   return (
-    <nav className="main-nav" style={{ 
-      display: 'flex', 
-      justifyContent: isMobile ? 'center' : 'flex-end',
-      width: isMobile ? '100%' : 'auto'
-    }}>
-      <ul className="nav-list" style={{ 
-        display: 'flex',
-        flexWrap: isMobile ? 'wrap' : 'nowrap',
-        justifyContent: isMobile ? 'center' : 'flex-end',
-        listStyle: 'none',
-        padding: 0,
-        margin: 0,
-        gap: '10px'
-      }}>
+    <nav className={`main-nav ${isMobile ? 'mobile' : ''}`}>
+      <ul className={`nav-list ${isMobile ? 'mobile' : ''}`}>
         {pages.map(page => {
           // Only show pages that are always visible or require a character when one is active
           const shouldShow = page.alwaysShow || (page.requiresCharacter && activeCharacter);
@@ -48,12 +37,12 @@ const Navigation = ({ currentPage, setCurrentPage, activeCharacter, isMobile }) 
             <li 
               key={page.id}
               className={`nav-item ${currentPage === page.id ? 'active' : ''}`}
+              data-page={page.id}
             >
               <button 
                 className="nav-button"
                 onClick={() => handleNavClick(page.id)}
                 disabled={page.requiresCharacter && !activeCharacter}
-                style={{ whiteSpace: 'nowrap' }}
               >
                 {page.label}
               </button>

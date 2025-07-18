@@ -63,6 +63,12 @@
     --gradient-accent: linear-gradient(135deg, #B71C1C 0%, #D32F2F 100%);
     --gradient-background: linear-gradient(135deg, #FBF8F3 0%, #F5F0E8 100%);
     
+    /* Contextual Background Themes */
+    --bg-context-combat: linear-gradient(135deg, rgba(183, 28, 28, 0.15) 0%, rgba(139, 69, 19, 0.1) 50%, rgba(45, 27, 14, 0.05) 100%);
+    --bg-context-tavern: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(184, 134, 11, 0.1) 50%, rgba(45, 27, 14, 0.05) 100%);
+    --bg-context-adventure: linear-gradient(135deg, rgba(27, 94, 32, 0.15) 0%, rgba(139, 69, 19, 0.1) 50%, rgba(45, 27, 14, 0.05) 100%);
+    --bg-context-manager: linear-gradient(135deg, rgba(26, 35, 126, 0.1) 0%, rgba(93, 64, 55, 0.08) 50%, rgba(45, 27, 14, 0.05) 100%);
+    
     /* Legacy Support */
     --highlight-color: #1A237E;
     --active-color: #1B5E20;
@@ -167,6 +173,12 @@
     --gradient-secondary: linear-gradient(135deg, #FFD700 0%, #FFEB3B 100%);
     --gradient-accent: linear-gradient(135deg, #FF6B6B 0%, #FF8A80 100%);
     --gradient-background: linear-gradient(135deg, #0A0A0F 0%, #1A1A24 100%);
+    
+    /* Contextual Background Themes - Dark Mode */
+    --bg-context-combat: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(183, 28, 28, 0.15) 50%, rgba(10, 10, 15, 0.1) 100%);
+    --bg-context-tavern: linear-gradient(135deg, rgba(255, 152, 0, 0.2) 0%, rgba(255, 215, 0, 0.15) 50%, rgba(10, 10, 15, 0.1) 100%);
+    --bg-context-adventure: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(27, 94, 32, 0.15) 50%, rgba(10, 10, 15, 0.1) 100%);
+    --bg-context-manager: linear-gradient(135deg, rgba(124, 77, 255, 0.15) 0%, rgba(58, 58, 74, 0.1) 50%, rgba(10, 10, 15, 0.05) 100%);
     
     /* Legacy Support */
     --highlight-color: #7C4DFF;

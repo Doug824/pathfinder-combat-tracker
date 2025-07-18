@@ -1,0 +1,191 @@
+/* Epic Fantasy Navigation Component */
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: auto;
+}
+
+.main-nav.mobile {
+  justify-content: center;
+  width: 100%;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+.nav-list.mobile {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-button {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.nav-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.nav-button:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color), 0.3);
+}
+
+.nav-button:hover::before {
+  left: 100%;
+}
+
+.nav-item.active .nav-button {
+  background: var(--gradient-primary);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(var(--primary-color), 0.4);
+  transform: translateY(-1px);
+}
+
+.nav-item.active .nav-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(var(--primary-color), 0.5);
+}
+
+.nav-button:disabled {
+  background: var(--bg-primary);
+  color: var(--text-tertiary);
+  border-color: var(--border-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+.nav-button:disabled:hover {
+  background: var(--bg-primary);
+  color: var(--text-tertiary);
+  border-color: var(--border-color);
+  transform: none;
+  box-shadow: none;
+}
+
+.nav-button:disabled::before {
+  display: none;
+}
+
+/* Context-specific navigation styling */
+.context-combat .nav-item.active[data-page="combat"] .nav-button {
+  background: var(--gradient-accent);
+  border-color: var(--error-color);
+  box-shadow: 0 4px 15px rgba(var(--error-color), 0.4);
+}
+
+.context-combat .nav-item.active[data-page="combat"] .nav-button:hover {
+  background: var(--error-hover);
+}
+
+.context-campaigns .nav-item.active[data-page="campaigns"] .nav-button {
+  background: var(--gradient-secondary);
+  border-color: var(--secondary-color);
+  box-shadow: 0 4px 15px rgba(var(--secondary-color), 0.4);
+}
+
+.context-campaigns .nav-item.active[data-page="campaigns"] .nav-button:hover {
+  background: var(--secondary-hover);
+}
+
+.context-manager .nav-item.active[data-page="manager"] .nav-button,
+.context-manager .nav-item.active[data-page="setup"] .nav-button {
+  background: var(--gradient-primary);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(var(--primary-color), 0.4);
+}
+
+.context-manager .nav-item.active[data-page="manager"] .nav-button:hover,
+.context-manager .nav-item.active[data-page="setup"] .nav-button:hover {
+  background: var(--primary-hover);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .nav-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    min-width: 80px;
+  }
+  
+  .nav-list {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+    min-width: 70px;
+  }
+}
+
+/* Animation for active state transitions */
+@keyframes navActivate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.nav-item.active .nav-button {
+  animation: navActivate 0.3s ease;
+}
+
+/* Focus states for accessibility */
+.nav-button:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.nav-button:focus:not(:hover) {
+  border-color: var(--primary-color);
+}

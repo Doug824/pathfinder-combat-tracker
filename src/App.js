@@ -19,6 +19,7 @@ import logoIcon from './assets/HerosLedgerLogo.png';
 import './styles/index.css';
 import './styles/fantasy-styles.css';
 import './styles/mobile-fixes.css';
+import './styles/contextual-themes.css';
 
 
 function AppContent() {
@@ -274,6 +275,21 @@ function AppContent() {
     // Reset to manager page when logging out
     setCurrentPage('manager');
   };
+
+  // Determine contextual class based on current page
+  const getContextualClass = (page) => {
+    switch (page) {
+      case 'combat':
+        return 'context-combat';
+      case 'campaigns':
+        return 'context-campaigns';
+      case 'setup':
+        return 'context-manager';
+      case 'manager':
+      default:
+        return 'context-manager';
+    }
+  };
   
   // Don't render anything while authentication state is loading
   if (loading) {
@@ -351,7 +367,7 @@ function AppContent() {
         </div>
       </header>
       
-      <main className="app-content" style={{
+      <main className={`app-content ${getContextualClass(currentPage)}`} style={{
         paddingBottom: isMobile ? '120px' : '60px', // Extra padding on mobile
         position: 'relative',
         width: '100%',
