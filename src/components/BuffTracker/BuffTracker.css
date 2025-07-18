@@ -117,8 +117,10 @@
   .new-buff-form {
     background: var(--bg-secondary);
     border-radius: 8px;
-    padding: 20px;
+    padding: 24px;
     box-shadow: var(--card-shadow);
+    min-width: 100%;
+    box-sizing: border-box;
   }
   
   .new-buff-form h3 {
@@ -130,7 +132,18 @@
   }
   
   .new-buff-form > div {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+  }
+  
+  .form-row > div {
+    flex: 1;
+    margin-bottom: 0;
   }
   
   .new-buff-form label {
@@ -152,11 +165,12 @@
   .duration-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
   }
   
   .duration-input {
-    width: 80px !important;
+    width: 100px !important;
+    flex-shrink: 0;
   }
   
   .duration-type-select,
@@ -179,17 +193,20 @@
   .stat-effect-row {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    gap: 15px;
   }
   
   .stat-effect-row label {
-    width: 120px;
+    width: 140px;
     margin-bottom: 0;
+    flex-shrink: 0;
   }
   
   .stat-effect-row input {
-    width: 70px !important;
+    width: 80px !important;
     text-align: center;
+    flex-shrink: 0;
   }
   
   .add-buff-button {

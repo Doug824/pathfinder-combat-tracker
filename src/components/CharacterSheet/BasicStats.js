@@ -71,22 +71,25 @@ const BasicStats = ({ onStatsChange, initialStats }) => {
     onStatsChange(parsedStats);
   }, [onStatsChange, stats]);
   
+  // Define the order of stats for proper 2-row layout
+  const statOrder = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+
   return (
     <div className="basic-stats">
       <h3>Character Attributes</h3>
       <div className="stats-grid">
-        {Object.entries(stats).map(([stat, value]) => (
+        {statOrder.map((stat) => (
           <div key={stat} className="stat-row">
             <label htmlFor={stat}>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
             <NumericInput
               id={stat}
-              value={value}
+              value={stats[stat]}
               onChange={(value) => handleStatChange(stat, value)}
               min={3}
               max={30}
             />
             <span className="modifier">
-              Mod: {calculateModifier(value) >= 0 ? '+' : ''}{calculateModifier(value)}
+              Mod: {calculateModifier(stats[stat]) >= 0 ? '+' : ''}{calculateModifier(stats[stat])}
             </span>
           </div>
         ))}
