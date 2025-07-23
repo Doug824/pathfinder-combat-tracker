@@ -6,6 +6,7 @@ import PDFUploader from './PDFUploader';
 import CreatureCard from './CreatureCard';
 import CreatureEditor from './CreatureEditor';
 import TemplateManager from './TemplateManager';
+import OrnatePanel, { OrnateButton } from '../OrnatePanel';
 
 const CampaignBestiary = ({ campaign }) => {
   const { currentUser } = useFirebaseAuth();
@@ -162,24 +163,29 @@ const CampaignBestiary = ({ campaign }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <div className="w-12 h-12 border-4 border-amber-700/30 border-t-amber-400 rounded-full animate-spin mb-4"></div>
-        <p className="text-amber-300 text-lg font-fantasy">Loading bestiary...</p>
-      </div>
+      <OrnatePanel variant="default" className="py-16">
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-12 h-12 border-4 border-amber-700/30 border-t-yellow-400 rounded-full animate-spin mb-4"></div>
+          <p className="text-yellow-300 text-lg font-fantasy uppercase tracking-wider">Loading bestiary...</p>
+        </div>
+      </OrnatePanel>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <p className="text-red-300 mb-4">{error}</p>
-        <button 
-          onClick={loadCreatures}
-          className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-6 py-3 rounded-lg font-fantasy font-semibold transition-all duration-300 transform hover:scale-105"
-        >
-          Try Again
-        </button>
-      </div>
+      <OrnatePanel variant="dark" className="py-16">
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-red-400 mb-4">{error}</p>
+          <OrnateButton
+            onClick={loadCreatures}
+            variant="primary"
+            icon="🔄"
+          >
+            Try Again
+          </OrnateButton>
+        </div>
+      </OrnatePanel>
     );
   }
 
@@ -187,54 +193,57 @@ const CampaignBestiary = ({ campaign }) => {
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-4xl font-fantasy font-bold text-amber-400 glow-text mb-2">Campaign Bestiary</h2>
-          <p className="text-amber-300 text-lg">{creatures.length} creatures in your collection</p>
+          <h2 className="text-4xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Bestiary</h2>
+          <p className="text-amber-200 text-lg">{creatures.length} creatures in your collection</p>
         </div>
         
         {isDM && (
           <div className="flex flex-wrap gap-3">
-            <button 
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-300 transform hover:scale-105"
+            <OrnateButton
+              variant="primary"
               onClick={() => setShowEditor(true)}
+              icon="➕"
             >
-              ➕ Add Creature
-            </button>
-            <button 
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-300 transform hover:scale-105"
+              Add Creature
+            </OrnateButton>
+            <OrnateButton
+              variant="secondary"
               onClick={() => setShowUploader(true)}
+              icon="📄"
             >
-              📄 Upload PDF
-            </button>
-            <button 
-              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-300 transform hover:scale-105"
+              Upload PDF
+            </OrnateButton>
+            <OrnateButton
+              variant="secondary"
               onClick={() => setShowTemplateManager(true)}
+              icon="🔧"
             >
-              🔧 Templates
-            </button>
+              Templates
+            </OrnateButton>
           </div>
         )}
       </div>
 
       {/* Filters */}
-      <div className="bg-black/30 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6 mb-8">
+      <OrnatePanel variant="default" className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
           <div>
-            <label className="block text-amber-300 font-semibold mb-2">Search</label>
+            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Search</label>
             <input
               type="text"
               placeholder="Search creatures..."
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              className="input-fantasy w-full"
+              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
             />
           </div>
           
           <div>
-            <label className="block text-amber-300 font-semibold mb-2">Type</label>
+            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Type</label>
             <select
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="input-fantasy w-full"
+              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
             >
               <option value="">All Types</option>
               {getUniqueTypes().map(type => (
@@ -244,11 +253,11 @@ const CampaignBestiary = ({ campaign }) => {
           </div>
           
           <div>
-            <label className="block text-amber-300 font-semibold mb-2">Challenge Rating</label>
+            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Challenge Rating</label>
             <select
               value={filters.cr}
               onChange={(e) => handleFilterChange('cr', e.target.value)}
-              className="input-fantasy w-full"
+              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
             >
               <option value="">All CRs</option>
               {getUniqueCRs().map(cr => (
@@ -258,11 +267,11 @@ const CampaignBestiary = ({ campaign }) => {
           </div>
           
           <div>
-            <label className="block text-amber-300 font-semibold mb-2">Tags</label>
+            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Tags</label>
             <select
               value={filters.tags}
               onChange={(e) => handleFilterChange('tags', e.target.value)}
-              className="input-fantasy w-full"
+              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
             >
               <option value="">All Tags</option>
               {getUniqueTags().map(tag => (
@@ -272,23 +281,24 @@ const CampaignBestiary = ({ campaign }) => {
           </div>
           
           <div>
-            <button 
-              className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-300 w-full"
+            <OrnateButton
+              variant="secondary"
               onClick={clearFilters}
+              className="w-full"
             >
               Clear Filters
-            </button>
+            </OrnateButton>
           </div>
         </div>
-      </div>
+      </OrnatePanel>
 
       {/* Creatures Grid */}
       <div className="min-h-96">
         {filteredCreatures.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-8xl mb-6 text-amber-400">🐉</div>
-            <h3 className="text-3xl font-fantasy font-bold text-amber-400 mb-4">No creatures found</h3>
-            <p className="text-amber-300 text-lg">
+          <OrnatePanel variant="default" className="text-center py-16">
+            <div className="text-8xl mb-6">🐉</div>
+            <h3 className="text-3xl font-fantasy font-bold text-yellow-400 mb-4 uppercase tracking-wider">No creatures found</h3>
+            <p className="text-amber-200 text-lg">
               {creatures.length === 0 
                 ? isDM 
                   ? "Upload a PDF or manually add creatures to build your bestiary"
@@ -296,7 +306,7 @@ const CampaignBestiary = ({ campaign }) => {
                 : "No creatures match your current filters"
               }
             </p>
-          </div>
+          </OrnatePanel>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCreatures.map(creature => (
