@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { campaignService } from '../../services/campaignService';
 import CharacterSelection from './CharacterSelection';
+import OrnatePanel, { OrnateButton } from '../OrnatePanel';
 
 const JoinCampaignForm = ({ onJoinCampaign, onCancel, characters, onCreateCharacter }) => {
   const [inviteCode, setInviteCode] = useState('');
