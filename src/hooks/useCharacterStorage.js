@@ -51,7 +51,6 @@ const useCharacterStorage = (user) => {
         setActiveCharacter(null);
       }
       
-      console.log("Loaded characters from Firebase:", charactersData);
     } catch (err) {
       console.error("Error loading characters from Firebase:", err);
       setError('Failed to load characters');
@@ -69,12 +68,8 @@ const useCharacterStorage = (user) => {
 
       setError(null);
       
-      // Log the incoming data to debug
-      console.log("Creating character with provided data:", characterData);
-      
       // Explicitly extract stats to make sure we're using the right object
       const providedStats = characterData.stats || {};
-      console.log("Provided stats:", providedStats);
       
       // Create stats object with defaults for any missing properties
       const statsWithDefaults = {
@@ -92,7 +87,6 @@ const useCharacterStorage = (user) => {
         statsWithDefaults[key] = parseInt(statsWithDefaults[key]) || 10;
       });
       
-      console.log("Final stats after processing:", statsWithDefaults);
       
       // Calculate initial hit points based on constitution
       const conModifier = Math.floor((statsWithDefaults.constitution - 10) / 2);
@@ -181,7 +175,6 @@ const useCharacterStorage = (user) => {
         ]
       };
       
-      console.log("Final character being created:", newCharacterData);
       
       // Save to Firebase
       const newCharacter = await characterService.createCharacter(user.uid, newCharacterData);
@@ -239,7 +232,6 @@ const useCharacterStorage = (user) => {
       );
       
       setCharacters(updatedCharacters);
-      console.log("Updated character:", updatedCharacter);
       
       // If this is the active character, update the active character object
       if (activeCharacterId === updatedCharacter.id) {
@@ -289,7 +281,6 @@ const useCharacterStorage = (user) => {
         }
       }
       
-      console.log("Deleted character:", characterId);
     } catch (error) {
       console.error("Error deleting character:", error);
       setError('Failed to delete character');
@@ -315,7 +306,6 @@ const useCharacterStorage = (user) => {
           activeCharacterId: characterId
         });
         
-        console.log("Selected character:", characterId);
       }
     } catch (error) {
       console.error("Error selecting character:", error);
@@ -339,7 +329,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated character stats:", processedStats);
       }
     } catch (error) {
       console.error("Error updating stats:", error);
@@ -357,7 +346,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated character buffs");
       }
     } catch (error) {
       console.error("Error updating buffs:", error);
@@ -375,7 +363,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated character gear");
       }
     } catch (error) {
       console.error("Error updating gear:", error);
@@ -393,7 +380,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated combat abilities");
       }
     } catch (error) {
       console.error("Error updating combat abilities:", error);
@@ -431,12 +417,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated weapon configuration", { 
-          primary: cleanPrimary, 
-          offhand: cleanOffhand,
-          primaryMult: primaryMult,
-          offhandMult: offhandMult
-        });
       }
     } catch (error) {
       console.error("Error updating weapons:", error);
@@ -476,7 +456,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated combat settings:", normalizedSettings);
       }
     } catch (error) {
       console.error("Error updating combat settings:", error);
@@ -494,9 +473,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated saved buffs:", newSavedBuffs?.length);
-      } else {
-        console.warn("No active character to update saved buffs for");
       }
     } catch (error) {
       console.error("Error updating saved buffs:", error);
@@ -522,9 +498,6 @@ const useCharacterStorage = (user) => {
         };
         
         await updateCharacter(updatedCharacter);
-        console.log("Updated character hit points:", updatedHitPoints);
-      } else {
-        console.warn("No active character to update hit points for");
       }
     } catch (error) {
       console.error("Error updating hit points:", error);

@@ -186,12 +186,12 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
   ];
 
   return (
-    <div className="template-editor-overlay">
-      <div className="template-editor">
-        <div className="editor-header">
-          <h2>{isEditing ? 'Edit Template' : 'Create New Template'}</h2>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[70]">
+      <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center p-6 border-b border-amber-700/30 sticky top-0 bg-black/60 backdrop-blur-md z-10">
+          <h2 className="text-3xl font-fantasy font-bold text-amber-400">{isEditing ? 'Edit Template' : 'Create New Template'}</h2>
           <button 
-            className="close-button"
+            className="text-amber-300 hover:text-amber-100 text-3xl leading-none transition-colors duration-300"
             onClick={onClose}
             disabled={loading}
           >
@@ -200,17 +200,17 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
         </div>
 
         {error && (
-          <div className="error-message">
-            {error}
+          <div className="bg-red-900/60 border border-red-700/50 rounded-lg p-4 m-6">
+            <p className="text-red-300">{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="template-form">
-          <div className="form-section">
-            <h3>Basic Information</h3>
+        <form onSubmit={handleSubmit} className="p-6">
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6 mb-6">
+            <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Basic Information</h3>
             
-            <div className="form-group">
-              <label htmlFor="name">Template Name *</label>
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-amber-300 font-fantasy font-semibold mb-2">Template Name *</label>
               <input
                 type="text"
                 id="name"
@@ -219,11 +219,12 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                 required
                 disabled={loading}
                 placeholder="e.g., Shadow Creature, Fiendish, Giant"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
+            <div>
+              <label htmlFor="description" className="block text-amber-300 font-fantasy font-semibold mb-2">Description</label>
               <textarea
                 id="description"
                 value={formData.description}
@@ -231,16 +232,17 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                 disabled={loading}
                 placeholder="Describe what this template does..."
                 rows={3}
+                className="input-fantasy w-full resize-none"
               />
             </div>
           </div>
 
-          <div className="form-section">
-            <h3>Basic Modifications</h3>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6 mb-6">
+            <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Basic Modifications</h3>
             
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="crModifier">Challenge Rating Modifier</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label htmlFor="crModifier" className="block text-amber-300 font-fantasy font-semibold mb-2">Challenge Rating Modifier</label>
                 <input
                   type="number"
                   id="crModifier"
@@ -250,11 +252,12 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                   step="1"
                   min="-10"
                   max="10"
+                  className="input-fantasy w-full"
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="hpModifier">Hit Points Modifier</label>
+              <div>
+                <label htmlFor="hpModifier" className="block text-amber-300 font-fantasy font-semibold mb-2">Hit Points Modifier</label>
                 <input
                   type="number"
                   id="hpModifier"
@@ -262,11 +265,12 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                   onChange={(e) => handleModificationChange('hitPointsModifier', parseInt(e.target.value) || 0)}
                   disabled={loading}
                   step="1"
+                  className="input-fantasy w-full"
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="acModifier">Armor Class Modifier</label>
+              <div>
+                <label htmlFor="acModifier" className="block text-amber-300 font-fantasy font-semibold mb-2">Armor Class Modifier</label>
                 <input
                   type="number"
                   id="acModifier"
@@ -274,11 +278,12 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                   onChange={(e) => handleModificationChange('armorClassModifier', parseInt(e.target.value) || 0)}
                   disabled={loading}
                   step="1"
+                  className="input-fantasy w-full"
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="speedModifier">Speed Modifier (ft)</label>
+              <div>
+                <label htmlFor="speedModifier" className="block text-amber-300 font-fantasy font-semibold mb-2">Speed Modifier (ft)</label>
                 <input
                   type="number"
                   id="speedModifier"
@@ -286,18 +291,20 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                   onChange={(e) => handleModificationChange('speedModifier', parseInt(e.target.value) || 0)}
                   disabled={loading}
                   step="5"
+                  className="input-fantasy w-full"
                 />
               </div>
             </div>
             
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="typeChange">Change Type To</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="typeChange" className="block text-amber-300 font-fantasy font-semibold mb-2">Change Type To</label>
                 <select
                   id="typeChange"
                   value={formData.modifications.typeChange}
                   onChange={(e) => handleModificationChange('typeChange', e.target.value)}
                   disabled={loading}
+                  className="input-fantasy w-full"
                 >
                   <option value="">No Change</option>
                   {creatureTypes.slice(1).map(type => (
@@ -306,13 +313,14 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                 </select>
               </div>
               
-              <div className="form-group">
-                <label htmlFor="sizeChange">Change Size To</label>
+              <div>
+                <label htmlFor="sizeChange" className="block text-amber-300 font-fantasy font-semibold mb-2">Change Size To</label>
                 <select
                   id="sizeChange"
                   value={formData.modifications.sizeChange}
                   onChange={(e) => handleModificationChange('sizeChange', e.target.value)}
                   disabled={loading}
+                  className="input-fantasy w-full"
                 >
                   <option value="">No Change</option>
                   {creatureSizes.slice(1).map(size => (
@@ -323,12 +331,12 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
             </div>
           </div>
 
-          <div className="form-section">
-            <h3>Ability Score Modifiers</h3>
-            <div className="ability-scores-grid">
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6 mb-6">
+            <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Ability Score Modifiers</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {Object.entries(formData.modifications.abilityScoreModifiers).map(([ability, value]) => (
-                <div key={ability} className="ability-modifier">
-                  <label>{ability.toUpperCase()}</label>
+                <div key={ability} className="bg-black/30 rounded border border-amber-700/20 p-3">
+                  <label className="block text-amber-400 font-fantasy font-semibold text-sm mb-2 text-center">{ability.toUpperCase()}</label>
                   <input
                     type="number"
                     value={value}
@@ -337,29 +345,32 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                     step="1"
                     min="-10"
                     max="10"
+                    className="input-fantasy w-full text-center"
                   />
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="form-section">
-            <h3>Added Abilities</h3>
-            <div className="ability-input">
-              <div className="form-row">
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6 mb-6">
+            <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Added Abilities</h3>
+            <div className="bg-black/30 rounded border border-amber-700/20 p-4 mb-4">
+              <div className="flex gap-3 mb-3">
                 <input
                   type="text"
                   value={newAbility.name}
                   onChange={(e) => setNewAbility(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="Ability name..."
                   disabled={loading}
+                  className="input-fantasy flex-1"
                 />
                 <button
                   type="button"
                   onClick={handleAddAbility}
                   disabled={loading || !newAbility.name.trim() || !newAbility.description.trim()}
+                  className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-200 disabled:opacity-50"
                 >
-                  Add Ability
+                  ➕ Add Ability
                 </button>
               </div>
               <textarea
@@ -368,48 +379,51 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                 placeholder="Ability description..."
                 disabled={loading}
                 rows={2}
+                className="input-fantasy w-full resize-none"
               />
             </div>
             
             {formData.modifications.addedAbilities.length > 0 && (
-              <div className="abilities-list">
+              <div className="space-y-3">
                 {formData.modifications.addedAbilities.map((ability, index) => (
-                  <div key={index} className="ability-item">
-                    <div className="ability-header">
-                      <strong>{ability.name}</strong>
+                  <div key={index} className="bg-emerald-900/30 border border-emerald-600/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <strong className="text-emerald-300 font-fantasy">{ability.name}</strong>
                       <button
                         type="button"
                         onClick={() => handleRemoveAbility(index)}
                         disabled={loading}
-                        className="remove-button"
+                        className="text-red-400 hover:text-red-300 w-6 h-6 rounded-full hover:bg-red-900/50 transition-all duration-200 flex items-center justify-center"
                       >
                         ×
                       </button>
                     </div>
-                    <p>{ability.description}</p>
+                    <p className="text-emerald-200 text-sm">{ability.description}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="form-section">
-            <h3>Added Actions</h3>
-            <div className="action-input">
-              <div className="form-row">
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6 mb-6">
+            <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Added Actions</h3>
+            <div className="bg-black/30 rounded border border-amber-700/20 p-4 mb-4">
+              <div className="flex gap-3 mb-3">
                 <input
                   type="text"
                   value={newAction.name}
                   onChange={(e) => setNewAction(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="Action name..."
                   disabled={loading}
+                  className="input-fantasy flex-1"
                 />
                 <button
                   type="button"
                   onClick={handleAddAction}
                   disabled={loading || !newAction.name.trim() || !newAction.description.trim()}
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-200 disabled:opacity-50"
                 >
-                  Add Action
+                  ⚔️ Add Action
                 </button>
               </div>
               <textarea
@@ -418,34 +432,35 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                 placeholder="Action description..."
                 disabled={loading}
                 rows={2}
+                className="input-fantasy w-full resize-none"
               />
             </div>
             
             {formData.modifications.addedActions.length > 0 && (
-              <div className="actions-list">
+              <div className="space-y-3">
                 {formData.modifications.addedActions.map((action, index) => (
-                  <div key={index} className="action-item">
-                    <div className="action-header">
-                      <strong>{action.name}</strong>
+                  <div key={index} className="bg-blue-900/30 border border-blue-600/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <strong className="text-blue-300 font-fantasy">{action.name}</strong>
                       <button
                         type="button"
                         onClick={() => handleRemoveAction(index)}
                         disabled={loading}
-                        className="remove-button"
+                        className="text-red-400 hover:text-red-300 w-6 h-6 rounded-full hover:bg-red-900/50 transition-all duration-200 flex items-center justify-center"
                       >
                         ×
                       </button>
                     </div>
-                    <p>{action.description}</p>
+                    <p className="text-blue-200 text-sm">{action.description}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="form-section">
-            <h3>Added Tags</h3>
-            <div className="tag-input-row">
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6 mb-6">
+            <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Added Tags</h3>
+            <div className="flex gap-3 mb-4">
               <input
                 type="text"
                 value={newTag}
@@ -453,25 +468,28 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
                 placeholder="Add a tag..."
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                 disabled={loading}
+                className="input-fantasy flex-1"
               />
               <button
                 type="button"
                 onClick={handleAddTag}
                 disabled={loading || !newTag.trim()}
+                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-200 disabled:opacity-50"
               >
-                Add Tag
+                🏷️ Add Tag
               </button>
             </div>
             
             {formData.modifications.addedTags.length > 0 && (
-              <div className="current-tags">
+              <div className="flex flex-wrap gap-2">
                 {formData.modifications.addedTags.map(tag => (
-                  <span key={tag} className="tag-item">
+                  <span key={tag} className="bg-purple-700/60 text-purple-100 px-3 py-1 rounded-full text-sm font-fantasy flex items-center gap-2">
                     {tag}
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(tag)}
                       disabled={loading}
+                      className="text-purple-200 hover:text-red-300 transition-colors"
                     >
                       ×
                     </button>
@@ -481,19 +499,19 @@ const TemplateEditor = ({ template, onSave, onClose }) => {
             )}
           </div>
 
-          <div className="form-actions">
+          <div className="flex gap-4 justify-end pt-6 border-t border-amber-700/30">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="cancel-button"
+              className="bg-gray-700/80 hover:bg-gray-600/90 text-gray-100 px-6 py-3 rounded-lg font-fantasy font-semibold transition-all duration-200 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !formData.name.trim()}
-              className="save-button"
+              className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-6 py-3 rounded-lg font-fantasy font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Saving...' : (isEditing ? 'Update Template' : 'Create Template')}
             </button>

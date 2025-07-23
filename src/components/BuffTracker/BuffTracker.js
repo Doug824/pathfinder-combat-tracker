@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './BuffTracker.css';
 
 const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
   const [buffs, setBuffs] = useState(initialBuffs || []);
@@ -147,33 +146,44 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
   };
   
   return (
-    <div className="buff-tracker">
-      <h2>Active Buffs & Effects</h2>
+    <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+      <h2 className="text-amber-400 font-fantasy font-bold text-2xl mb-6">Active Buffs & Effects</h2>
       
-      <div className="active-buffs card-grid-layout">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {buffs.length === 0 ? (
-          <p>No active buffs</p>
+          <p className="text-amber-300 text-center col-span-full">No active buffs</p>
         ) : (
           buffs.map(buff => (
-            <div key={buff.id} className="buff-card">
-              <h3>{buff.name}</h3>
-              <div className="buff-meta">
-                <span>Duration: {formatDuration(buff)}</span>
-                <span>Type: {buff.bonusType.charAt(0).toUpperCase() + buff.bonusType.slice(1)}</span>
+            <div key={buff.id} className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+              <h3 className="text-amber-400 font-fantasy font-bold text-lg mb-2">{buff.name}</h3>
+              <div className="text-amber-300 text-sm mb-3 space-y-1">
+                <div>Duration: {formatDuration(buff)}</div>
+                <div>Type: {buff.bonusType.charAt(0).toUpperCase() + buff.bonusType.slice(1)}</div>
               </div>
-              <div className="buff-effects">
+              <div className="text-amber-100 text-sm mb-4">
                 {Object.entries(buff.effects)
                   .filter(([_, value]) => value !== 0)
                   .map(([stat, value]) => (
-                    <p key={stat}>
-                      {stat.charAt(0).toUpperCase() + stat.slice(1)}: {value > 0 ? '+' : ''}{value}
-                    </p>
+                    <div key={stat} className="flex justify-between">
+                      <span>{stat.charAt(0).toUpperCase() + stat.slice(1)}:</span>
+                      <span className={value > 0 ? 'text-green-400' : 'text-red-400'}>{value > 0 ? '+' : ''}{value}</span>
+                    </div>
                   ))}
               </div>
-              <div className="buff-actions">
-                <button onClick={() => handleRemoveBuff(buff.id)} className="remove-buff-btn">Remove</button>
+              <div className="flex gap-2 mt-4">
+                <button 
+                  onClick={() => handleRemoveBuff(buff.id)} 
+                  className="bg-red-700/80 hover:bg-red-600/90 text-red-100 px-3 py-1 rounded text-sm transition-colors"
+                >
+                  Remove
+                </button>
                 {onSaveBuff && (
-                  <button onClick={() => handleSaveBuff(buff)} className="save-buff-btn">Save to Library</button>
+                  <button 
+                    onClick={() => handleSaveBuff(buff)} 
+                    className="bg-amber-700/80 hover:bg-amber-600/90 text-amber-100 px-3 py-1 rounded text-sm transition-colors"
+                  >
+                    Save to Library
+                  </button>
                 )}
               </div>
             </div>
@@ -181,38 +191,38 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
         )}
       </div>
       
-      <div className="new-buff-form">
-        <h3>Add New Buff</h3>
-        <div className="form-row">
-          <div className="form-group">
-            <label>Name:</label>
+      <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6">
+        <h3 className="text-amber-400 font-fantasy font-bold text-xl mb-4">Add New Buff</h3>
+        <div className="mb-4">
+          <div className="mb-4">
+            <label className="block text-amber-300 text-sm font-medium mb-2">Name:</label>
             <input 
               type="text" 
               value={newBuff.name}
               onChange={(e) => handleBuffChange('name', e.target.value)}
-              className="form-control"
+              className="input-fantasy w-full"
             />
           </div>
         </div>
         
-        <div className="form-row">
-          <div className="form-group" style={{ flex: '1', maxWidth: '200px' }}>
-            <label>Duration:</label>
-            <div className="duration-container">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">Duration:</label>
+            <div className="flex gap-2">
               {newBuff.durationType !== 'permanent' && (
                 <input 
                   type="number" 
                   min="1"
                   value={newBuff.duration}
                   onChange={(e) => handleBuffChange('duration', parseInt(e.target.value))}
-                  className="duration-input form-control"
+                  className="input-fantasy flex-1"
                 />
               )}
               
               <select
                 value={newBuff.durationType}
                 onChange={(e) => handleBuffChange('durationType', e.target.value)}
-                className="duration-type-select form-control"
+                className="input-fantasy flex-1"
               >
                 {durationTypes.map(type => (
                   <option key={type.value} value={type.value}>
@@ -223,12 +233,12 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
             </div>
           </div>
           
-          <div className="form-group" style={{ flex: '1', maxWidth: '200px' }}>
-            <label>Bonus Type:</label>
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">Bonus Type:</label>
             <select
               value={newBuff.bonusType}
               onChange={(e) => handleBuffChange('bonusType', e.target.value)}
-              className="bonus-type-select form-control"
+              className="input-fantasy w-full"
             >
               {bonusTypes.map(type => (
                 <option key={type.value} value={type.value}>
@@ -239,91 +249,94 @@ const BuffTracker = ({ onBuffsChange, initialBuffs, onSaveBuff }) => {
           </div>
         </div>
         
-        <div className="stat-effects">
-          <div className="attribute-section">
-            <h4>Attribute Bonuses/Penalties</h4>
-            <div className="effects-grid">
+        <div className="space-y-6">
+          <div>
+            <h4 className="text-amber-400 font-fantasy font-bold text-lg mb-4">Attribute Bonuses/Penalties</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
-                <div key={stat} className="stat-effect-row">
-                  <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}:</label>
+                <div key={stat} className="flex flex-col">
+                  <label className="text-amber-300 text-sm font-medium mb-1">{stat.charAt(0).toUpperCase() + stat.slice(1)}:</label>
                   <input 
                     type="number" 
                     value={newBuff.effects[stat]}
                     onChange={(e) => handleEffectChange(stat, e.target.value)}
-                    className="form-control"
+                    className="input-fantasy"
                   />
                 </div>
               ))}
             </div>
           </div>
           
-          <div className="combat-section">
-            <h4>Combat Bonuses/Penalties</h4>
-            <div className="effects-grid">
-              <div className="stat-effect-row">
-                <label>Attack Bonus:</label>
+          <div>
+            <h4 className="text-amber-400 font-fantasy font-bold text-lg mb-4">Combat Bonuses/Penalties</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="flex flex-col">
+                <label className="text-amber-300 text-sm font-medium mb-1">Attack Bonus:</label>
                 <input 
                   type="number" 
                   value={newBuff.effects.attackBonus}
                   onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
-                  className="form-control"
+                  className="input-fantasy"
                 />
               </div>
               
-              <div className="stat-effect-row">
-                <label>AC:</label>
+              <div className="flex flex-col">
+                <label className="text-amber-300 text-sm font-medium mb-1">AC:</label>
                 <input 
                   type="number" 
                   value={newBuff.effects.ac}
                   onChange={(e) => handleEffectChange('ac', e.target.value)}
-                  className="form-control"
+                  className="input-fantasy"
                 />
               </div>
               
-              <div className="stat-effect-row">
-                <label>Fortitude:</label>
+              <div className="flex flex-col">
+                <label className="text-amber-300 text-sm font-medium mb-1">Fortitude:</label>
                 <input 
                   type="number" 
                   value={newBuff.effects.fortitude}
                   onChange={(e) => handleEffectChange('fortitude', e.target.value)}
-                  className="form-control"
+                  className="input-fantasy"
                 />
               </div>
               
-              <div className="stat-effect-row">
-                <label>Reflex:</label>
+              <div className="flex flex-col">
+                <label className="text-amber-300 text-sm font-medium mb-1">Reflex:</label>
                 <input 
                   type="number" 
                   value={newBuff.effects.reflex}
                   onChange={(e) => handleEffectChange('reflex', e.target.value)}
-                  className="form-control"
+                  className="input-fantasy"
                 />
               </div>
               
-              <div className="stat-effect-row">
-                <label>Will:</label>
+              <div className="flex flex-col">
+                <label className="text-amber-300 text-sm font-medium mb-1">Will:</label>
                 <input 
                   type="number" 
                   value={newBuff.effects.will}
                   onChange={(e) => handleEffectChange('will', e.target.value)}
-                  className="form-control"
+                  className="input-fantasy"
                 />
               </div>
               
-              <div className="stat-effect-row">
-                <label>Natural Armor:</label>
+              <div className="flex flex-col">
+                <label className="text-amber-300 text-sm font-medium mb-1">Natural Armor:</label>
                 <input 
                   type="number" 
                   value={newBuff.effects.naturalArmor}
                   onChange={(e) => handleEffectChange('naturalArmor', e.target.value)}
-                  className="form-control"
+                  className="input-fantasy"
                 />
               </div>
             </div>
           </div>
         </div>
         
-        <button onClick={handleAddBuff} className="add-buff-button">
+        <button 
+          onClick={handleAddBuff} 
+          className="bg-amber-700/80 hover:bg-amber-600/90 text-amber-100 font-medium px-6 py-2 rounded transition-colors w-full mt-6"
+        >
           Add Buff
         </button>
       </div>

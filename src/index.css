@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import fantasy fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+
+/* Fantasy Theme Base Layer */
+@layer base {
+  html {
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    @apply font-body text-gray-100;
+    margin: 0;
+    padding: 0;
+  }
+  
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-fantasy;
+  }
+}
+
+/* Fantasy Components Layer */
+@layer components {
+  /* Parchment Card Style */
+  .parchment-card {
+    @apply bg-parchment text-ink rounded-lg shadow-parchment relative overflow-hidden;
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(212, 175, 55, 0.1) 2px, rgba(212, 175, 55, 0.1) 4px);
+    background-blend-mode: multiply;
+  }
+  
+  /* Fantasy Button Styles */
+  .btn-fantasy {
+    @apply px-6 py-3 rounded-lg font-fantasy font-semibold transition-all duration-300 transform hover:scale-105;
+  }
+  
+  .btn-primary {
+    @apply btn-fantasy bg-gradient-to-r from-fantasy-gold to-fantasy-bronze text-white shadow-fantasy-glow hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply btn-fantasy bg-gradient-to-r from-mystic-purple to-purple-700 text-white shadow-magic-purple hover:shadow-lg;
+  }
+  
+  .btn-danger {
+    @apply btn-fantasy bg-gradient-to-r from-blood-red to-red-700 text-white shadow-fire-red hover:shadow-lg;
+  }
+  
+  .btn-nature {
+    @apply btn-fantasy bg-gradient-to-r from-forest-green to-green-700 text-white shadow-nature-green hover:shadow-lg;
+  }
+  
+  /* Fantasy Input Styles */
+  .input-fantasy {
+    @apply bg-black/20 border-2 border-fantasy-gold/30 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:border-fantasy-gold focus:outline-none focus:ring-2 focus:ring-fantasy-gold/50 transition-all duration-300;
+  }
+  
+  /* Glowing Text Effect */
+  .glow-text {
+    @apply animate-glow-pulse;
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+  
+  /* Navigation Item Styles */
+  .nav-item-fantasy {
+    @apply relative px-4 py-2 rounded-lg transition-all duration-300 cursor-pointer;
+  }
+  
+  .nav-item-fantasy:hover {
+    @apply bg-white/10 shadow-fantasy-glow;
+  }
+  
+  .nav-item-fantasy.active {
+    @apply bg-gradient-to-r from-fantasy-gold/20 to-fantasy-bronze/20 shadow-fantasy-glow;
+  }
+  
+  .nav-item-fantasy.active::before {
+    content: '';
+    @apply absolute inset-0 rounded-lg;
+    background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+  }
+  
+  /* Stat Block Styles */
+  .stat-block {
+    @apply bg-parchment/90 rounded-lg p-4 border-2 border-fantasy-bronze/30 shadow-md;
+  }
+  
+  .stat-label {
+    @apply text-sm font-fantasy text-ink/70 uppercase tracking-wide;
+  }
+  
+  .stat-value {
+    @apply text-2xl font-bold font-fantasy text-ink;
+  }
+  
+  /* Floating Animation for UI Elements */
+  .float-animation {
+    @apply animate-float;
+  }
+}
+
+/* Custom scrollbar for fantasy theme */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #D4AF37, #B87333);
+  border-radius: 6px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #B87333, #D4AF37);
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Page background classes */
+.bg-page-landing {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 100%);
+}
+
+.bg-page-main {
+  background-image: url('/src/assets/images/background_main.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.bg-page-notes {
+  background-image: url('/src/assets/images/background_notes.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.bg-page-combat {
+  background-image: url('/src/assets/images/background_combat.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Page background overlays */
+.fantasy-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.fantasy-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, rgba(107, 70, 193, 0.1) 0%, transparent 50%);
+}
+
+/* Parchment texture overlay for cards */
+.parchment-texture {
+  position: relative;
+}
+
+.parchment-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(212, 175, 55, 0.1) 2px, rgba(212, 175, 55, 0.1) 4px);
+  opacity: 0.1;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}

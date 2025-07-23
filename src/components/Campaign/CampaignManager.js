@@ -6,7 +6,7 @@ import JoinCampaignForm from './JoinCampaignForm';
 import CampaignList from './CampaignList';
 import NotesManager from '../Notes/NotesManager';
 import CampaignBestiary from './CampaignBestiary';
-import './Campaign.css';
+import OrnatePanel, { OrnateTab, OrnateButton } from '../OrnatePanel';
 
 const CampaignManager = ({ characters, onCreateCharacter }) => {
   const { currentUser, userRole } = useFirebaseAuth();
@@ -106,82 +106,95 @@ const CampaignManager = ({ characters, onCreateCharacter }) => {
 
   if (loading) {
     return (
-      <div className="campaign-manager">
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading campaigns...</p>
-        </div>
+      <div className="max-w-7xl mx-auto p-8">
+        <OrnatePanel variant="default" className="py-16">
+          <div className="flex flex-col items-center justify-center">
+            <div className="w-12 h-12 border-4 border-amber-700/30 border-t-yellow-400 rounded-full animate-spin mb-4"></div>
+            <p className="text-yellow-300 text-lg font-fantasy uppercase tracking-wider">Loading campaigns...</p>
+          </div>
+        </OrnatePanel>
       </div>
     );
   }
 
   return (
-    <div className="campaign-manager">
-      <div className="campaign-header">
-        <h1>Campaign Management</h1>
-        <p>Create, join, and manage your Pathfinder campaigns</p>
+    <div className="max-w-7xl mx-auto p-8">
+      <div className="text-center mb-8">
+        <h1 className="text-5xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Management</h1>
+        <p className="text-amber-200 text-lg">Create, join, and manage your Pathfinder campaigns</p>
       </div>
 
       {error && (
-        <div className="error-message">
-          <p>{error}</p>
-          <button onClick={loadCampaigns}>Try Again</button>
-        </div>
+        <OrnatePanel variant="dark" className="mb-6">
+          <div className="text-center">
+            <p className="text-red-400 mb-4">{error}</p>
+            <OrnateButton
+              onClick={loadCampaigns}
+              variant="primary"
+              icon="🔄"
+            >
+              Try Again
+            </OrnateButton>
+          </div>
+        </OrnatePanel>
       )}
 
       {activeTab !== 'notes' && activeTab !== 'bestiary' && (
-        <div className="campaign-tabs">
-          <button 
-            className={`tab-button ${activeTab === 'list' ? 'active' : ''}`}
+        <div className="flex justify-center gap-2 mb-8">
+          <OrnateTab
+            label={`My Campaigns (${campaigns.length})`}
+            active={activeTab === 'list'}
             onClick={() => setActiveTab('list')}
-          >
-            My Campaigns ({campaigns.length})
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'create' ? 'active' : ''}`}
+            icon="📜"
+          />
+          <OrnateTab
+            label="Create Campaign"
+            active={activeTab === 'create'}
             onClick={() => setActiveTab('create')}
-          >
-            Create Campaign
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'join' ? 'active' : ''}`}
+            icon="✨"
+          />
+          <OrnateTab
+            label="Join Campaign"
+            active={activeTab === 'join'}
             onClick={() => setActiveTab('join')}
-          >
-            Join Campaign
-          </button>
+            icon="🤝"
+          />
         </div>
       )}
 
       {(activeTab === 'notes' || activeTab === 'bestiary') && selectedCampaign && (
-        <div className="campaign-navigation">
-          <div className="campaign-breadcrumb">
-            <button 
-              className="back-button"
-              onClick={handleBackToCampaigns}
-            >
-              ← Back to Campaigns
-            </button>
-            <h3>{selectedCampaign.name}</h3>
-          </div>
-          
-          <div className="campaign-tabs">
-            <button 
-              className={`tab-button ${activeTab === 'notes' ? 'active' : ''}`}
-              onClick={() => setActiveTab('notes')}
-            >
-              📝 Notes
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'bestiary' ? 'active' : ''}`}
-              onClick={() => setActiveTab('bestiary')}
-            >
-              🐉 Bestiary
-            </button>
-          </div>
+        <div className="mb-8">
+          <OrnatePanel variant="default" className="mb-6">
+            <div className="flex items-center gap-4 mb-4">
+              <OrnateButton
+                variant="secondary"
+                onClick={handleBackToCampaigns}
+                icon="←"
+              >
+                Back to Campaigns
+              </OrnateButton>
+              <h3 className="text-2xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider">{selectedCampaign.name}</h3>
+            </div>
+            
+            <div className="flex justify-center gap-2">
+              <OrnateTab
+                label="Notes"
+                active={activeTab === 'notes'}
+                onClick={() => setActiveTab('notes')}
+                icon="📝"
+              />
+              <OrnateTab
+                label="Bestiary"
+                active={activeTab === 'bestiary'}
+                onClick={() => setActiveTab('bestiary')}
+                icon="🐉"
+              />
+            </div>
+          </OrnatePanel>
         </div>
       )}
 
-      <div className="campaign-content">
+      <div>
         {activeTab === 'list' && (
           <CampaignList 
             campaigns={campaigns}

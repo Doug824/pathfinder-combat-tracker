@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './Campaign.css';
 
 const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -49,21 +48,21 @@ const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
   };
 
   return (
-    <div className="create-campaign-form">
-      <div className="form-header">
-        <h2>Create New Campaign</h2>
-        <p>Set up a new Pathfinder campaign for your party</p>
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-fantasy font-bold text-amber-400 mb-2">Create New Campaign</h2>
+        <p className="text-amber-300">Set up a new Pathfinder campaign for your party</p>
       </div>
 
       {error && (
-        <div className="error-message">
-          {error}
+        <div className="bg-red-900/60 border-2 border-red-700/50 rounded-lg p-4 mb-6 text-center">
+          <p className="text-red-300">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="campaign-form">
-        <div className="form-group">
-          <label htmlFor="name">Campaign Name *</label>
+      <form onSubmit={handleSubmit} className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+        <div className="mb-6">
+          <label htmlFor="name" className="block text-amber-300 font-semibold mb-2">Campaign Name *</label>
           <input
             type="text"
             id="name"
@@ -74,14 +73,15 @@ const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
             disabled={loading}
             required
             maxLength={50}
+            className="input-fantasy w-full"
           />
-          <span className="char-count">
+          <span className="block text-right text-amber-400 text-sm mt-1">
             {formData.name.length}/50
           </span>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
+        <div className="mb-6">
+          <label htmlFor="description" className="block text-amber-300 font-semibold mb-2">Description</label>
           <textarea
             id="description"
             name="description"
@@ -91,15 +91,16 @@ const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
             rows={4}
             disabled={loading}
             maxLength={500}
+            className="input-fantasy w-full resize-none"
           />
-          <span className="char-count">
+          <span className="block text-right text-amber-400 text-sm mt-1">
             {formData.description.length}/500
           </span>
         </div>
 
-        <div className="form-info">
-          <h3>What happens when you create a campaign?</h3>
-          <ul>
+        <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4 mb-6">
+          <h3 className="text-lg font-fantasy font-bold text-amber-400 mb-3">What happens when you create a campaign?</h3>
+          <ul className="text-amber-100 space-y-2 list-disc list-inside">
             <li>You become the Dungeon Master (DM) of this campaign</li>
             <li>A unique invite code is generated for players to join</li>
             <li>You can manage campaign settings and member permissions</li>
@@ -107,18 +108,18 @@ const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
           </ul>
         </div>
 
-        <div className="form-actions">
+        <div className="flex justify-end gap-4">
           <button 
             type="button" 
             onClick={onCancel}
-            className="cancel-button"
+            className="bg-gray-600 hover:bg-gray-500 text-white px-6 py-3 rounded-lg font-fantasy font-semibold transition-all duration-300"
             disabled={loading}
           >
             Cancel
           </button>
           <button 
             type="submit" 
-            className="save-button"
+            className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-6 py-3 rounded-lg font-fantasy font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             disabled={loading || !formData.name.trim()}
           >
             {loading ? 'Creating...' : 'Create Campaign'}

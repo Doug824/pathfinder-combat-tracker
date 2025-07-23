@@ -10,7 +10,6 @@ const Navigation = ({ currentPage, setCurrentPage, activeCharacter, isMobile }) 
   ];
 
   const handleNavClick = (pageId) => {
-    console.log("Navigation clicked:", pageId);
     // Add a small delay for 'manager' to ensure state updates properly
     if (pageId === 'manager') {
       // Prevents the page from immediately changing back

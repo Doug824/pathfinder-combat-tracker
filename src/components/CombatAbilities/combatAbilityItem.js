@@ -83,13 +83,19 @@ const CombatAbilityItem = ({
   // Display mode (not editing)
   if (!isEditing) {
     return (
-      <div className={`ability-card ${ability.isActive ? 'active' : ''}`}>
-        <div className="ability-header">
-          <h3>{ability.name}</h3>
-          <div className="ability-actions">
+      <div className={`bg-black/40 backdrop-blur-md rounded-lg border p-4 hover:bg-black/60 transition-all duration-200 ${
+        ability.isActive 
+          ? 'border-emerald-600/50 bg-emerald-900/20' 
+          : 'border-amber-700/30'
+      }`}>
+        <div className="flex justify-between items-center mb-3">
+          <h3 className={`text-lg font-fantasy font-bold ${
+            ability.isActive ? 'text-emerald-300' : 'text-amber-300'
+          }`}>{ability.name}</h3>
+          <div className="flex gap-2">
             <button 
               type="button" 
-              className="edit-ability-btn"
+              className="text-amber-400 hover:text-amber-300 w-7 h-7 rounded-full hover:bg-amber-900/50 transition-all duration-200 flex items-center justify-center"
               onClick={() => setIsEditing(true)}
               title="Edit Ability"
             >
@@ -97,7 +103,7 @@ const CombatAbilityItem = ({
             </button>
             <button 
               type="button" 
-              className="remove-ability-btn"
+              className="text-red-400 hover:text-red-300 w-7 h-7 rounded-full hover:bg-red-900/50 transition-all duration-200 flex items-center justify-center"
               onClick={() => onRemove(ability.id)}
               title="Remove Ability"
             >
@@ -106,31 +112,39 @@ const CombatAbilityItem = ({
           </div>
         </div>
         
-        <div className="ability-meta">
-          <span className="ability-type">{ability.type.charAt(0).toUpperCase() + ability.type.slice(1)} Action</span>
-          <span className="ability-bonus-type">Bonus Type: {ability.bonusType.charAt(0).toUpperCase() + ability.bonusType.slice(1)}</span>
+        <div className="flex flex-wrap gap-2 mb-3">
+          <span className="bg-blue-700/30 border border-blue-600/50 rounded px-2 py-1 text-blue-200 text-xs font-fantasy">
+            {ability.type.charAt(0).toUpperCase() + ability.type.slice(1)} Action
+          </span>
+          <span className="bg-purple-700/30 border border-purple-600/50 rounded px-2 py-1 text-purple-200 text-xs font-fantasy">
+            {ability.bonusType.charAt(0).toUpperCase() + ability.bonusType.slice(1)}
+          </span>
         </div>
         
         {ability.description && (
-          <div className="ability-description">
+          <div className="text-amber-200/80 text-sm mb-3 p-2 bg-black/20 rounded border border-amber-700/20">
             {ability.description}
           </div>
         )}
         
-        <div className="ability-effects">
+        <div className="flex flex-wrap gap-2 mb-4">
           {Object.entries(ability.effects)
             .filter(([_, value]) => value !== 0)
             .map(([stat, value]) => (
-              <span key={stat} className="ability-effect">
+              <span key={stat} className={`px-2 py-1 rounded text-xs font-fantasy font-semibold ${
+                value > 0 
+                  ? 'bg-emerald-700/40 border border-emerald-600/50 text-emerald-200' 
+                  : 'bg-red-700/40 border border-red-600/50 text-red-200'
+              }`}>
                 {stat.charAt(0).toUpperCase() + stat.slice(1)}: {formatModifier(value)}
               </span>
             ))}
         </div>
         
-        <div className="ability-controls">
+        <div className="space-y-3">
           {ability.variableInput && (
-            <div className="ability-input">
-              <label htmlFor={`ability-input-${ability.id}`}>
+            <div className="bg-black/30 rounded-lg border border-amber-700/20 p-3">
+              <label htmlFor={`ability-input-${ability.id}`} className="block text-amber-300 font-fantasy font-semibold mb-2">
                 {ability.inputLabel || 'Value:'}
               </label>
               <input
@@ -145,12 +159,13 @@ const CombatAbilityItem = ({
                   inputValue: parseInt(e.target.value) || 0
                 })}
                 disabled={!ability.isActive}
+                className="input-fantasy w-16"
               />
               
               {/* Secondary input for abilities that need it, like Fighting Defensively */}
               {ability.hasSecondaryInput && (
-                <div style={{ marginTop: '5px' }}>
-                  <label htmlFor={`ability-secondary-input-${ability.id}`}>
+                <div className="mt-3">
+                  <label htmlFor={`ability-secondary-input-${ability.id}`} className="block text-amber-300 font-fantasy font-semibold mb-2">
                     {ability.secondaryInputLabel || 'Secondary Value:'}
                   </label>
                   <input
@@ -165,24 +180,32 @@ const CombatAbilityItem = ({
                       secondaryInputValue: parseInt(e.target.value) || 0
                     })}
                     disabled={!ability.isActive}
-                    style={{ marginLeft: '5px' }}
+                    className="input-fantasy w-16"
                   />
                 </div>
               )}
             </div>
           )}
           
-          <label className="toggle-switch">
-            <input
-              type="checkbox"
-              checked={ability.isActive}
-              onChange={() => onToggle(ability.id)}
-            />
-            <span className="toggle-slider">
-              <span className="toggle-label active">Active</span>
-              <span className="toggle-label inactive">Inactive</span>
-            </span>
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={ability.isActive}
+                onChange={() => onToggle(ability.id)}
+                className="w-5 h-5 text-emerald-600 bg-black/60 border-amber-700 rounded focus:ring-emerald-500"
+              />
+              <span className="text-amber-200 font-fantasy font-semibold">Active</span>
+            </label>
+            
+            <div className={`px-3 py-1 rounded-full text-sm font-fantasy font-semibold transition-all duration-200 ${
+              ability.isActive 
+                ? 'bg-emerald-700/60 text-emerald-200 border border-emerald-600/50' 
+                : 'bg-gray-700/60 text-gray-300 border border-gray-600/50'
+            }`}>
+              {ability.isActive ? 'Active' : 'Inactive'}
+            </div>
+          </div>
         </div>
       </div>
     );

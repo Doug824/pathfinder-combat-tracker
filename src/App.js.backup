@@ -4,7 +4,6 @@ import CampaignManager from './components/Campaign/CampaignManager';
 import CharacterSetup from './pages/CharacterSetup';
 import CombatTracker from './pages/CombatTracker';
 import Navigation from './components/layout/Navigation';
-import FantasySidebar from './components/FantasySidebar';
 import ThemeToggle from './components/common/ThemeToggle';
 import AuthPage from './components/Auth/AuthPage';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -16,8 +15,10 @@ import useCharacterStorage from './hooks/useCharacterStorage';
 // Asset imports
 import logoIcon from './assets/HerosLedgerLogo.png';
 
-// CSS imports
-import './index.css';
+// CSS imports temporarily disabled to fix compilation
+// import './styles/fantasy-styles.css';
+// import './styles/mobile-fixes.css';
+// import './styles/contextual-themes.css';
 
 
 function AppContent() {
@@ -79,6 +80,7 @@ function AppContent() {
   
   // Modified page change handler to track manual navigation
   const handlePageChange = useCallback((pageName) => {
+    console.log("Changing page to:", pageName);
     
     // Track when user manually navigates to manager
     if (pageName === 'manager') {
@@ -129,6 +131,7 @@ function AppContent() {
     // 2. We're on the manager page
     // 3. We didn't get here by clicking the manager button
     if (activeCharacterId && currentPage === 'manager' && !manuallyNavigatedToManager) {
+      console.log("Auto-navigating to setup from manager");
       const timer = setTimeout(() => {
         setCurrentPage('setup');
       }, 100);
@@ -138,8 +141,9 @@ function AppContent() {
   
   // Update local state when active character changes
   useEffect(() => {
+    console.log("Active character changed:", activeCharacter);
     if (activeCharacter) {
-      // Safely set statistics with defaults - only update state, don't call updateStats
+      // Safely set statistics with defaults
       setCharacterStats({
         strength: parseInt(activeCharacter.stats?.strength) || 10,
         dexterity: parseInt(activeCharacter.stats?.dexterity) || 10,
@@ -148,7 +152,6 @@ function AppContent() {
         wisdom: parseInt(activeCharacter.stats?.wisdom) || 10,
         charisma: parseInt(activeCharacter.stats?.charisma) || 10
       });
-      
       setActiveBuffs(activeCharacter.buffs || []);
       setActiveGear(activeCharacter.gear || []);
       setCombatAbilities(activeCharacter.combatAbilities || []);
@@ -197,8 +200,6 @@ function AppContent() {
     }
   }, [darkMode]);
 
-
-
   const handleThemeToggle = async () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
@@ -216,6 +217,7 @@ function AppContent() {
   
   // Improved stats change handler
   const handleStatsChange = (newStats) => {
+    console.log("Stats changed:", newStats);
     
     // Ensure all stats are integers
     const parsedStats = {
@@ -232,6 +234,7 @@ function AppContent() {
     
     // Immediately update the character if it exists
     if (activeCharacter) {
+      console.log("Updating stats for active character:", activeCharacter.name);
       updateStats(parsedStats);
     } else {
       console.warn("No active character to update stats for");
@@ -239,6 +242,7 @@ function AppContent() {
   };
   
   const handleBuffsChange = (newBuffs) => {
+    console.log("Buffs changed");
     setActiveBuffs(newBuffs);
     if (activeCharacter) {
       updateBuffs(newBuffs);
@@ -246,6 +250,7 @@ function AppContent() {
   };
 
   const handleHitPointsChange = (newHitPoints) => {
+    console.log("Hit points changed:", newHitPoints);
     if (activeCharacter) {
       updateHitPoints(newHitPoints);
     } else {
@@ -254,6 +259,7 @@ function AppContent() {
   };
   
   const handleGearChange = (newGear) => {
+    console.log("Gear changed");
     setActiveGear(newGear);
     if (activeCharacter) {
       updateGear(newGear);
@@ -261,6 +267,7 @@ function AppContent() {
   };
   
   const handleCombatAbilitiesChange = (newAbilities) => {
+    console.log("Combat abilities changed");
     setCombatAbilities(newAbilities);
     if (activeCharacter) {
       updateCombatAbilities(newAbilities);
@@ -268,12 +275,14 @@ function AppContent() {
   };
   
   const handleUpdateWeapons = (primaryWeapon, offhandWeapon, primaryModMultiplier, offhandModMultiplier) => {
+    console.log("Weapons updated with multipliers");
     if (activeCharacter) {
       updateWeapons(primaryWeapon, offhandWeapon, primaryModMultiplier, offhandModMultiplier);
     }
   };
   
   const handleUpdateCombatSettings = (settings) => {
+    console.log("Combat settings updated", settings);
     if (activeCharacter) {
       updateCombatSettings(settings);
     }
@@ -299,6 +308,21 @@ function AppContent() {
         return 'bg-page-main';
     }
   };
+
+  // Determine contextual class based on current page
+  const getContextualClass = (page) => {
+    switch (page) {
+      case 'combat':
+        return 'context-combat';
+      case 'campaigns':
+        return 'context-campaigns';
+      case 'setup':
+        return 'context-manager';
+      case 'manager':
+      default:
+        return 'context-manager';
+    }
+  };
   
   // Don't render anything while authentication state is loading
   if (loading) {
@@ -313,7 +337,7 @@ function AppContent() {
   // If not authenticated, show login page
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
         <AuthPage />
       </div>
     );
@@ -322,64 +346,132 @@ function AppContent() {
   // Show error if character loading failed
   if (charactersError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
-        <div className="parchment-card p-8 max-w-md mx-auto text-center">
-          <h2 className="text-2xl font-fantasy text-blood-red mb-4">Error Loading Characters</h2>
-          <p className="mb-6">{charactersError}</p>
-          <button onClick={refreshCharacters} className="btn-primary">Retry</button>
+      <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+        <div className="error-container">
+          <h2>Error Loading Characters</h2>
+          <p>{charactersError}</p>
+          <button onClick={refreshCharacters}>Retry</button>
         </div>
       </div>
     );
   }
 
-  // Main app when authenticated  
+  // Main app when authenticated
   return (
-    <div className={`min-h-screen ${getBackgroundClass(currentPage)} flex ${isMobile ? 'flex-col' : 'flex-row'} relative`}>
-      {/* Background overlay */}
-      <div className="absolute inset-0 bg-black/40 pointer-events-none z-0" />
+    <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`} style={{
+      minHeight: '100vh',
+      backgroundImage: currentPage === 'combat' 
+        ? "url('/src/assets/images/background_combat.png')" 
+        : currentPage === 'campaigns' 
+        ? "url('/src/assets/images/background_notes.png')"
+        : "url('/src/assets/images/background_main.png')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      position: 'relative'
+    }}>
+      {/* Dark overlay for better text readability */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        zIndex: 1
+      }} />
       
-      {/* Fantasy Sidebar */}
-      <FantasySidebar 
-        currentPage={currentPage} 
-        setCurrentPage={handlePageChange} 
-        activeCharacter={activeCharacter}
-        isMobile={isMobile}
-        currentUser={currentUser}
-        userRole={userRole}
-        onLogout={handleLogout}
-        darkMode={darkMode}
-        onThemeToggle={handleThemeToggle}
-        logoIcon={logoIcon}
-      />
-      
-      {/* Main content area */}
-      <main className={`flex-1 relative z-10 p-4 ${isMobile ? 'pb-20' : 'ml-64'}`} style={{
-        paddingTop: '20px'
+      <div style={{
+        position: 'relative',
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        minHeight: '100vh'
       }}>
-
-        {/* Active character info */}
+      <header className="App-header" style={{
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        alignItems: isMobile ? 'center' : 'center',
+        padding: '15px 20px',
+        gap: isMobile ? '15px' : '0',
+        width: '100%' // Ensure header takes full width
+      }}>
+        <div className="app-title" style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          width: isMobile ? '100%' : 'auto',
+          justifyContent: isMobile ? 'center' : 'flex-start'
+        }}>
+          <img src={logoIcon} alt="Hero's Ledger Logo" className="app-logo" />
+          <div>
+            <h1 style={{ margin: 0 }}>Hero's Ledger</h1>
+            <p className="app-tagline" style={{ margin: 0 }}>
+              Because tracking stats shouldn't be a quest of its own
+            </p>
+          </div>
+        </div>
+        
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'center' : 'center',
+          gap: '15px',
+          width: isMobile ? '100%' : 'auto'
+        }}>
+          <Navigation 
+            currentPage={currentPage} 
+            setCurrentPage={handlePageChange} 
+            activeCharacter={activeCharacter}
+            isMobile={isMobile} // Pass this prop to Navigation
+          />
+          <div className="user-section" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '15px',
+            width: isMobile ? '100%' : 'auto',
+            justifyContent: isMobile ? 'center' : 'flex-end'
+          }}>
+            <div className="user-info">
+              <span className="username">
+                {currentUser.displayName || currentUser.email}
+                {userRole && <span className="user-role">({userRole})</span>}
+              </span>
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+            </div>
+            <ThemeToggle darkMode={darkMode} onToggle={handleThemeToggle} />
+          </div>
+        </div>
+      </header>
+      
+      <main className={`app-content ${getContextualClass(currentPage)}`} style={{
+        paddingBottom: isMobile ? '120px' : '60px', // Extra padding on mobile
+        position: 'relative',
+        width: '100%',
+        overflowX: 'hidden',
+        overflowY: 'visible'
+      }}>
         {activeCharacter && currentPage !== 'manager' && (
-          <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6 mb-6">
-            <h2 className="text-3xl font-fantasy text-amber-400 mb-2">
+          <div className="active-character-info">
+            <h2>
               {activeCharacter.name}
               {activeCharacter.level && activeCharacter.characterClass && (
-                <span className="text-xl text-amber-200/80 block font-body">
+                <span className="character-subtitle">
                   Level {activeCharacter.level} {activeCharacter.characterClass}
                 </span>
               )}
             </h2>
             
             {activeCharacter.race && activeCharacter.alignment && (
-              <div className="flex gap-4 text-amber-100 font-semibold">
+              <div className="character-meta">
                 <span>{activeCharacter.race}</span>
-                <span>•</span>
                 <span>{activeCharacter.alignment}</span>
               </div>
             )}
           </div>
         )}
         
-        {/* Page content */}
+        {/* Always render something based on currentPage */}
         {currentPage === 'manager' && (
           <CharacterManager
             characters={characters}
@@ -425,12 +517,12 @@ function AppContent() {
           />
         )}
         
-        {/* Fallback error */}
+        {/* Fallback if somehow nothing matches */}
         {!(['manager', 'campaigns', 'setup', 'combat'].includes(currentPage)) && (
-          <div className="parchment-card p-8 text-center">
-            <h2 className="text-2xl font-fantasy text-blood-red mb-4">Navigation Error</h2>
-            <p className="mb-6">Invalid page: {currentPage}</p>
-            <button onClick={() => setCurrentPage('manager')} className="btn-primary">
+          <div className="error-message">
+            <h2>Navigation Error</h2>
+            <p>Invalid page: {currentPage}</p>
+            <button onClick={() => setCurrentPage('manager')}>
               Return to Character Manager
             </button>
           </div>

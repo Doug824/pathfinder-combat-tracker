@@ -727,33 +727,35 @@ const Playsheet = ({
   };
 
   return (
-    <div className="playsheet">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4">
       {/* Left Column: Combat Stats */}
-      <div className="playsheet-left-column">
-        <div className="playsheet-section attacks">
-          <h3>Attacks</h3>
-          <div className="playsheet-controls">
-            <label className="haste-toggle">
+      <div className="space-y-6">
+        <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+          <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Attacks</h3>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <label className="flex items-center gap-2 bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 px-4 py-2 cursor-pointer hover:bg-black/60 transition-all duration-200">
               <input
                 type="checkbox"
                 checked={hasHaste}
                 onChange={() => setHasHaste(!hasHaste)}
+                className="w-4 h-4 text-amber-600 bg-black/60 border-amber-700 rounded focus:ring-amber-500"
               />
-              <span>Haste (Extra Attack)</span>
+              <span className="text-amber-200 font-fantasy">Haste (Extra Attack)</span>
             </label>
             
-            <label className="twf-toggle">
+            <label className="flex items-center gap-2 bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 px-4 py-2 cursor-pointer hover:bg-black/60 transition-all duration-200">
               <input
                 type="checkbox"
                 checked={twoWeaponFighting}
                 onChange={handleTwoWeaponFightingToggle}
+                className="w-4 h-4 text-amber-600 bg-black/60 border-amber-700 rounded focus:ring-amber-500"
               />
-              <span>Two-Weapon Fighting</span>
+              <span className="text-amber-200 font-fantasy">Two-Weapon Fighting</span>
             </label>
           </div>
           
           {/* Primary Attacks Display */}
-          <div className="attack-list">
+          <div className="space-y-2 mb-4">
           {attackModifiers.map((mod, index) => {
             // Determine attack name based on position and haste
             let attackName;
@@ -778,108 +780,114 @@ const Playsheet = ({
             }
             
             return (
-              <AttackRow 
-                key={index} 
-                attackName={attackName} 
-                attackValue={formatModifier(mod)} 
-              />
+              <div key={index} className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center hover:bg-black/60 transition-all duration-200">
+                <span className="text-amber-200 font-fantasy font-semibold">{attackName}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-100 font-bold text-lg">{formatModifier(mod)}</span>
+                  {character?.hitPoints?.negLevels > 0 && (
+                    <span className="text-red-400 text-sm" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
+                  )}
+                </div>
+              </div>
             );
           })}
           </div>
           
-          <div className="damage-mod">
-            <span className="damage-label">Damage Modifier:</span>
-            <span className="damage-value">{formatModifier(damageModifier)}</span>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center">
+            <span className="text-amber-300 font-fantasy font-semibold">Damage Modifier:</span>
+            <span className="text-amber-100 font-bold text-lg">{formatModifier(damageModifier)}</span>
           </div>
           
           {/* Off-hand Attacks Display (only if two-weapon fighting is enabled) */}
           {twoWeaponFighting && (
             <>
-              <div className="offhand-attacks">
-                <h4>{offhandWeapon.name} Attacks</h4>
-                <div className="attack-list">
+              <div className="mt-6">
+                <h4 className="text-lg font-fantasy font-bold text-amber-400 mb-3 border-b border-amber-700/30 pb-1">{offhandWeapon.name} Attacks</h4>
+                <div className="space-y-2 mb-4">
                   {offhandAttackModifiers.map((mod, index) => (
-                    <div key={index} className="attack-row">
-                      <span className="attack-name">Off-hand Attack {index + 1}</span>
-                      <div className="attack-value-container">
-                        <span className="attack-value">{formatModifier(mod)}</span>
+                    <div key={index} className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center hover:bg-black/60 transition-all duration-200">
+                      <span className="text-amber-200 font-fantasy font-semibold">Off-hand Attack {index + 1}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-amber-100 font-bold text-lg">{formatModifier(mod)}</span>
                         {character?.hitPoints?.negLevels > 0 && (
-                          <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
+                          <span className="text-red-400 text-sm" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
                 
-                <div className="damage-mod">
-                  <span className="damage-label">Off-hand Damage:</span>
-                  <span className="damage-value">{formatModifier(offhandDamageModifier)}</span>
+                <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center">
+                  <span className="text-amber-300 font-fantasy font-semibold">Off-hand Damage:</span>
+                  <span className="text-amber-100 font-bold text-lg">{formatModifier(offhandDamageModifier)}</span>
                 </div>
               </div>
             </>
           )}
           
-          <div className="attack-summary">
-            Total Attacks: {attacksCount + (twoWeaponFighting ? offhandAttackModifiers.length : 0)}
-            {hasHaste && <span> (includes Haste)</span>}
+          <div className="bg-amber-700/20 backdrop-blur-md rounded-lg border border-amber-600/50 p-3 text-center">
+            <span className="text-amber-100 font-fantasy font-semibold">
+              Total Attacks: {attacksCount + (twoWeaponFighting ? offhandAttackModifiers.length : 0)}
+              {hasHaste && <span className="text-amber-300"> (includes Haste)</span>}
+            </span>
           </div>
         </div>
         
-        <div className="playsheet-section defenses">
-          <h3>Armor Class</h3>
-          <div className="defense-row">
-            <span className="defense-name">Normal AC:</span>
-            <span className="defense-value">{combatStats.normalAC}</span>
+        <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+          <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Armor Class</h3>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center mb-2 hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Normal AC:</span>
+            <span className="text-amber-100 font-bold text-lg">{combatStats.normalAC}</span>
           </div>
-          <div className="defense-row">
-            <span className="defense-name">Touch AC:</span>
-            <span className="defense-value">{combatStats.touchAC}</span>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center mb-2 hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Touch AC:</span>
+            <span className="text-amber-100 font-bold text-lg">{combatStats.touchAC}</span>
           </div>
-          <div className="defense-row">
-            <span className="defense-name">Flat-Footed AC:</span>
-            <span className="defense-value">{combatStats.flatFootedAC}</span>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center mb-2 hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Flat-Footed AC:</span>
+            <span className="text-amber-100 font-bold text-lg">{combatStats.flatFootedAC}</span>
           </div>
-          <div className="defense-row">
-            <span className="defense-name">Combat Maneuver Bonus:</span>
-            <div className="attack-value-container">
-              <span className="defense-value">{formatModifier(combatStats.cmb)}</span>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center mb-2 hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Combat Maneuver Bonus:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-amber-100 font-bold text-lg">{formatModifier(combatStats.cmb)}</span>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
+                <span className="text-red-400 text-sm" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
               )}
             </div>
           </div>
-          <div className="defense-row">
-            <span className="defense-name">Combat Maneuver Defense:</span>
-            <span className="defense-value">{combatStats.cmd}</span>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Combat Maneuver Defense:</span>
+            <span className="text-amber-100 font-bold text-lg">{combatStats.cmd}</span>
           </div>
         </div>
         
-        <div className="playsheet-section saves">
-          <h3>Saving Throws</h3>
-          <div className="save-row">
-            <span className="save-name">Fortitude:</span>
-            <div className="attack-value-container">
-              <span className="save-value">{formatModifier(combatStats.fort)}</span>
+        <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+          <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Saving Throws</h3>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center mb-2 hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Fortitude:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-amber-100 font-bold text-lg">{formatModifier(combatStats.fort)}</span>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
+                <span className="text-red-400 text-sm" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
               )}
             </div>
           </div>
-          <div className="save-row">
-            <span className="save-name">Reflex:</span>
-            <div className="attack-value-container">
-              <span className="save-value">{formatModifier(combatStats.ref)}</span>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center mb-2 hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Reflex:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-amber-100 font-bold text-lg">{formatModifier(combatStats.ref)}</span>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
+                <span className="text-red-400 text-sm" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
               )}
             </div>
           </div>
-          <div className="save-row">
-            <span className="save-name">Will:</span>
-            <div className="attack-value-container">
-              <span className="save-value">{formatModifier(combatStats.will)}</span>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-3 flex justify-between items-center hover:bg-black/60 transition-all duration-200">
+            <span className="text-amber-200 font-fantasy font-semibold">Will:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-amber-100 font-bold text-lg">{formatModifier(combatStats.will)}</span>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-indicator" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
+                <span className="text-red-400 text-sm" title={`Includes -${character.hitPoints.negLevels} from negative levels`}>*</span>
               )}
             </div>
           </div>
@@ -887,58 +895,56 @@ const Playsheet = ({
       </div>
       
       {/* Right Column: Weapon Configuration and Dice Roller */}
-      <div className="playsheet-right-column">
-        <div className="playsheet-section weapon-settings">
-          <h3>Weapon Configuration</h3>
+      <div className="space-y-6">
+        <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+          <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Weapon Configuration</h3>
           {/* Primary Weapon Settings */}
-          <div className="primary-weapon">
-            <h4>Primary Weapon</h4>
-            <div className="weapon-form">
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="primaryWeaponName">Weapon Name</label>
-                  <input
-                    id="primaryWeaponName"
-                    type="text"
-                    value={primaryWeapon.name}
-                    onChange={(e) => handleWeaponChange(false, 'name', e.target.value)}
-                    className="form-control"
-                  />
-                </div>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-4 mb-4">
+            <h4 className="text-lg font-fantasy font-bold text-amber-400 mb-3 border-b border-amber-700/30 pb-1">Primary Weapon</h4>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="primaryWeaponName" className="block text-amber-300 font-fantasy font-semibold">Weapon Name</label>
+                <input
+                  id="primaryWeaponName"
+                  type="text"
+                  value={primaryWeapon.name}
+                  onChange={(e) => handleWeaponChange(false, 'name', e.target.value)}
+                  className="input-fantasy w-full"
+                />
               </div>
               
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="primaryAttackBonus">Attack Bonus</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="primaryAttackBonus" className="block text-amber-300 font-fantasy font-semibold">Attack Bonus</label>
                   <input
                     id="primaryAttackBonus"
                     type="number"
                     value={primaryWeapon.attackBonus}
                     onChange={(e) => handleWeaponChange(false, 'attackBonus', e.target.value)}
-                    className="form-control"
+                    className="input-fantasy w-full"
                   />
                 </div>
                 
-                <div className="form-group">
-                  <label htmlFor="primaryDamageBonus">Damage Bonus</label>
+                <div className="space-y-2">
+                  <label htmlFor="primaryDamageBonus" className="block text-amber-300 font-fantasy font-semibold">Damage Bonus</label>
                   <input
                     id="primaryDamageBonus"
                     type="number"
                     value={primaryWeapon.damageBonus}
                     onChange={(e) => handleWeaponChange(false, 'damageBonus', e.target.value)}
-                    className="form-control"
+                    className="input-fantasy w-full"
                   />
                 </div>
               </div>
               
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="attackAbilityMod">Attack Ability</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="attackAbilityMod" className="block text-amber-300 font-fantasy font-semibold">Attack Ability</label>
                   <select
                     id="attackAbilityMod"
                     value={attackAbilityMod}
                     onChange={(e) => handleAbilityModChange('attack', e.target.value)}
-                    className="form-control"
+                    className="input-fantasy w-full"
                   >
                     <option value="strength">Strength</option>
                     <option value="dexterity">Dexterity</option>
@@ -949,13 +955,13 @@ const Playsheet = ({
                   </select>
                 </div>
                 
-                <div className="form-group">
-                  <label htmlFor="damageAbilityMod">Damage Ability</label>
+                <div className="space-y-2">
+                  <label htmlFor="damageAbilityMod" className="block text-amber-300 font-fantasy font-semibold">Damage Ability</label>
                   <select
                     id="damageAbilityMod"
                     value={damageAbilityMod}
                     onChange={(e) => handleAbilityModChange('damage', e.target.value)}
-                    className="form-control"
+                    className="input-fantasy w-full"
                   >
                     <option value="strength">Strength</option>
                     <option value="dexterity">Dexterity</option>
@@ -971,20 +977,18 @@ const Playsheet = ({
           
           {/* Off-hand Weapon Settings (only visible when two-weapon fighting is enabled) */}
           {twoWeaponFighting && (
-            <div className="offhand-weapon">
-              <h4>Off-Hand Weapon</h4>
-              <div className="weapon-form">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="offhandWeaponName">Weapon Name</label>
-                    <input
-                      id="offhandWeaponName"
-                      type="text"
-                      value={offhandWeapon.name}
-                      onChange={(e) => handleWeaponChange(true, 'name', e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
+            <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-4">
+              <h4 className="text-lg font-fantasy font-bold text-amber-400 mb-3 border-b border-amber-700/30 pb-1">Off-Hand Weapon</h4>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="offhandWeaponName" className="block text-amber-300 font-fantasy font-semibold">Weapon Name</label>
+                  <input
+                    id="offhandWeaponName"
+                    type="text"
+                    value={offhandWeapon.name}
+                    onChange={(e) => handleWeaponChange(true, 'name', e.target.value)}
+                    className="input-fantasy w-full"
+                  />
                 </div>
                 
                 <div className="form-row">
@@ -995,7 +999,7 @@ const Playsheet = ({
                       type="number"
                       value={offhandWeapon.attackBonus}
                       onChange={(e) => handleWeaponChange(true, 'attackBonus', e.target.value)}
-                      className="form-control"
+                      className="input-fantasy"
                     />
                   </div>
                   
@@ -1006,7 +1010,7 @@ const Playsheet = ({
                       type="number"
                       value={offhandWeapon.damageBonus}
                       onChange={(e) => handleWeaponChange(true, 'damageBonus', e.target.value)}
-                      className="form-control"
+                      className="input-fantasy"
                     />
                   </div>
                 </div>
@@ -1018,7 +1022,7 @@ const Playsheet = ({
                       id="offhandAttackAbilityMod"
                       value={offhandAttackAbilityMod}
                       onChange={(e) => handleAbilityModChange('offhandAttack', e.target.value)}
-                      className="form-control"
+                      className="input-fantasy"
                     >
                       <option value="strength">Strength</option>
                       <option value="dexterity">Dexterity</option>
@@ -1035,7 +1039,7 @@ const Playsheet = ({
                       id="offhandDamageAbilityMod"
                       value={offhandDamageAbilityMod}
                       onChange={(e) => handleAbilityModChange('offhandDamage', e.target.value)}
-                      className="form-control"
+                      className="input-fantasy"
                     >
                       <option value="strength">Strength</option>
                       <option value="dexterity">Dexterity</option>
@@ -1057,7 +1061,7 @@ const Playsheet = ({
                       max="3"
                       value={offhandAttacksCount}
                       onChange={(e) => handleOffhandAttacksCountChange(e.target.value)}
-                      className="form-control"
+                      className="input-fantasy"
                     />
                   </div>
                 </div>
@@ -1075,29 +1079,41 @@ const Playsheet = ({
         />
 
         {character?.hitPoints?.negLevels > 0 && (
-          <div className="negative-levels-indicator">
-            <div className="negative-levels-warning">
-              <span>{character.hitPoints.negLevels} Negative Level{character.hitPoints.negLevels > 1 ? 's' : ''} (-{character.hitPoints.negLevels} to attacks, saves, and maneuvers)</span>
+          <div className="bg-red-900/60 backdrop-blur-md rounded-lg border-2 border-red-700/50 p-4 mb-6">
+            <div className="text-red-200 font-fantasy font-bold text-center">
+              <span className="text-lg">{character.hitPoints.negLevels} Negative Level{character.hitPoints.negLevels > 1 ? 's' : ''}</span>
+              <div className="text-red-300 text-sm mt-2">
+                (-{character.hitPoints.negLevels} to attacks, saves, and maneuvers)
+              </div>
             </div>
           </div>
         )}
 
         {/* Dice Roller Section */}
-        <div className="playsheet-section dice-roller">
-          <h3>Dice Roller</h3>
+        <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+          <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Dice Roller</h3>
           
           {/* Weapon selector for dice roller */}
           {twoWeaponFighting && (
-            <div className="damage-modifier-select">
-              <div className="form-row">
+            <div className="mb-4">
+              <p className="text-amber-300 font-fantasy font-semibold mb-2">Select Weapon for Damage:</p>
+              <div className="flex gap-2">
                 <button 
-                  className={`weapon-selector ${currentDamageModifier === damageModifier ? 'active' : ''}`}
+                  className={`px-4 py-2 rounded-lg border font-fantasy font-semibold transition-all duration-200 ${
+                    currentDamageModifier === damageModifier 
+                      ? 'bg-amber-700/80 border-amber-600 text-amber-100 shadow-lg' 
+                      : 'bg-black/40 border-amber-700/30 text-amber-200 hover:bg-black/60'
+                  }`}
                   onClick={() => handleSelectWeaponDamage(false)}
                 >
                   {primaryWeapon.name} Damage
                 </button>
                 <button 
-                  className={`weapon-selector ${currentDamageModifier === offhandDamageModifier ? 'active' : ''}`}
+                  className={`px-4 py-2 rounded-lg border font-fantasy font-semibold transition-all duration-200 ${
+                    currentDamageModifier === offhandDamageModifier 
+                      ? 'bg-amber-700/80 border-amber-600 text-amber-100 shadow-lg' 
+                      : 'bg-black/40 border-amber-700/30 text-amber-200 hover:bg-black/60'
+                  }`}
                   onClick={() => handleSelectWeaponDamage(true)}
                 >
                   {offhandWeapon.name} Damage
@@ -1112,80 +1128,83 @@ const Playsheet = ({
       </div>
       
       {/* Combat Abilities - Full Width */}
-      <div className="playsheet-section abilities">
-        <h3>Combat Abilities</h3>
+      <div className="lg:col-span-2 bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+        <h3 className="text-2xl font-fantasy font-bold text-amber-400 mb-6 border-b border-amber-700/30 pb-2">Combat Abilities</h3>
         {combatAbilities.length === 0 ? (
-          <p>No combat abilities defined. Add abilities in the Combat Abilities tab.</p>
+          <p className="text-amber-200/70 text-center py-8">No combat abilities defined. Add abilities in the Combat Abilities tab.</p>
         ) : (
-          <div className="ability-toggles">
+          <div className="space-y-4">
             {combatAbilities.map(ability => (
-              <div key={ability.id} className="ability-toggle-row">
-                <label className="ability-toggle">
-                  <input
-                    type="checkbox"
-                    checked={ability.isActive}
-                    onChange={() => toggleAbility(ability.id)}
-                  />
-                  <span className="ability-name">{ability.name}</span>
-                </label>
+              <div key={ability.id} className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-4 hover:bg-black/60 transition-all duration-200">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={ability.isActive}
+                      onChange={() => toggleAbility(ability.id)}
+                      className="w-5 h-5 text-amber-600 bg-black/60 border-amber-700 rounded focus:ring-amber-500"
+                    />
+                    <span className="text-amber-100 font-fantasy font-bold text-lg">{ability.name}</span>
+                  </label>
+                  
+                  <div className={`px-3 py-1 rounded-full text-sm font-fantasy font-semibold transition-all duration-200 ${
+                    ability.isActive 
+                      ? 'bg-emerald-700/60 text-emerald-200 border border-emerald-600/50' 
+                      : 'bg-gray-700/60 text-gray-300 border border-gray-600/50'
+                  }`}>
+                    {ability.isActive ? 'Active' : 'Inactive'}
+                  </div>
+                </div>
                 
                 {ability.isActive && ability.variableInput && (
-                  <div className="ability-variable-input">
-                    <label htmlFor={`ability-input-${ability.id}`}>{ability.inputLabel || 'Value:'}
-                      <input
-                        id={`ability-input-${ability.id}`}
-                        type="number"
-                        min={ability.inputMin || 0}
-                        max={ability.inputMax || combatStats.baseAttackBonus}
-                        step={ability.inputStep || 1}
-                        value={ability.inputValue || 0}
-                        onChange={(e) => handleAbilityInputChange(ability.id, e.target.value)}
-                      />
+                  <div className="bg-black/30 rounded-lg border border-amber-700/20 p-3 mb-3">
+                    <label htmlFor={`ability-input-${ability.id}`} className="block text-amber-300 font-fantasy font-semibold mb-2">
+                      {ability.inputLabel || 'Value:'}
                     </label>
+                    <input
+                      id={`ability-input-${ability.id}`}
+                      type="number"
+                      min={ability.inputMin || 0}
+                      max={ability.inputMax || combatStats.baseAttackBonus}
+                      step={ability.inputStep || 1}
+                      value={ability.inputValue || 0}
+                      onChange={(e) => handleAbilityInputChange(ability.id, e.target.value)}
+                      className="input-fantasy w-16"
+                    />
                     
                     {/* Secondary input for abilities like Fighting Defensively */}
                     {ability.hasSecondaryInput && (
-                      <div style={{ marginTop: '5px' }}>
-                        <label htmlFor={`ability-secondary-input-${ability.id}`}>
+                      <div className="mt-3">
+                        <label htmlFor={`ability-secondary-input-${ability.id}`} className="block text-amber-300 font-fantasy font-semibold mb-2">
                           {ability.secondaryInputLabel || 'Secondary Value:'}
-                          <input
-                            id={`ability-secondary-input-${ability.id}`}
-                            type="number"
-                            min={1}
-                            max={10}
-                            step={1}
-                            value={ability.secondaryInputValue || 2}
-                            onChange={(e) => handleSecondaryInputChange(ability.id, e.target.value)}
-                            disabled={!ability.isActive}
-                          />
                         </label>
+                        <input
+                          id={`ability-secondary-input-${ability.id}`}
+                          type="number"
+                          min={1}
+                          max={10}
+                          step={1}
+                          value={ability.secondaryInputValue || 2}
+                          onChange={(e) => handleSecondaryInputChange(ability.id, e.target.value)}
+                          disabled={!ability.isActive}
+                          className="input-fantasy w-16"
+                        />
                       </div>
                     )}
                   </div>
                 )}
                 
                 {ability.isActive && (
-                  <div className="ability-active-effects">
+                  <div className="flex flex-wrap gap-2 mt-3">
                     {Object.entries(ability.effects || {})
                       .filter(([_, value]) => value !== 0)
                       .map(([stat, value]) => (
-                        <span key={stat} className="ability-effect">
+                        <span key={stat} className="bg-emerald-700/40 border border-emerald-600/50 rounded-lg px-3 py-1 text-emerald-200 text-sm font-fantasy font-semibold">
                           {stat.charAt(0).toUpperCase() + stat.slice(1)}: {formatModifier(value)}
                         </span>
                       ))}
                   </div>
                 )}
-                <label className="toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={ability.isActive}
-                    onChange={() => toggleAbility(ability.id)}
-                  />
-                  <span className="toggle-slider">
-                    <span className="toggle-label active">Active</span>
-                    <span className="toggle-label inactive">Inactive</span>
-                  </span>
-                </label>
               </div>
             ))}
           </div>

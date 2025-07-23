@@ -212,38 +212,54 @@ const CharacterSetup = ({
   
   return (
     <div className="character-setup">
-      <section className="setup-section character-details">
-        <div className="section-header">
-          <h2>Character Details</h2>
+      {/* Character Details Section */}
+      <section className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6 mb-6">
+        <div className="mb-6">
+          <h2 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Character Details</h2>
+        </div>
+        <div className="flex justify-between items-center mb-6">
           {!isEditing ? (
-            <button className="edit-button" onClick={() => setIsEditing(true)}>
+            <button 
+              className="bg-amber-700/80 hover:bg-amber-600/90 text-amber-100 px-6 py-2 rounded-lg border border-amber-600/50 font-fantasy font-semibold transition-all duration-200 shadow-lg hover:shadow-amber-500/25"
+              onClick={() => setIsEditing(true)}
+            >
               Edit Details
             </button>
           ) : (
-            <div className="edit-controls">
-              <button className="save-button" onClick={handleSaveDetails}>Save</button>
-              <button className="cancel-button" onClick={handleCancelEdit}>Cancel</button>
+            <div className="flex gap-3">
+              <button 
+                className="bg-emerald-700/80 hover:bg-emerald-600/90 text-emerald-100 px-6 py-2 rounded-lg border border-emerald-600/50 font-fantasy font-semibold transition-all duration-200 shadow-lg hover:shadow-emerald-500/25"
+                onClick={handleSaveDetails}
+              >
+                Save
+              </button>
+              <button 
+                className="bg-red-700/80 hover:bg-red-600/90 text-red-100 px-6 py-2 rounded-lg border border-red-600/50 font-fantasy font-semibold transition-all duration-200 shadow-lg hover:shadow-red-500/25"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
             </div>
           )}
         </div>
         
         {isEditing ? (
-          <div className="character-form">
-            <div className="form-group">
-              <label htmlFor="name">Character Name</label>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="name" className="block text-amber-300 font-fantasy font-semibold">Character Name</label>
               <input
                 type="text"
                 id="name"
                 name="name"
                 value={characterData.name}
                 onChange={handleChange}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="level">Level</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="level" className="block text-amber-300 font-fantasy font-semibold">Level</label>
                 <input
                   type="number"
                   id="level"
@@ -252,44 +268,44 @@ const CharacterSetup = ({
                   max="30"
                   value={characterData.level}
                   onChange={handleChange}
-                  className="form-control"
+                  className="input-fantasy w-full"
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="characterClass">Class</label>
+              <div className="space-y-2">
+                <label htmlFor="characterClass" className="block text-amber-300 font-fantasy font-semibold">Class</label>
                 <input
                   type="text"
                   id="characterClass"
                   name="characterClass"
                   value={characterData.characterClass}
                   onChange={handleChange}
-                  className="form-control"
+                  className="input-fantasy w-full"
                 />
               </div>
             </div>
             
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="race">Race</label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="race" className="block text-amber-300 font-fantasy font-semibold">Race</label>
                 <input
                   type="text"
                   id="race"
                   name="race"
                   value={characterData.race}
                   onChange={handleChange}
-                  className="form-control"
+                  className="input-fantasy w-full"
                 />
               </div>
               
-              <div className="form-group">
-                <label htmlFor="size">Size</label>
+              <div className="space-y-2">
+                <label htmlFor="size" className="block text-amber-300 font-fantasy font-semibold">Size</label>
                 <select
                   id="size"
                   name="size"
                   value={characterData.size}
                   onChange={handleChange}
-                  className="form-control"
+                  className="input-fantasy w-full"
                 >
                   {sizeOptions.map(option => (
                     <option key={option.value} value={option.value}>
@@ -299,14 +315,14 @@ const CharacterSetup = ({
                 </select>
               </div>
               
-              <div className="form-group">
-                <label htmlFor="alignment">Alignment</label>
+              <div className="space-y-2">
+                <label htmlFor="alignment" className="block text-amber-300 font-fantasy font-semibold">Alignment</label>
                 <select
                   id="alignment"
                   name="alignment"
                   value={characterData.alignment}
                   onChange={handleChange}
-                  className="form-control"
+                  className="input-fantasy w-full"
                 >
                   <option value="">Select Alignment</option>
                   <option value="Lawful Good">Lawful Good</option>
@@ -322,269 +338,285 @@ const CharacterSetup = ({
               </div>
             </div>
             
-            <h3>Class Base Values</h3>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="baseAttackBonus">Base Attack Bonus</label>
+            <div className="mt-8">
+              <h3 className="text-xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Class Base Values</h3>
+              <div className="space-y-2">
+                <label htmlFor="baseAttackBonus" className="block text-amber-300 font-fantasy font-semibold">Base Attack Bonus</label>
                 <NumericInput
                   value={characterData.baseAttackBonus}
                   onChange={(value) => handleNumericChange('baseAttackBonus', value)}
-                  className="form-control"
+                  className="input-fantasy w-full max-w-xs"
                   min={0}
                   max={20}
                 />
               </div>
             </div>
             
-            <h4>Base Saving Throws</h4>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="baseFortitude">Fortitude</label>
-                <NumericInput
-                  value={characterData.baseFortitude}
-                  onChange={(value) => handleNumericChange('baseFortitude', value)}
-                  className="form-control"
-                  min={0}
-                  max={20}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="baseReflex">Reflex</label>
-                <NumericInput
-                  value={characterData.baseReflex}
-                  onChange={(value) => handleNumericChange('baseReflex', value)}
-                  className="form-control"
-                  min={0}
-                  max={20}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="baseWill">Will</label>
-                <NumericInput
-                  value={characterData.baseWill}
-                  onChange={(value) => handleNumericChange('baseWill', value)}
-                  className="form-control"
-                  min={0}
-                  max={20}
-                />
+            <div className="mt-6">
+              <h4 className="text-lg font-fantasy font-bold text-amber-400 mb-4">Base Saving Throws</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="baseFortitude" className="block text-amber-300 font-fantasy font-semibold">Fortitude</label>
+                  <NumericInput
+                    value={characterData.baseFortitude}
+                    onChange={(value) => handleNumericChange('baseFortitude', value)}
+                    className="input-fantasy w-full"
+                    min={0}
+                    max={20}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <label htmlFor="baseReflex" className="block text-amber-300 font-fantasy font-semibold">Reflex</label>
+                  <NumericInput
+                    value={characterData.baseReflex}
+                    onChange={(value) => handleNumericChange('baseReflex', value)}
+                    className="input-fantasy w-full"
+                    min={0}
+                    max={20}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <label htmlFor="baseWill" className="block text-amber-300 font-fantasy font-semibold">Will</label>
+                  <NumericInput
+                    value={characterData.baseWill}
+                    onChange={(value) => handleNumericChange('baseWill', value)}
+                    className="input-fantasy w-full"
+                    min={0}
+                    max={20}
+                  />
+                </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="character-display">
-            <div className="detail-row">
-              <span className="detail-label">Name:</span>
-              <span className="detail-value">{character?.name || 'Unnamed'}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-20">Name:</span>
+                <span className="text-amber-100 ml-4">{character?.name || 'Unnamed'}</span>
+              </div>
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-20">Level:</span>
+                <span className="text-amber-100 ml-4">{character?.level || 1}</span>
+              </div>
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-20">Class:</span>
+                <span className="text-amber-100 ml-4">{character?.characterClass || 'None'}</span>
+              </div>
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-20">Race:</span>
+                <span className="text-amber-100 ml-4">{character?.race || 'None'}</span>
+              </div>
             </div>
-            <div className="detail-row">
-              <span className="detail-label">Level:</span>
-              <span className="detail-value">{character?.level || 1}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Class:</span>
-              <span className="detail-value">{character?.characterClass || 'None'}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Race:</span>
-              <span className="detail-value">{character?.race || 'None'}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Size:</span>
-              <span className="detail-value">{getSizeDisplayName(character?.size) || 'Medium'}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Alignment:</span>
-              <span className="detail-value">{character?.alignment || 'None'}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">BAB:</span>
-              <span className="detail-value">{character?.baseAttackBonus || 0}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Base Saves:</span>
-              <span className="detail-value">
-                Fort: {character?.baseFortitude || 0}, 
-                Ref: {character?.baseReflex || 0}, 
-                Will: {character?.baseWill || 0}
-              </span>
+            <div className="space-y-3">
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-24">Size:</span>
+                <span className="text-amber-100 ml-4">{getSizeDisplayName(character?.size) || 'Medium'}</span>
+              </div>
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-24">Alignment:</span>
+                <span className="text-amber-100 ml-4">{character?.alignment || 'None'}</span>
+              </div>
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-24">BAB:</span>
+                <span className="text-amber-100 ml-4">{character?.baseAttackBonus || 0}</span>
+              </div>
+              <div className="flex">
+                <span className="text-amber-300 font-fantasy font-semibold w-24">Base Saves:</span>
+                <span className="text-amber-100 ml-4">
+                  Fort: {character?.baseFortitude || 0}, 
+                  Ref: {character?.baseReflex || 0}, 
+                  Will: {character?.baseWill || 0}
+                </span>
+              </div>
             </div>
           </div>
         )}
       </section>
       
-      <section className="setup-section base-stats">
-        <h2>Base Attributes</h2>
-        <BasicStats 
-          onStatsChange={onStatsChange}
-          initialStats={stats}
-          buffs={[]}
-          gear={[]}
-        />
+      {/* Base Attributes Section */}
+      <section className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6 mb-6">
+        <div className="mb-6">
+          <h2 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Base Attributes</h2>
+        </div>
+        <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6">
+          <BasicStats 
+            onStatsChange={onStatsChange}
+            initialStats={stats}
+            buffs={[]}
+            gear={[]}
+          />
+        </div>
       </section>
       
-      <section className="setup-section equipment">
-        <h2>Equipment & Gear</h2>
-        <div className="gear-section">
-        <div className="active-gear">
-          {gear.length === 0 ? (
-            <p>No gear equipped. Add gear items below.</p>
-          ) : (
-            <div className="gear-list card-grid-layout">
-              {gear.map(item => (
-                <GearItem
-                  key={item.id}
-                  item={item}
-                  onRemove={handleRemoveGear}
-                  onUpdate={handleUpdateGear}
-                  equipmentSlots={equipmentSlots}
-                  bonusTypes={bonusTypes}
-                />
-              ))}
-            </div>
-          )}
+      {/* Equipment & Gear Section */}
+      <section className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6 mb-6">
+        <div className="mb-6">
+          <h2 className="text-2xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Equipment & Gear</h2>
         </div>
+        <div className="space-y-6">
+          <div>
+            {gear.length === 0 ? (
+              <p className="text-amber-200/70 text-center py-8">No gear equipped. Add gear items below.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {gear.map(item => (
+                  <GearItem
+                    key={item.id}
+                    item={item}
+                    onRemove={handleRemoveGear}
+                    onUpdate={handleUpdateGear}
+                    equipmentSlots={equipmentSlots}
+                    bonusTypes={bonusTypes}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
           
-        <div className="new-gear-form">
-          <h3>Add New Gear</h3>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Item Name</label>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-6">
+            <h3 className="text-xl font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Add New Gear</h3>
+            <div className="space-y-2 mb-6">
+              <label className="block text-amber-300 font-fantasy font-semibold">Item Name</label>
               <input 
                 type="text" 
                 value={newGearItem.name}
                 onChange={(e) => handleGearChange('name', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
-          </div>
           
-          <div className="form-row">
-            <div className="form-group" style={{ flex: '1', maxWidth: '150px' }}>
-              <label>Equipment Slot</label>
-              <select
-                value={newGearItem.slot}
-                onChange={(e) => handleGearChange('slot', e.target.value)}
-                className="form-control"
-              >
-                {equipmentSlots.map(slot => (
-                  <option key={slot.value} value={slot.value}>
-                    {slot.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="form-group" style={{ flex: '1', maxWidth: '150px' }}>
-              <label>Bonus Type</label>
-              <select
-                value={newGearItem.bonusType}
-                onChange={(e) => handleGearChange('bonusType', e.target.value)}
-                className="form-control"
-              >
-                {bonusTypes.map(type => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          <h4>Attribute Bonuses</h4>
-          <div className="gear-stats-container">
-            {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
-              <div key={stat} className="gear-stat-input">
-                <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
-                <NumericInput 
-                  value={newGearItem.effects[stat]}
-                  onChange={(value) => handleGearEffectChange(stat, value)}
-                  className="form-control"
-                  min={-10}
-                  max={20}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-2">
+                <label className="block text-amber-300 font-fantasy font-semibold">Equipment Slot</label>
+                <select
+                  value={newGearItem.slot}
+                  onChange={(e) => handleGearChange('slot', e.target.value)}
+                  className="input-fantasy w-full"
+                >
+                  {equipmentSlots.map(slot => (
+                    <option key={slot.value} value={slot.value}>
+                      {slot.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-            ))}
-          </div>
+              
+              <div className="space-y-2">
+                <label className="block text-amber-300 font-fantasy font-semibold">Bonus Type</label>
+                <select
+                  value={newGearItem.bonusType}
+                  onChange={(e) => handleGearChange('bonusType', e.target.value)}
+                  className="input-fantasy w-full"
+                >
+                  {bonusTypes.map(type => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           
-          <h4>Combat Bonuses</h4>
-          <div className="gear-stats-container">
-            <div className="gear-stat-input">
-              <label>Attack Bonus</label>
-              <NumericInput 
-                value={newGearItem.effects.attackBonus}
-                onChange={(value) => handleGearEffectChange('attackBonus', value)}
-                className="form-control"
-                min={-10}
-                max={20}
-              />
+            <div className="mb-6">
+              <h4 className="text-lg font-fantasy font-bold text-amber-400 mb-4">Attribute Bonuses</h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
+                  <div key={stat} className="space-y-1">
+                    <label className="block text-amber-300 font-fantasy text-sm font-semibold">{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
+                    <NumericInput 
+                      value={newGearItem.effects[stat]}
+                      onChange={(value) => handleGearEffectChange(stat, value)}
+                      className="input-fantasy w-full"
+                      min={-10}
+                      max={20}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            <div className="gear-stat-input">
-              <label>AC</label>
-              <NumericInput 
-                value={newGearItem.effects.ac}
-                onChange={(value) => handleGearEffectChange('ac', value)}
-                className="form-control"
-                min={-10}
-                max={20}
-              />
-            </div>
+          
+            <div className="mb-6">
+              <h4 className="text-lg font-fantasy font-bold text-amber-400 mb-4">Combat Bonuses</h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-amber-300 font-fantasy text-sm font-semibold">Attack Bonus</label>
+                  <NumericInput 
+                    value={newGearItem.effects.attackBonus}
+                    onChange={(value) => handleGearEffectChange('attackBonus', value)}
+                    className="input-fantasy w-full"
+                    min={-10}
+                    max={20}
+                  />
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="block text-amber-300 font-fantasy text-sm font-semibold">AC</label>
+                  <NumericInput 
+                    value={newGearItem.effects.ac}
+                    onChange={(value) => handleGearEffectChange('ac', value)}
+                    className="input-fantasy w-full"
+                    min={-10}
+                    max={20}
+                  />
+                </div>
 
-            <div className="gear-stat-input">
-              <label>Natural Armor</label>
-              <NumericInput 
-                value={newGearItem.effects.naturalArmor}
-                onChange={(value) => handleGearEffectChange('naturalArmor', value)}
-                className="form-control"
-                min={-10}
-                max={20}
-              />
+                <div className="space-y-1">
+                  <label className="block text-amber-300 font-fantasy text-sm font-semibold">Natural Armor</label>
+                  <NumericInput 
+                    value={newGearItem.effects.naturalArmor}
+                    onChange={(value) => handleGearEffectChange('naturalArmor', value)}
+                    className="input-fantasy w-full"
+                    min={-10}
+                    max={20}
+                  />
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="block text-amber-300 font-fantasy text-sm font-semibold">Fortitude</label>
+                  <NumericInput 
+                    value={newGearItem.effects.fortitude}
+                    onChange={(value) => handleGearEffectChange('fortitude', value)}
+                    className="input-fantasy w-full"
+                    min={-10}
+                    max={20}
+                  />
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="block text-amber-300 font-fantasy text-sm font-semibold">Reflex</label>
+                  <NumericInput 
+                    value={newGearItem.effects.reflex}
+                    onChange={(value) => handleGearEffectChange('reflex', value)}
+                    className="input-fantasy w-full"
+                    min={-10}
+                    max={20}
+                  />
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="block text-amber-300 font-fantasy text-sm font-semibold">Will</label>
+                  <NumericInput 
+                    value={newGearItem.effects.will}
+                    onChange={(value) => handleGearEffectChange('will', value)}
+                    className="input-fantasy w-full"
+                    min={-10}
+                    max={20}
+                  />
+                </div>
+              </div>
             </div>
-            
-            <div className="gear-stat-input">
-              <label>Fortitude</label>
-              <NumericInput 
-                value={newGearItem.effects.fortitude}
-                onChange={(value) => handleGearEffectChange('fortitude', value)}
-                className="form-control"
-                min={-10}
-                max={20}
-              />
-            </div>
-            
-            <div className="gear-stat-input">
-              <label>Reflex</label>
-              <NumericInput 
-                value={newGearItem.effects.reflex}
-                onChange={(value) => handleGearEffectChange('reflex', value)}
-                className="form-control"
-                min={-10}
-                max={20}
-              />
-            </div>
-            
-            <div className="gear-stat-input">
-              <label>Will</label>
-              <NumericInput 
-                value={newGearItem.effects.will}
-                onChange={(value) => handleGearEffectChange('will', value)}
-                className="form-control"
-                min={-10}
-                max={20}
-              />
-            </div>
-          </div>
           
-          <button 
-            type="button" 
-            onClick={handleAddGear} 
-            className="add-gear-button"
-          >
-            Add Item
-          </button>
-        </div>
+            <button 
+              type="button" 
+              onClick={handleAddGear} 
+              className="w-full bg-amber-700/80 hover:bg-amber-600/90 text-amber-100 px-6 py-3 rounded-lg border border-amber-600/50 font-fantasy font-semibold transition-all duration-200 shadow-lg hover:shadow-amber-500/25"
+            >
+              Add Item
+            </button>
+          </div>
         </div>
       </section>
     </div>

@@ -119,19 +119,19 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
       <div className="creature-stats">
         <div className="basic-stats">
           {creature.armor_class && (
-            <div className="stat-item">
+            <div className="bg-black/30 rounded border border-amber-700/30 p-2 text-center">
               <span className="stat-label">AC</span>
               <span className="stat-value">{creature.armor_class}</span>
             </div>
           )}
           {creature.hit_points && (
-            <div className="stat-item">
+            <div className="bg-black/30 rounded border border-amber-700/30 p-2 text-center">
               <span className="stat-label">HP</span>
               <span className="stat-value">{creature.hit_points}</span>
             </div>
           )}
           {creature.speed && (
-            <div className="stat-item">
+            <div className="bg-black/30 rounded border border-amber-700/30 p-2 text-center">
               <span className="stat-label">Speed</span>
               <span className="stat-value">{creature.speed}</span>
             </div>

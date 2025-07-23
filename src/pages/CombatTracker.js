@@ -100,9 +100,7 @@ const CombatTracker = ({
         // Add the new buff to the saved buffs array
         const updatedSavedBuffs = [...currentSavedBuffs, buff];
         onUpdateSavedBuffs(updatedSavedBuffs);
-        console.log(`Saved buff "${buff.name}" to library`);
       } else {
-        console.log(`Buff "${buff.name}" already exists in library`);
       }
     } else {
       console.warn("Cannot save buff: Missing character or onUpdateSavedBuffs prop");
@@ -133,7 +131,6 @@ const CombatTracker = ({
     if (character && character.savedBuffs && onUpdateSavedBuffs) {
       const updatedSavedBuffs = character.savedBuffs.filter(buff => buff.id !== buffId);
       onUpdateSavedBuffs(updatedSavedBuffs);
-      console.log(`Deleted buff ${buffId} from library`);
     }
   };
   
@@ -142,7 +139,6 @@ const CombatTracker = ({
     if (character && character.savedBuffs && onUpdateSavedBuffs) {
       const updatedSavedBuffs = [...character.savedBuffs, newPackage];
       onUpdateSavedBuffs(updatedSavedBuffs);
-      console.log(`Created buff package: ${newPackage.name}`);
     }
   };
   
@@ -154,39 +150,31 @@ const CombatTracker = ({
   };
 
   return (
-    <div className="combat-tracker" style={{
-      overflow: 'visible', // Ensure content is not cut off
-      position: 'relative', // Allow normal document flow
-      width: '100%', // Take full width
-      height: 'auto', // Let height adjust to content
-      paddingBottom: isMobile ? '150px' : '0' // Add extra space on mobile
-    }}>
-      <div className="tabs-container" style={{
-        overflow: 'visible', // Ensure content is not cut off
-        position: 'relative', // Allow normal document flow
-        height: 'auto' // Let height adjust to content
-      }}>
-        <div className="tabs">
+    <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+      {/* Tab Navigation */}
+      <div className="bg-gradient-to-r from-black/80 via-amber-900/60 to-black/80 rounded-t-xl p-4 border-2 border-amber-700/50 border-b-0 backdrop-blur-md -m-6 mb-6">
+        <div className="flex flex-wrap justify-center gap-2">
           {tabs.map(tab => (
             <button
               key={tab.id}
-              className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+              className={`
+                px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-200
+                ${activeTab === tab.id 
+                  ? 'bg-amber-700/80 text-amber-100 shadow-lg shadow-amber-500/25 border border-amber-600/50' 
+                  : 'bg-black/40 text-amber-300 hover:bg-amber-800/40 hover:text-amber-100 border border-amber-700/30'
+                }
+                ${isMobile ? 'text-sm min-h-[50px]' : 'text-base'}
+              `}
               onClick={() => setActiveTab(tab.id)}
-              style={{
-                minHeight: isMobile ? '50px' : 'auto' // Taller on mobile for better touch
-              }}
             >
               {tab.label}
             </button>
           ))}
         </div>
+      </div>
         
-        <div className="tab-content" style={{
-          overflow: 'visible', // Ensure content is not cut off
-          position: 'relative', // Allow normal document flow
-          height: 'auto', // Let height adjust to content
-          paddingBottom: isMobile ? '150px' : '20px' // Add extra space on mobile
-        }}>
+      {/* Tab Content */}
+      <div className="mt-6">
         {activeTab === 'playsheet' && (
           <Playsheet
             character={character}
@@ -248,7 +236,6 @@ const CombatTracker = ({
               character={character}
             />
           )}
-        </div>
       </div>
     </div>
   );

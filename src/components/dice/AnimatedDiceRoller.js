@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import './AnimatedDiceRoller.css';
 
@@ -108,126 +107,148 @@ const AnimatedDiceRoller = ({ damageModifier = 0 }) => {
   };
 
   return (
-    <div className="animated-dice-roller">
-      <div className="dice-form">
-        <h3 className="dice-form-title">Dice Roller</h3>
+    <div className="space-y-4">
+      <div className="bg-black/30 backdrop-blur-md rounded-lg border border-amber-700/30 p-4">
+        <h3 className="text-lg font-fantasy font-bold text-amber-400 mb-4 border-b border-amber-700/30 pb-2">Dice Configuration</h3>
         
         {/* Dice Groups */}
-        {diceGroups.map((group) => (
-          <div key={group.id} className="dice-group">
-            <div className="dice-group-content">
-              <div className="dice-count">
-                <label htmlFor={`dice-count-${group.id}`}>Dice</label>
-                <input
-                  id={`dice-count-${group.id}`}
-                  type="number"
-                  min="1"
-                  max="20"
-                  value={group.count}
-                  onChange={(e) => updateDiceGroup(group.id, 'count', e.target.value)}
-                  className="dice-input"
-                />
-              </div>
-              
-              <div className="dice-type">
-                <label htmlFor={`dice-type-${group.id}`}>Type</label>
-                <select
-                  id={`dice-type-${group.id}`}
-                  value={group.type}
-                  onChange={(e) => updateDiceGroup(group.id, 'type', e.target.value)}
-                  className="dice-select"
+        <div className="space-y-3">
+          {diceGroups.map((group) => (
+            <div key={group.id} className="bg-black/20 rounded-lg border border-amber-700/20 p-3">
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <label htmlFor={`dice-count-${group.id}`} className="block text-amber-300 font-fantasy font-semibold text-sm mb-1">Count</label>
+                  <input
+                    id={`dice-count-${group.id}`}
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={group.count}
+                    onChange={(e) => updateDiceGroup(group.id, 'count', e.target.value)}
+                    className="input-fantasy w-16"
+                  />
+                </div>
+                
+                <div className="flex-1">
+                  <label htmlFor={`dice-type-${group.id}`} className="block text-amber-300 font-fantasy font-semibold text-sm mb-1">Type</label>
+                  <select
+                    id={`dice-type-${group.id}`}
+                    value={group.type}
+                    onChange={(e) => updateDiceGroup(group.id, 'type', e.target.value)}
+                    className="input-fantasy w-20"
+                  >
+                    <option value="4">d4</option>
+                    <option value="6">d6</option>
+                    <option value="8">d8</option>
+                    <option value="10">d10</option>
+                    <option value="12">d12</option>
+                    <option value="20">d20</option>
+                    <option value="100">d100</option>
+                  </select>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => removeDiceGroup(group.id)}
+                  className="text-red-400 hover:text-red-300 w-8 h-8 rounded-full hover:bg-red-900/50 transition-all duration-200 flex items-center justify-center mt-6"
+                  aria-label="Remove dice"
                 >
-                  <option value="4">d4</option>
-                  <option value="6">d6</option>
-                  <option value="8">d8</option>
-                  <option value="10">d10</option>
-                  <option value="12">d12</option>
-                  <option value="20">d20</option>
-                  <option value="100">d100</option>
-                </select>
+                  −
+                </button>
               </div>
-              
-              <button
-                type="button"
-                onClick={() => removeDiceGroup(group.id)}
-                className="remove-dice-btn"
-                aria-label="Remove dice"
-              >
-                −
-              </button>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         
         {/* Add Dice Button */}
         <button
           type="button"
           onClick={addDiceGroup}
-          className="add-dice-btn"
+          className="w-full bg-amber-700/60 hover:bg-amber-600/70 text-amber-100 px-4 py-2 rounded-lg border border-amber-600/50 font-fantasy font-semibold transition-all duration-200 mt-3"
         >
-          + Add Dice
+          + Add Dice Group
         </button>
         
         {/* Modifier */}
-        <div className="dice-modifier">
-          <label htmlFor="dice-modifier">Damage Modifier:</label>
-          <input
-            id="dice-modifier"
-            type="number"
-            value={modifier}
-            onChange={(e) => setModifier(e.target.value)}
-            className="modifier-input"
-          />
-          <span className="modifier-source">
-            (From character damage bonus)
-          </span>
+        <div className="bg-black/20 rounded-lg border border-amber-700/20 p-3 mt-4">
+          <label htmlFor="dice-modifier" className="block text-amber-300 font-fantasy font-semibold mb-2">Damage Modifier:</label>
+          <div className="flex items-center gap-2">
+            <input
+              id="dice-modifier"
+              type="number"
+              value={modifier}
+              onChange={(e) => setModifier(e.target.value)}
+              className="input-fantasy w-20"
+            />
+            <span className="text-amber-200/70 text-sm font-fantasy">
+              (From character stats)
+            </span>
+          </div>
         </div>
-        
-        {/* Dice Display */}
-        <div className="dice-display">
-          <div className="dice-formula">
+      </div>
+      
+      {/* Dice Display */}
+      <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-4">
+        <div className="text-center mb-4">
+          <div className="text-xl font-fantasy font-bold text-amber-300 bg-black/30 rounded-lg border border-amber-700/20 p-3">
             {getDiceFormula()}
           </div>
-          
-          {showAverage && (
-            <div className="dice-result">
-              <span className="result-label">Average:</span>
-              <span className="result-value">{calculateAverageDice().toFixed(1)}</span>
-            </div>
-          )}
-          
-          {diceResult && !showAverage && (
-            <div className={`dice-result ${isRolling ? 'dice-rolling' : ''}`}>
-              <span className="result-label">Roll Result:</span>
-              <span className="result-value">{diceResult.total}</span>
-              <div className="individual-rolls">
-                {diceResult.groupRolls.map((group, groupIndex) => (
-                  <div key={groupIndex} className="dice-group-result">
-                    <span className="dice-group-formula">{group.formula}:</span> 
-                    <span className="dice-group-values">
-                      {group.rolls.map((roll, i) => (
-                        <span key={i} className={`individual-die ${roll === parseInt(group.type) ? 'max-roll' : (roll === 1 ? 'min-roll' : '')}`}>
-                          {roll}
-                        </span>
-                      ))}
-                    </span>
-                  </div>
-                ))}
-                {diceResult.modifier !== 0 && (
-                  <div className="damage-modifier-result">
-                    <span>Modifier: {diceResult.modifier > 0 ? '+' : ''}{diceResult.modifier}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
+          
+        {showAverage && (
+          <div className="text-center mb-4">
+            <div className="bg-blue-700/30 border border-blue-600/50 rounded-lg p-3">
+              <span className="text-blue-200 font-fantasy font-semibold text-sm">Average: </span>
+              <span className="text-blue-100 font-fantasy font-bold text-lg">{calculateAverageDice().toFixed(1)}</span>
+            </div>
+          </div>
+        )}
+          
+        {diceResult && !showAverage && (
+          <div className={`bg-emerald-900/30 border border-emerald-600/50 rounded-lg p-4 transition-all duration-300 ${
+            isRolling ? 'animate-pulse' : ''
+          }`}>
+            <div className="text-center mb-3">
+              <span className="text-emerald-300 font-fantasy font-semibold text-sm">Roll Result:</span>
+              <div className="text-emerald-100 font-fantasy font-bold text-3xl">{diceResult.total}</div>
+            </div>
+            <div className="space-y-2">
+              {diceResult.groupRolls.map((group, groupIndex) => (
+                <div key={groupIndex} className="bg-black/30 rounded border border-emerald-700/30 p-2">
+                  <span className="text-emerald-400 font-fantasy font-semibold text-sm">{group.formula}:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {group.rolls.map((roll, i) => (
+                      <span key={i} className={`inline-flex items-center justify-center w-8 h-8 rounded font-fantasy font-bold text-sm ${
+                        roll === parseInt(group.formula.split('d')[1]) 
+                          ? 'bg-emerald-600/80 text-emerald-100 border border-emerald-500' 
+                          : roll === 1 
+                            ? 'bg-red-600/80 text-red-100 border border-red-500'
+                            : 'bg-amber-700/60 text-amber-100 border border-amber-600/50'
+                      }`}>
+                        {roll}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              {diceResult.modifier !== 0 && (
+                <div className="bg-black/30 rounded border border-amber-700/30 p-2">
+                  <span className="text-amber-400 font-fantasy font-semibold text-sm">
+                    Modifier: {diceResult.modifier > 0 ? '+' : ''}{diceResult.modifier}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         
         {/* Roll Actions */}
-        <div className="dice-actions">
+        <div className="flex gap-3 justify-center mt-4">
           <button 
             onClick={rollDice} 
-            className={`roll-button ${isRolling ? 'rolling' : ''}`}
+            className={`bg-emerald-700/80 hover:bg-emerald-600/90 text-emerald-100 px-6 py-3 rounded-lg border border-emerald-600/50 font-fantasy font-bold transition-all duration-200 ${
+              isRolling ? 'animate-pulse cursor-not-allowed opacity-75' : 'hover:scale-105'
+            }`}
             disabled={isRolling}
           >
             {isRolling ? 'Rolling...' : 'Roll Dice'}
@@ -238,35 +259,35 @@ const AnimatedDiceRoller = ({ damageModifier = 0 }) => {
               setDiceResult(null);
               setShowAverage(true);
             }}
-            className="average-button"
+            className="bg-blue-700/80 hover:bg-blue-600/90 text-blue-100 px-6 py-3 rounded-lg border border-blue-600/50 font-fantasy font-bold transition-all duration-200 hover:scale-105"
           >
             Show Average
           </button>
         </div>
+      </div>
         
-        {/* Dice History */}
-        {diceHistory.length > 0 && (
-          <div className="dice-history">
-            <h4>Recent Rolls</h4>
-            <div className="history-list">
-              {diceHistory.map((result, index) => (
-                <div key={index} className="history-item">
-                  <div className="history-result">
-                    <span className="history-value">{result.total}</span>
-                    <span className="history-formula">
-                      {result.groupRolls.map(g => g.formula).join(' + ')}
-                      {result.modifier !== 0 && `${result.modifier > 0 ? ' + ' : ' - '}${Math.abs(result.modifier)}`}
-                    </span>
-                  </div>
-                  <span className="history-time">
-                    {result.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+      {/* Dice History */}
+      {diceHistory.length > 0 && (
+        <div className="bg-black/30 backdrop-blur-md rounded-lg border border-amber-700/30 p-4">
+          <h4 className="text-amber-400 font-fantasy font-bold mb-3 border-b border-amber-700/30 pb-2">Recent Rolls</h4>
+          <div className="space-y-2 max-h-40 overflow-y-auto">
+            {diceHistory.map((result, index) => (
+              <div key={index} className="bg-black/20 rounded border border-amber-700/20 p-2 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <span className="text-amber-100 font-fantasy font-bold text-lg">{result.total}</span>
+                  <span className="text-amber-300/70 font-fantasy text-sm">
+                    {result.groupRolls.map(g => g.formula).join(' + ')}
+                    {result.modifier !== 0 && `${result.modifier > 0 ? ' + ' : ' - '}${Math.abs(result.modifier)}`}
                   </span>
                 </div>
-              ))}
-            </div>
+                <span className="text-amber-400/60 font-fantasy text-xs">
+                  {result.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                </span>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -205,7 +205,6 @@ const CombatAbilities = ({
         attackBonus: -numValue,
         damage: numValue * 2
       };
-      console.log(`Improved Power Attack effects: Attack ${-numValue}, Damage +${numValue * 2}`);
     }
     // Handle Greater Power Attack (sacrifice damage for attack)
     else if (ability.name === 'Greater Power Attack') {
@@ -214,7 +213,6 @@ const CombatAbilities = ({
         attackBonus: inputValue,   // POSITIVE
         damage: -inputValue        // NEGATIVE
       };
-      console.log(`Greater Power Attack effects: Attack +${inputValue}, Damage ${-inputValue}`);
     }
     // Handle Combat Expertise (sacrifice attack for AC)
     else if (ability.name === 'Combat Expertise') {
@@ -599,35 +597,22 @@ const CombatAbilities = ({
   };
   
   return (
-    <div className="combat-abilities">
-      <h2>Combat Abilities</h2>
+    <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+      <h2 className="text-2xl font-fantasy font-bold text-amber-400 mb-6 border-b border-amber-700/30 pb-2">Combat Abilities</h2>
       
       <button 
         type="button"
         onClick={handleAddPredefinedAbilities}
-        className="add-predefined-abilities-button"
-        style={{
-          marginTop: '10px',
-          marginBottom: '20px',
-          background: 'var(--highlight-color)',
-          color: 'white',
-          padding: '10px 15px',
-          borderRadius: '4px',
-          border: 'none',
-          cursor: 'pointer',
-          fontWeight: 'bold',
-          display: 'block',
-          width: '100%'
-        }}
+        className="w-full bg-amber-700/80 hover:bg-amber-600/90 text-amber-100 px-6 py-3 rounded-lg border border-amber-600/50 font-fantasy font-bold transition-all duration-200 shadow-lg hover:shadow-amber-500/25 mb-6"
       >
         Add Common Combat Abilities
       </button>
       
-      <div className="active-abilities">
+      <div className="mb-8">
         {combatAbilities.length === 0 ? (
-          <p>No combat abilities defined. Add abilities below or use the "Add Common Combat Abilities" button.</p>
+          <p className="text-amber-200/70 text-center py-8">No combat abilities defined. Add abilities below or use the "Add Common Combat Abilities" button.</p>
         ) : (
-          <div className="abilities-list card-grid-layout">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {combatAbilities.map(ability => (
             <CombatAbilityItem
               key={ability.id}
@@ -643,28 +628,26 @@ const CombatAbilities = ({
         )}
       </div>
       
-      <div className="new-ability-form">
-        <h3>Add New Combat Ability</h3>
+      <div className="bg-black/40 backdrop-blur-md rounded-lg border border-amber-700/30 p-6">
+        <h3 className="text-xl font-fantasy font-bold text-amber-400 mb-6 border-b border-amber-700/30 pb-2">Add New Combat Ability</h3>
         
-        <div className="form-row">
-          <div className="form-group">
-            <label>Ability Name</label>
-            <input
-              type="text"
-              value={newAbility.name}
-              onChange={(e) => handleAbilityChange('name', e.target.value)}
-              className="form-control"
-            />
-          </div>
+        <div className="mb-6">
+          <label className="block text-amber-300 font-fantasy font-semibold mb-2">Ability Name</label>
+          <input
+            type="text"
+            value={newAbility.name}
+            onChange={(e) => handleAbilityChange('name', e.target.value)}
+            className="input-fantasy w-full"
+          />
         </div>
         
-        <div className="form-row">
-          <div className="form-group" style={{ flex: '1', maxWidth: '150px' }}>
-            <label>Action Type</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-amber-300 font-fantasy font-semibold mb-2">Action Type</label>
             <select
               value={newAbility.type}
               onChange={(e) => handleAbilityChange('type', e.target.value)}
-              className="form-control"
+              className="input-fantasy w-full"
             >
               {actionTypes.map(type => (
                 <option key={type.value} value={type.value}>
@@ -674,12 +657,12 @@ const CombatAbilities = ({
             </select>
           </div>
           
-          <div className="form-group" style={{ flex: '1', maxWidth: '150px' }}>
-            <label>Bonus Type</label>
+          <div>
+            <label className="block text-amber-300 font-fantasy font-semibold mb-2">Bonus Type</label>
             <select
               value={newAbility.bonusType}
               onChange={(e) => handleAbilityChange('bonusType', e.target.value)}
-              className="form-control"
+              className="input-fantasy w-full"
             >
               {bonusTypes.map(type => (
                 <option key={type.value} value={type.value}>
@@ -690,76 +673,71 @@ const CombatAbilities = ({
           </div>
         </div>
         
-        <div className="form-row">
-          <div className="form-group">
-            <label>Description</label>
-            <textarea
-              value={newAbility.description || ''}
-              onChange={(e) => handleAbilityChange('description', e.target.value)}
-              className="form-control"
-              rows="2"
-            />
-          </div>
+        <div className="mb-6">
+          <label className="block text-amber-300 font-fantasy font-semibold mb-2">Description</label>
+          <textarea
+            value={newAbility.description || ''}
+            onChange={(e) => handleAbilityChange('description', e.target.value)}
+            className="input-fantasy w-full resize-vertical"
+            rows="2"
+          />
         </div>
         
-        <div className="form-row">
-          <div className="form-group variable-input-toggle">
-            <label>
-              <input
-                type="checkbox"
-                checked={newAbility.variableInput}
-                onChange={() => handleToggleField('variableInput')}
-              />
-              Variable Input (e.g., Power Attack)
-            </label>
-          </div>
+        <div className="mb-6">
+          <label className="flex items-center gap-3 cursor-pointer bg-black/30 rounded-lg border border-amber-700/20 p-3">
+            <input
+              type="checkbox"
+              checked={newAbility.variableInput}
+              onChange={() => handleToggleField('variableInput')}
+              className="w-5 h-5 text-amber-600 bg-black/60 border-amber-700 rounded focus:ring-amber-500"
+            />
+            <span className="text-amber-200 font-fantasy font-semibold">Variable Input (e.g., Power Attack)</span>
+          </label>
         </div>
         
         {newAbility.variableInput && (
-          <div className="variable-input-settings">
-            <div className="form-row">
-              <div className="form-group">
-                <label>Input Label</label>
-                <input
-                  type="text"
-                  value={newAbility.inputLabel || ''}
-                  onChange={(e) => handleAbilityChange('inputLabel', e.target.value)}
-                  className="form-control"
-                  placeholder="e.g., Power Attack Penalty"
-                />
-              </div>
+          <div className="bg-black/30 rounded-lg border border-amber-700/20 p-4 mb-6">
+            <div className="mb-4">
+              <label className="block text-amber-300 font-fantasy font-semibold mb-2">Input Label</label>
+              <input
+                type="text"
+                value={newAbility.inputLabel || ''}
+                onChange={(e) => handleAbilityChange('inputLabel', e.target.value)}
+                className="input-fantasy w-full"
+                placeholder="e.g., Power Attack Penalty"
+              />
             </div>
             
-            <div className="form-row">
-              <div className="form-group" style={{ flex: '1', maxWidth: '100px' }}>
-                <label>Min Value</label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-amber-300 font-fantasy font-semibold mb-2">Min Value</label>
                 <NumericInput
                   value={newAbility.inputMin || 0}
                   onChange={(value) => handleAbilityChange('inputMin', value)}
-                  className="form-control"
+                  className="input-fantasy w-full"
                   min={0}
                   max={30}
                 />
               </div>
               
-              <div className="form-group" style={{ flex: '1', maxWidth: '100px' }}>
-                <label>Max Value</label>
+              <div>
+                <label className="block text-amber-300 font-fantasy font-semibold mb-2">Max Value</label>
                 <NumericInput
-                  value={newAbility.inputMin || 0}
-                  onChange={(value) => handleAbilityChange('inputMin', value)}
-                  className="form-control"
+                  value={newAbility.inputMax || 0}
+                  onChange={(value) => handleAbilityChange('inputMax', value)}
+                  className="input-fantasy w-full"
                   min={0}
                   max={30}
                 />
               </div>
               
-              <div className="form-group" style={{ flex: '1', maxWidth: '100px' }}>
-                <label>Step</label>
+              <div>
+                <label className="block text-amber-300 font-fantasy font-semibold mb-2">Step</label>
                 <input
                   type="number"
                   value={newAbility.inputStep || 1}
                   onChange={(e) => handleAbilityChange('inputStep', parseInt(e.target.value) || 1)}
-                  className="form-control"
+                  className="input-fantasy w-full"
                   min="1"
                 />
               </div>
@@ -767,16 +745,16 @@ const CombatAbilities = ({
           </div>
         )}
         
-        <div className="ability-effects-form">
-          <h4>Attribute Effects</h4>
-          <div className="effects-row">
+        <div className="space-y-6">
+          <h4 className="text-lg font-fantasy font-bold text-amber-400 border-b border-amber-700/30 pb-2">Attribute Effects</h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].map(stat => (
-              <div key={stat} className="form-group">
-                <label>{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
+              <div key={stat} className="space-y-2">
+                <label className="block text-amber-300 font-fantasy font-semibold text-sm">{stat.charAt(0).toUpperCase() + stat.slice(1)}</label>
                 <NumericInput
                   value={newAbility.effects[stat] || 0}
                   onChange={(value) => handleEffectChange(stat, value)}
-                  className="form-control"
+                  className="input-fantasy w-full"
                   min={-10}
                   max={40}
                 />
@@ -784,88 +762,88 @@ const CombatAbilities = ({
             ))}
           </div>
           
-          <h4>Combat Effects</h4>
-          <div className="effects-row">
-            <div className="form-group">
-              <label>Attack</label>
+          <h4 className="text-lg font-fantasy font-bold text-amber-400 border-b border-amber-700/30 pb-2">Combat Effects</h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">Attack</label>
               <input
                 type="number"
                 value={newAbility.effects.attackBonus || 0}
                 onChange={(e) => handleEffectChange('attackBonus', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-group">
-              <label>AC</label>
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">AC</label>
               <input
                 type="number"
                 value={newAbility.effects.ac || 0}
                 onChange={(e) => handleEffectChange('ac', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-group">
-              <label>Damage</label>
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">Damage</label>
               <input
                 type="number"
                 value={newAbility.effects.damage || 0}
                 onChange={(e) => handleEffectChange('damage', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-group">
-              <label>CMB</label>
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">CMB</label>
               <input
                 type="number"
                 value={newAbility.effects.cmb || 0}
                 onChange={(e) => handleEffectChange('cmb', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-group">
-              <label>CMD</label>
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">CMD</label>
               <input
                 type="number"
                 value={newAbility.effects.cmd || 0}
                 onChange={(e) => handleEffectChange('cmd', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
           </div>
           
-          <h4>Saving Throw Effects</h4>
-          <div className="effects-row">
-            <div className="form-group">
-              <label>Fortitude</label>
+          <h4 className="text-lg font-fantasy font-bold text-amber-400 border-b border-amber-700/30 pb-2">Saving Throw Effects</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">Fortitude</label>
               <input
                 type="number"
                 value={newAbility.effects.fortitude || 0}
                 onChange={(e) => handleEffectChange('fortitude', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-group">
-              <label>Reflex</label>
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">Reflex</label>
               <input
                 type="number"
                 value={newAbility.effects.reflex || 0}
                 onChange={(e) => handleEffectChange('reflex', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
             
-            <div className="form-group">
-              <label>Will</label>
+            <div className="space-y-2">
+              <label className="block text-amber-300 font-fantasy font-semibold text-sm">Will</label>
               <input
                 type="number"
                 value={newAbility.effects.will || 0}
                 onChange={(e) => handleEffectChange('will', e.target.value)}
-                className="form-control"
+                className="input-fantasy w-full"
               />
             </div>
           </div>
@@ -874,7 +852,7 @@ const CombatAbilities = ({
         <button 
           type="button"
           onClick={handleAddAbility}
-          className="add-ability-button"
+          className="w-full bg-emerald-700/80 hover:bg-emerald-600/90 text-emerald-100 px-6 py-3 rounded-lg border border-emerald-600/50 font-fantasy font-bold transition-all duration-200 shadow-lg hover:shadow-emerald-500/25 mt-6"
         >
           Add Ability
         </button>

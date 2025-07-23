@@ -6,7 +6,6 @@ import NotesSidebar from './NotesSidebar';
 import NotesListPanel from './NotesListPanel';
 import NotesViewerPanel from './NotesViewerPanel';
 import NoteEditor from './NoteEditor';
-import './Notes.css';
 
 const NotesManager = ({ campaign }) => {
   const { currentUser } = useFirebaseAuth();
@@ -157,52 +156,61 @@ const NotesManager = ({ campaign }) => {
 
   if (loading) {
     return (
-      <div className="notes-manager">
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading notes...</p>
-        </div>
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="w-12 h-12 border-4 border-amber-700/30 border-t-amber-400 rounded-full animate-spin mb-4"></div>
+        <p className="text-amber-300 text-lg font-fantasy">Loading notes...</p>
       </div>
     );
   }
 
   return (
-    <div className="notes-manager">
+    <div className="max-w-7xl mx-auto p-8">
       {error && (
-        <div className="error-message">
-          <p>{error}</p>
-          <button onClick={() => setError(null)}>Dismiss</button>
+        <div className="bg-red-900/60 border-2 border-red-700/50 rounded-lg p-4 mb-6 text-center">
+          <p className="text-red-300 mb-2">{error}</p>
+          <button 
+            onClick={() => setError(null)}
+            className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-300"
+          >
+            Dismiss
+          </button>
         </div>
       )}
 
-      <div className="notes-layout">
-        <NotesSidebar
-          notes={notes}
-          selectedCategory={selectedCategory}
-          selectedSubcategory={selectedSubcategory}
-          onCategorySelect={handleCategorySelect}
-          userRole={userRole}
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-96">
+        <div className="lg:col-span-1">
+          <NotesSidebar
+            notes={notes}
+            selectedCategory={selectedCategory}
+            selectedSubcategory={selectedSubcategory}
+            onCategorySelect={handleCategorySelect}
+            userRole={userRole}
+          />
+        </div>
 
-        <NotesListPanel
-          notes={filteredNotes}
-          selectedNote={selectedNote}
-          onNoteSelect={handleNoteSelect}
-          onNewNote={handleNewNote}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
+        <div className="lg:col-span-1">
+          <NotesListPanel
+            notes={filteredNotes}
+            selectedNote={selectedNote}
+            onNoteSelect={handleNoteSelect}
+            onNewNote={handleNewNote}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+        </div>
 
-        <NotesViewerPanel
-          note={selectedNote}
-          currentUser={currentUser}
-          userRole={userRole}
-          onEdit={handleEditNote}
-          onDelete={handleDeleteNote}
-          onReveal={handleRevealNote}
-          onTagClick={handleTagClick}
-          onClose={handleCloseViewer}
-        />
+        <div className="lg:col-span-2">
+          <NotesViewerPanel
+            note={selectedNote}
+            currentUser={currentUser}
+            userRole={userRole}
+            onEdit={handleEditNote}
+            onDelete={handleDeleteNote}
+            onReveal={handleRevealNote}
+            onTagClick={handleTagClick}
+            onClose={handleCloseViewer}
+          />
+        </div>
       </div>
 
       {showEditor && (

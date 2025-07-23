@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { campaignService } from '../../services/campaignService';
-import './Campaign.css';
+import OrnatePanel, { OrnateButton } from '../OrnatePanel';
 
 const CampaignCard = ({ 
   campaign, 
@@ -55,29 +55,35 @@ const CampaignCard = ({
   };
 
   return (
-    <div className="campaign-card">
-      <div className="campaign-card-header">
-        <h3 className="campaign-name">{campaign.name}</h3>
-        <div className="campaign-actions">
+    <OrnatePanel variant="default" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-yellow-500/20">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider">{campaign.name}</h3>
+        <div className="relative">
           <button 
-            className="actions-button"
+            className="text-yellow-300 hover:text-yellow-100 text-2xl p-1 rounded transition-colors duration-300"
             onClick={() => setShowActions(!showActions)}
           >
             ⋮
           </button>
           {showActions && (
-            <div className="actions-dropdown">
-              <button onClick={() => onSelect(campaign)}>
+            <div className="absolute right-0 top-8 bg-gradient-to-b from-amber-900/95 to-amber-950/95 border-2 border-amber-700/50 rounded-lg shadow-lg z-10 min-w-40">
+              <button 
+                className="w-full text-left px-4 py-2 text-yellow-200 hover:bg-amber-700/30 rounded-t-lg transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
+                onClick={() => onSelect(campaign)}
+              >
                 View Details
               </button>
               {isDM && (
                 <>
-                  <button onClick={() => console.log('Edit campaign')}>
+                  <button 
+                    className="w-full text-left px-4 py-2 text-yellow-200 hover:bg-amber-700/30 transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
+                    onClick={() => {}}
+                  >
                     Edit Campaign
                   </button>
                   <button 
                     onClick={handleDeleteClick}
-                    className="delete-action"
+                    className="w-full text-left px-4 py-2 text-red-400 hover:bg-red-900/30 rounded-b-lg transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
                     disabled={isDeleting}
                   >
                     {isDeleting ? 'Deleting...' : 'Delete Campaign'}
@@ -87,7 +93,7 @@ const CampaignCard = ({
               {!isDM && (
                 <button 
                   onClick={handleLeaveClick}
-                  className="leave-action"
+                  className="w-full text-left px-4 py-2 text-red-400 hover:bg-red-900/30 rounded-b-lg transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
                 >
                   Leave Campaign
                 </button>
@@ -97,46 +103,53 @@ const CampaignCard = ({
         </div>
       </div>
 
-      <div className="campaign-card-content">
-        <p className="campaign-description">
+      <div className="mb-4">
+        <p className="text-amber-200 mb-4 line-clamp-2">
           {campaign.description || 'No description provided'}
         </p>
 
-        <div className="campaign-meta">
-          <div className="campaign-role">
-            <span className={`role-badge ${userRole}`}>
-              {userRole?.toUpperCase()}
-            </span>
-          </div>
+        <div className="flex justify-between items-center mb-4">
+          <span className={`px-3 py-1 rounded-md text-xs font-fantasy uppercase tracking-wider font-bold text-yellow-100 border ${
+            userRole === 'dm' 
+              ? 'bg-gradient-to-b from-purple-600/50 to-purple-800/50 border-purple-500/50' 
+              : 'bg-gradient-to-b from-blue-600/50 to-blue-800/50 border-blue-500/50'
+          }`}>
+            {userRole?.toUpperCase()}
+          </span>
           
-          <div className="campaign-stats">
-            <span className="member-count">
-              👥 {campaign.members.length} member{campaign.members.length !== 1 ? 's' : ''}
-            </span>
-            <span className="last-activity">
-              📅 {getLastActivityText()}
-            </span>
+          <div className="text-right text-sm text-amber-200">
+            <div className="flex items-center gap-1">
+              <span>👥</span>
+              <span className="font-fantasy">{campaign.members.length} member{campaign.members.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span>📅</span>
+              <span className="font-fantasy">{getLastActivityText()}</span>
+            </div>
           </div>
         </div>
 
         {isDM && (
-          <div className="dm-info">
-            <span className="invite-code">
-              Invite Code: <code>{campaign.inviteCode}</code>
-            </span>
+          <div className="bg-black/60 rounded-md border-2 border-amber-700/50 p-3 mb-4">
+            <div className="text-amber-200 text-sm">
+              <span className="font-fantasy uppercase tracking-wider">Invite Code:</span> 
+              <code className="bg-black/60 px-2 py-1 rounded font-mono text-yellow-400 ml-2 border border-amber-700/30">
+                {campaign.inviteCode}
+              </code>
+            </div>
           </div>
         )}
       </div>
 
-      <div className="campaign-card-footer">
-        <button 
-          className="enter-button"
-          onClick={() => onEnterCampaign(campaign)}
-        >
-          Enter Campaign
-        </button>
-      </div>
-    </div>
+      <OrnateButton
+        variant="primary"
+        onClick={() => onEnterCampaign(campaign)}
+        className="w-full"
+        icon="⚔️"
+      >
+        Enter Campaign
+      </OrnateButton>
+    </OrnatePanel>
   );
 };
 

@@ -77,7 +77,7 @@ const NumericInput = ({
       value={inputValue}
       onChange={handleChange}
       onBlur={handleBlur}
-      className={`form-control ${className}`}
+      className={`input-fantasy max-w-24 ${className}`}
       placeholder={placeholder}
       {...restProps}
     />

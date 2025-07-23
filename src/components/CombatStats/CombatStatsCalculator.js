@@ -168,21 +168,21 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
   }, [baseStats, buffs, gear, character, combatAbilities]);
 
   return (
-    <div className="combat-stats">
-      <h2>Combat Statistics</h2>
+    <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
+      <h2 className="text-amber-400 font-fantasy font-bold text-2xl mb-6">Combat Statistics</h2>
       
       {character?.hitPoints?.negLevels > 0 && (
-        <div className="negative-levels-warning">
-          <h4>Negative Levels: {character.hitPoints.negLevels}</h4>
-          <p>All attack rolls, saving throws, combat maneuvers, and skill checks have a 
+        <div className="bg-red-900/40 border border-red-700/50 rounded-lg p-4 mb-6">
+          <h4 className="text-red-400 font-fantasy font-bold mb-2">Negative Levels: {character.hitPoints.negLevels}</h4>
+          <p className="text-red-300 text-sm mb-1">All attack rolls, saving throws, combat maneuvers, and skill checks have a 
           -{character.hitPoints.negLevels} penalty.</p>
-          <p>Maximum hit points are reduced by {character.hitPoints.negLevels * 5}.</p>
+          <p className="text-red-300 text-sm">Maximum hit points are reduced by {character.hitPoints.negLevels * 5}.</p>
         </div>
       )}
       
-      <div className="final-attributes">
-        <h3>Final Attributes (with buffs & gear)</h3>
-        <div className="card-grid-layout">
+      <div className="mb-8">
+        <h3 className="text-amber-400 font-fantasy font-bold text-xl mb-4">Final Attributes (with buffs & gear)</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Object.entries(finalStats).map(([stat, value]) => {
             // Skip certain stats that are now displayed in Combat Values
             if (['bab', 'attackBonus', 'ac', 'fortitude', 'reflex', 'will', 'cmb', 'cmd', 'damage'].includes(stat)) return null;
@@ -191,21 +191,23 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             const totalBonus = statBonuses.reduce((sum, bonus) => sum + bonus.value, 0);
             
             return (
-              <div key={stat} className="stat-display card">
-                <div className="stat-header">
-                  <span className="stat-name">{stat.charAt(0).toUpperCase() + stat.slice(1)}:</span>
-                  <span className="stat-value">{value}</span>
-                  <span className="modifier">(Mod: {getModifier(value) >= 0 ? '+' : ''}{getModifier(value)})</span>
+              <div key={stat} className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+                <div className="mb-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-amber-300 font-medium">{stat.charAt(0).toUpperCase() + stat.slice(1)}:</span>
+                    <span className="text-amber-100 text-xl font-bold">{value}</span>
+                  </div>
+                  <div className="text-amber-200 text-sm">(Mod: {getModifier(value) >= 0 ? '+' : ''}{getModifier(value)})</div>
                 </div>
                 
                 {statBonuses.length > 0 && (
-                  <div className="stat-bonuses">
-                    <span className="total-bonus">
+                  <div className="text-xs">
+                    <div className="text-amber-300 mb-1">
                       From bonuses: {totalBonus > 0 ? '+' : ''}{totalBonus}
-                    </span>
-                    <div className="bonus-sources">
+                    </div>
+                    <div className="space-y-1">
                       {statBonuses.map((bonus, idx) => (
-                        <div key={idx} className="bonus-source">
+                        <div key={idx} className="text-amber-200 bg-black/20 rounded px-2 py-1">
                           {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
                         </div>
                       ))}
@@ -218,246 +220,250 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
         </div>
       </div>
       
-      <div className="derived-stats">
-        <h3>Combat Values</h3>
-        <div className="card-grid-layout">
+      <div className="mb-8">
+        <h3 className="text-amber-400 font-fantasy font-bold text-xl mb-4">Combat Values</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Display character size */}
           {character.size && (
-            <div className="stat-display card">
-              <div className="stat-header">
-                <span className="stat-name">Size Category:</span>
-                <span className="stat-value">{getSizeDisplayName(character.size)}</span>
+            <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+              <div className="mb-3">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-amber-300 font-medium">Size Category:</span>
+                  <span className="text-amber-100 text-xl font-bold">{getSizeDisplayName(character.size)}</span>
+                </div>
               </div>
-              <div className="save-details">
-                <span>Size modifier for CMB/CMD: {derived.sizeModifier >= 0 ? '+' : ''}{derived.sizeModifier}</span>
-                <span>Size modifier for AC: {derived.sizeACModifier >= 0 ? '+' : ''}{derived.sizeACModifier}</span>
+              <div className="text-amber-200 text-sm space-y-1">
+                <div>Size modifier for CMB/CMD: {derived.sizeModifier >= 0 ? '+' : ''}{derived.sizeModifier}</div>
+                <div>Size modifier for AC: {derived.sizeACModifier >= 0 ? '+' : ''}{derived.sizeACModifier}</div>
               </div>
             </div>
           )}
           
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">Attack Bonus:</span>
-              <span className="stat-value">{derived.attackBonus >= 0 ? '+' : ''}{derived.attackBonus}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">Attack Bonus:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.attackBonus >= 0 ? '+' : ''}{derived.attackBonus}</span>
+              </div>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-effect">
+                <div className="text-red-400 text-xs">
                   (includes -{character.hitPoints.negLevels} negative level penalty)
-                </span>
+                </div>
               )}
             </div>
-            <div className="save-details">
-              <span>Base: {character.baseAttackBonus || 0}</span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">Base: {character.baseAttackBonus || 0}</div>
               {bonusDetails.attackBonus && bonusDetails.attackBonus.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.attackBonus.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1">
+                  {bonusDetails.attackBonus.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
           
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">Damage Bonus:</span>
-              <span className="stat-value">{derived.damageBonus >= 0 ? '+' : ''}{derived.damageBonus}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">Damage Bonus:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.damageBonus >= 0 ? '+' : ''}{derived.damageBonus}</span>
+              </div>
             </div>
-            <div className="save-details">
-              <span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">
                 {character?.damageAbilityMod ? (
                   `${character.damageAbilityMod.charAt(0).toUpperCase() + character.damageAbilityMod.slice(1)} modifier: ${getModifier(finalStats[character.damageAbilityMod]) >= 0 ? '+' : ''}${getModifier(finalStats[character.damageAbilityMod])}`
                 ) : (
                   `STR modifier: ${getModifier(finalStats.strength) >= 0 ? '+' : ''}${getModifier(finalStats.strength)}`
                 )}
-              </span>
+              </div>
               {bonusDetails.damage && bonusDetails.damage.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.damage.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1">
+                  {bonusDetails.damage.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
           
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">Armor Class:</span>
-              <span className="stat-value">{derived.ac}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">Armor Class:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.ac}</span>
+              </div>
             </div>
-            <div className="save-details">
-              <span>Base: 10 + DEX modifier: {getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)}</span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">Base: 10 + DEX modifier: {getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)}</div>
               {derived.sizeACModifier !== 0 && (
-                <span> + Size modifier: {derived.sizeACModifier >= 0 ? '+' : ''}{derived.sizeACModifier}</span>
+                <div className="mb-1"> + Size modifier: {derived.sizeACModifier >= 0 ? '+' : ''}{derived.sizeACModifier}</div>
               )}
               {finalStats.naturalArmor > 0 && (
-                <span> + Natural Armor: +{finalStats.naturalArmor}</span>
+                <div className="mb-1"> + Natural Armor: +{finalStats.naturalArmor}</div>
               )}
               {bonusDetails.ac && bonusDetails.ac.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.ac.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1 mt-2">
+                  {bonusDetails.ac.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
 
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">Natural Armor:</span>
-              <span className="stat-value">{finalStats.naturalArmor || 0}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">Natural Armor:</span>
+                <span className="text-amber-100 text-xl font-bold">{finalStats.naturalArmor || 0}</span>
+              </div>
             </div>
-            <div className="save-details">
+            <div className="text-amber-200 text-sm">
               {bonusDetails.naturalArmor && bonusDetails.naturalArmor.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.naturalArmor.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1">
+                  {bonusDetails.naturalArmor.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
           
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">CMB:</span>
-              <span className="stat-value">{derived.cmb >= 0 ? '+' : ''}{derived.cmb}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">CMB:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.cmb >= 0 ? '+' : ''}{derived.cmb}</span>
+              </div>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-effect">
+                <div className="text-red-400 text-xs">
                   (includes -{character.hitPoints.negLevels} negative level penalty)
-                </span>
+                </div>
               )}
             </div>
-            <div className="save-details">
-              <span>BAB ({character.baseAttackBonus || 0}) + STR modifier ({getModifier(finalStats.strength) >= 0 ? '+' : ''}{getModifier(finalStats.strength)})</span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">BAB ({character.baseAttackBonus || 0}) + STR modifier ({getModifier(finalStats.strength) >= 0 ? '+' : ''}{getModifier(finalStats.strength)})</div>
               {derived.sizeModifier !== 0 && (
-                <span> + Size modifier: {derived.sizeModifier >= 0 ? '+' : ''}{derived.sizeModifier}</span>
+                <div className="mb-1"> + Size modifier: {derived.sizeModifier >= 0 ? '+' : ''}{derived.sizeModifier}</div>
               )}
               {bonusDetails.cmb && bonusDetails.cmb.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.cmb.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1 mt-2">
+                  {bonusDetails.cmb.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
           
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">CMD:</span>
-              <span className="stat-value">{derived.cmd}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">CMD:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.cmd}</span>
+              </div>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-effect">
+                <div className="text-red-400 text-xs">
                   (includes -{character.hitPoints.negLevels} negative level penalty)
-                </span>
+                </div>
               )}
             </div>
-            <div className="save-details">
-              <span>10 + BAB ({character.baseAttackBonus || 0}) + STR ({getModifier(finalStats.strength) >= 0 ? '+' : ''}{getModifier(finalStats.strength)}) + DEX ({getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)})</span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">10 + BAB ({character.baseAttackBonus || 0}) + STR ({getModifier(finalStats.strength) >= 0 ? '+' : ''}{getModifier(finalStats.strength)}) + DEX ({getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)})</div>
               {derived.sizeModifier !== 0 && (
-                <span> + Size modifier: {derived.sizeModifier >= 0 ? '+' : ''}{derived.sizeModifier}</span>
+                <div className="mb-1"> + Size modifier: {derived.sizeModifier >= 0 ? '+' : ''}{derived.sizeModifier}</div>
               )}
             </div>
           </div>
         </div>
         
-        <h3>Saving Throws</h3>
-        <div className="card-grid-layout">
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">Fortitude Save:</span>
-              <span className="stat-value">{derived.fortitudeSave >= 0 ? '+' : ''}{derived.fortitudeSave}</span>
+        <h3 className="text-amber-400 font-fantasy font-bold text-xl mb-4">Saving Throws</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">Fortitude Save:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.fortitudeSave >= 0 ? '+' : ''}{derived.fortitudeSave}</span>
+              </div>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-effect">
+                <div className="text-red-400 text-xs">
                   (includes -{character.hitPoints.negLevels} negative level penalty)
-                </span>
+                </div>
               )}
             </div>
-            <div className="save-details">
-              <span>Base: {character.baseFortitude || 0} + CON modifier: {getModifier(finalStats.constitution) >= 0 ? '+' : ''}{getModifier(finalStats.constitution)}</span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">Base: {character.baseFortitude || 0} + CON modifier: {getModifier(finalStats.constitution) >= 0 ? '+' : ''}{getModifier(finalStats.constitution)}</div>
               {bonusDetails.fortitude && bonusDetails.fortitude.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.fortitude.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1">
+                  {bonusDetails.fortitude.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
           
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">Reflex Save:</span>
-              <span className="stat-value">{derived.reflexSave >= 0 ? '+' : ''}{derived.reflexSave}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">Reflex Save:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.reflexSave >= 0 ? '+' : ''}{derived.reflexSave}</span>
+              </div>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-effect">
+                <div className="text-red-400 text-xs">
                   (includes -{character.hitPoints.negLevels} negative level penalty)
-                </span>
+                </div>
               )}
             </div>
-            <div className="save-details">
-              <span>Base: {character.baseReflex || 0} + DEX modifier: {getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)}</span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">Base: {character.baseReflex || 0} + DEX modifier: {getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)}</div>
               {bonusDetails.reflex && bonusDetails.reflex.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.reflex.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1 mt-2">
+                  {bonusDetails.reflex.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
           
-          <div className="stat-display card">
-            <div className="stat-header">
-              <span className="stat-name">Will Save:</span>
-              <span className="stat-value">{derived.willSave >= 0 ? '+' : ''}{derived.willSave}</span>
+          <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-amber-300 font-medium">Will Save:</span>
+                <span className="text-amber-100 text-xl font-bold">{derived.willSave >= 0 ? '+' : ''}{derived.willSave}</span>
+              </div>
               {character?.hitPoints?.negLevels > 0 && (
-                <span className="negative-level-effect">
+                <div className="text-red-400 text-xs">
                   (includes -{character.hitPoints.negLevels} negative level penalty)
-                </span>
+                </div>
               )}
             </div>
-            <div className="save-details">
-              <span>Base: {character.baseWill || 0} + WIS modifier: {getModifier(finalStats.wisdom) >= 0 ? '+' : ''}{getModifier(finalStats.wisdom)}</span>
+            <div className="text-amber-200 text-sm">
+              <div className="mb-2">Base: {character.baseWill || 0} + WIS modifier: {getModifier(finalStats.wisdom) >= 0 ? '+' : ''}{getModifier(finalStats.wisdom)}</div>
               {bonusDetails.will && bonusDetails.will.length > 0 && (
-                <div className="stat-bonuses">
-                  <div className="bonus-sources">
-                    {bonusDetails.will.map((bonus, idx) => (
-                      <div key={idx} className="bonus-source">
-                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                      </div>
-                    ))}
-                  </div>
+                <div className="space-y-1 mt-2">
+                  {bonusDetails.will.map((bonus, idx) => (
+                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -465,33 +471,6 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
         </div>
       </div>
       
-      {/* Add CSS for the negative level effects */}
-      <style jsx>{`
-        .negative-levels-warning {
-          margin: 15px 0;
-          padding: 12px;
-          background-color: rgba(192, 57, 43, 0.1);
-          border-left: 4px solid var(--error-color);
-          border-radius: 4px;
-        }
-        
-        .negative-levels-warning h4 {
-          margin-top: 0;
-          margin-bottom: 8px;
-          color: var(--error-color);
-        }
-        
-        .negative-levels-warning p {
-          margin: 5px 0;
-          font-size: 0.9rem;
-        }
-        
-        .negative-level-effect {
-          font-size: 0.8rem;
-          color: var(--error-color);
-          margin-left: 8px;
-        }
-      `}</style>
     </div>
   );
 };

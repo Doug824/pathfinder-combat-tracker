@@ -43,26 +43,29 @@ const LoginForm = ({ onToggleMode }) => {
   };
 
   return (
-    <div className="auth-form">
-      <div className="auth-header">
+    <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-8 max-w-md mx-auto">
+      {/* Fantasy Auth Header */}
+      <div className="text-center mb-8">
         <img 
           src={logoIcon} 
           alt="Hero's Ledger Logo" 
-          className="auth-logo"
+          className="w-20 h-20 mx-auto mb-4 rounded-full border-2 border-ornate-gold shadow-fantasy-glow"
         />
-        <h2>Welcome Back</h2>
-        <p>Sign in to access your legendary campaigns</p>
+        <h2 className="text-3xl font-fantasy font-bold text-ornate-gold mb-2">Welcome Back, Hero</h2>
+        <p className="text-amber-200/70">Sign in to continue your legendary adventures</p>
       </div>
 
       {error && (
-        <div className="auth-error">
+        <div className="bg-red-900/50 border border-red-600/50 text-red-200 p-3 rounded-lg mb-6 text-center">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="auth-form-fields">
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-amber-300 font-fantasy font-semibold">
+            Email
+          </label>
           <input
             type="email"
             id="email"
@@ -70,11 +73,15 @@ const LoginForm = ({ onToggleMode }) => {
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
             required
+            className="input-fantasy w-full"
+            placeholder="Enter your email"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
+        <div className="space-y-2">
+          <label htmlFor="password" className="block text-amber-300 font-fantasy font-semibold">
+            Password
+          </label>
           <input
             type="password"
             id="password"
@@ -82,25 +89,29 @@ const LoginForm = ({ onToggleMode }) => {
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
             required
+            className="input-fantasy w-full"
+            placeholder="Enter your password"
           />
         </div>
 
         <button 
           type="submit" 
-          className="auth-button primary"
+          className="btn-primary w-full py-3 disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? 'Signing In...' : 'Sign In'}
+          {loading ? '⚔️ Entering...' : '⚔️ Enter the Realm'}
         </button>
       </form>
 
-      <div className="auth-divider">
-        <span>or</span>
+      <div className="my-6 flex items-center">
+        <div className="flex-1 h-px bg-amber-700/30"></div>
+        <span className="px-4 text-amber-200/70 text-sm">or</span>
+        <div className="flex-1 h-px bg-amber-700/30"></div>
       </div>
 
       <button 
         onClick={handleGoogleSignIn}
-        className="auth-button google"
+        className="w-full py-3 bg-white/90 hover:bg-white text-gray-800 font-semibold rounded-lg border-2 border-amber-700/30 flex items-center justify-center gap-3 transition-all disabled:opacity-50"
         disabled={loading}
       >
         <svg width="18" height="18" viewBox="0 0 18 18">
@@ -112,15 +123,15 @@ const LoginForm = ({ onToggleMode }) => {
         Continue with Google
       </button>
 
-      <div className="auth-footer">
-        <p>
+      <div className="text-center mt-6 pt-6 border-t border-amber-700/30">
+        <p className="text-amber-200/70">
           Don't have an account?{' '}
           <button 
             onClick={onToggleMode}
-            className="auth-link"
+            className="text-amber-400 hover:text-amber-300 font-semibold underline transition-colors"
             disabled={loading}
           >
-            Sign up
+            Create one
           </button>
         </p>
       </div>

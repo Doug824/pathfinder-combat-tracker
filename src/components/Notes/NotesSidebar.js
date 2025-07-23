@@ -117,7 +117,7 @@ const NotesSidebar = ({
         <h3>Campaign Notes</h3>
       </div>
 
-      <div className="sidebar-section">
+      <div className="mb-6">
         <div className="sidebar-item-group">
           <div 
             className={`sidebar-item ${!selectedCategory ? 'active' : ''}`}
@@ -130,7 +130,7 @@ const NotesSidebar = ({
         </div>
       </div>
 
-      <div className="sidebar-section">
+      <div className="mb-6">
         <div className="sidebar-section-title">By Type</div>
         <div className="sidebar-item-group">
           <div 
@@ -162,7 +162,7 @@ const NotesSidebar = ({
         </div>
       </div>
 
-      <div className="sidebar-section">
+      <div className="mb-6">
         <div className="sidebar-section-title">By Category</div>
         {Object.entries(categoryStructure).map(([categoryKey, category]) => (
           <div key={categoryKey} className="sidebar-category">

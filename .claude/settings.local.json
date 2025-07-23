@@ -10,7 +10,10 @@
       "Bash(npm start)",
       "Bash(lsof:*)",
       "Bash(kill:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(rm:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './HitPointTracker.css';
 import NumericInput from '../common/NumericInput';
 
 const HitPointTracker = ({ 
@@ -100,13 +99,6 @@ const HitPointTracker = ({
       setHitPoints(updatedHitPoints);
       onHitPointChange(updatedHitPoints);
       
-      if (hasConChanged) {
-        console.log(`Con changed: ${hitPoints.lastConModifier} -> ${conModifier}, HP adjusted by ${hpChange}`);
-      }
-      
-      if (hasNegLevelsChanged) {
-        console.log(`Negative levels changed: ${character.hitPoints?.negLevels || 0} -> ${hitPoints.negLevels}`);
-      }
     }
   }, [finalStats.constitution, hitPoints.negLevels, character]);
 
@@ -306,193 +298,210 @@ const HitPointTracker = ({
   const isNonLethalUnconscious = !isUnconscious && hitPoints.nonLethalDamage >= hitPoints.currentHP;
 
   return (
-    <div className={`hit-point-tracker ${className}`}>
-      <h3 className="hp-header">Hit Points</h3>
+    <div className={`bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6 ${className}`}>
+      <h3 className="text-amber-400 font-fantasy font-bold text-xl mb-4">Hit Points</h3>
       
-      <div className="hp-visual-container">
-        <div 
-          className="hp-heart" 
-          style={{ '--health-percent': `${calculateHealthPercentage()}%` }}
-          title={`${calculateHealthPercentage().toFixed(0)}% health remaining`}
-        >
-          <div className="hp-heart-fill"></div>
-        </div>
-        
-        <div className="hp-status">
-          <div className="hp-values">
-            <span className="current-hp" style={{ color: healthStatus.color }}>
-              {hitPoints.currentHP}
-            </span>
-            <span className="hp-separator">/</span>
-            <span className="max-hp">{hitPoints.maxHP}</span>
-            {hitPoints.tempHP > 0 && (
-              <span className="temp-hp">(+{hitPoints.tempHP})</span>
-            )}
+      <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4 mb-6">
+        <div className="flex items-center gap-4">
+          <div 
+            className="w-20 h-20 rounded-full border-4 border-amber-600 flex items-center justify-center relative overflow-hidden"
+            title={`${calculateHealthPercentage().toFixed(0)}% health remaining`}
+          >
+            <div 
+              className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-red-600 to-red-400 transition-all duration-300"
+              style={{ height: `${calculateHealthPercentage()}%` }}
+            ></div>
+            <div className="relative z-10 text-white font-bold text-sm">
+              {Math.round(calculateHealthPercentage())}%
+            </div>
           </div>
           
-          {/* Show true max HP if negative levels are present */}
-          {hitPoints.negLevels > 0 && (
-            <div className="true-max-hp">
-              True Max HP: {hitPoints.trueMaxHP}
+          <div className="flex-1">
+            <div className="flex items-baseline gap-2 text-2xl font-bold mb-2">
+              <span className="text-amber-100" style={{ color: healthStatus.color }}>
+                {hitPoints.currentHP}
+              </span>
+              <span className="text-amber-300">/</span>
+              <span className="text-amber-100">{hitPoints.maxHP}</span>
+              {hitPoints.tempHP > 0 && (
+                <span className="text-blue-400 text-lg">(+{hitPoints.tempHP})</span>
+              )}
             </div>
-          )}
           
-          {hitPoints.nonLethalDamage > 0 && (
-            <div className="nonlethal-damage">
-              Non-lethal: {hitPoints.nonLethalDamage}
-            </div>
-          )}
-          
-          {hitPoints.negLevels > 0 && (
-            <div className="negative-levels-container">
-              <div className="negative-levels">
-                Negative Levels: {hitPoints.negLevels}
+            {/* Show true max HP if negative levels are present */}
+            {hitPoints.negLevels > 0 && (
+              <div className="text-amber-300 text-sm">
+                True Max HP: {hitPoints.trueMaxHP}
               </div>
-              <div className="negative-level-penalties">
-                <div className="penalty-item">-{hitPoints.negLevels} to attack rolls</div>
-                <div className="penalty-item">-{hitPoints.negLevels} to saving throws</div>
-                <div className="penalty-item">-{hitPoints.negLevels} to combat maneuvers</div>
-                <div className="penalty-item">-{hitPoints.negLevels*5} to hit points</div>
+            )}
+            
+            {hitPoints.nonLethalDamage > 0 && (
+              <div className="text-yellow-400 text-sm">
+                Non-lethal: {hitPoints.nonLethalDamage}
               </div>
-            </div>
-          )}
-          
-          {isUnconscious && (
-            <div className="unconscious-warning">
-              {hitPoints.currentHP < 0 ? "DYING" : "DISABLED"}
-            </div>
-          )}
-          
-          {isNonLethalUnconscious && (
-            <div className="nonlethal-unconscious-warning">
-              UNCONSCIOUS (Non-lethal)
-            </div>
-          )}
+            )}
+            
+            {hitPoints.negLevels > 0 && (
+              <div className="bg-red-900/40 border border-red-700/30 rounded p-2 mt-2">
+                <div className="text-red-400 font-bold text-sm mb-1">
+                  Negative Levels: {hitPoints.negLevels}
+                </div>
+                <div className="text-red-300 text-xs space-y-0.5">
+                  <div>-{hitPoints.negLevels} to attack rolls</div>
+                  <div>-{hitPoints.negLevels} to saving throws</div>
+                  <div>-{hitPoints.negLevels} to combat maneuvers</div>
+                  <div>-{hitPoints.negLevels*5} to hit points</div>
+                </div>
+              </div>
+            )}
+            
+            {isUnconscious && (
+              <div className="bg-red-900/60 border border-red-600 rounded px-3 py-1 mt-2">
+                <span className="text-red-200 font-bold text-sm">
+                  {hitPoints.currentHP < 0 ? "DYING" : "DISABLED"}
+                </span>
+              </div>
+            )}
+            
+            {isNonLethalUnconscious && (
+              <div className="bg-yellow-900/60 border border-yellow-600 rounded px-3 py-1 mt-2">
+                <span className="text-yellow-200 font-bold text-sm">
+                  UNCONSCIOUS (Non-lethal)
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       
-      <div className="hp-edit-container">
-        {/* Add True Max HP field that's always visible */}
-        <div className="hp-row">
-          <label>True Max HP</label>
-          <NumericInput
-            value={hitPoints.trueMaxHP}
-            onChange={(value) => handleHPChange('trueMaxHP', value)}
-            min={1}
-          />
-        </div>
-        
-        <div className="hp-row">
-          <label>Effective Max HP</label>
-          <NumericInput
-            value={hitPoints.maxHP}
-            onChange={(value) => handleHPChange('maxHP', value)}
-            min={1}
-          />
-        </div>
-        
-        <div className="hp-row">
-          <label>Current HP</label>
-          <NumericInput
-            value={hitPoints.currentHP}
-            onChange={(value) => handleHPChange('currentHP', value)}
-            min={-1000}
-            max={hitPoints.maxHP}
-          />
-        </div>
-        
-        <div className="hp-row">
-          <label>Temp HP</label>
-          <NumericInput
-            value={hitPoints.tempHP}
-            onChange={(value) => handleHPChange('tempHP', value)}
-            min={0}
-          />
-        </div>
-        
-        <div className="hp-row">
-          <label>Non-Lethal</label>
-          <NumericInput
-            value={hitPoints.nonLethalDamage}
-            onChange={(value) => handleHPChange('nonLethalDamage', value)}
-            min={0}
-          />
-        </div>
-        
-        <div className="hp-row">
-          <label>Neg. Levels</label>
-          <NumericInput
-            value={hitPoints.negLevels}
-            onChange={(value) => handleHPChange('negLevels', value)}
-            min={0}
-            max={20}
-          />
+      <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4 mb-6">
+        <h4 className="text-amber-400 font-fantasy font-bold mb-4">Hit Point Details</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Add True Max HP field that's always visible */}
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">True Max HP</label>
+            <NumericInput
+              value={hitPoints.trueMaxHP}
+              onChange={(value) => handleHPChange('trueMaxHP', value)}
+              min={1}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">Effective Max HP</label>
+            <NumericInput
+              value={hitPoints.maxHP}
+              onChange={(value) => handleHPChange('maxHP', value)}
+              min={1}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">Current HP</label>
+            <NumericInput
+              value={hitPoints.currentHP}
+              onChange={(value) => handleHPChange('currentHP', value)}
+              min={-1000}
+              max={hitPoints.maxHP}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">Temp HP</label>
+            <NumericInput
+              value={hitPoints.tempHP}
+              onChange={(value) => handleHPChange('tempHP', value)}
+              min={0}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">Non-Lethal</label>
+            <NumericInput
+              value={hitPoints.nonLethalDamage}
+              onChange={(value) => handleHPChange('nonLethalDamage', value)}
+              min={0}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-amber-300 text-sm font-medium mb-2">Neg. Levels</label>
+            <NumericInput
+              value={hitPoints.negLevels}
+              onChange={(value) => handleHPChange('negLevels', value)}
+              min={0}
+              max={20}
+            />
+          </div>
         </div>
       </div>
       
-      <div className="hp-quick-actions">
-        <div className="hp-action-row">
-          <input
-            type="number"
-            min="1"
-            className="hp-action-input"
-            placeholder="Amount"
-            id="damage-amount"
-          />
-          <button 
-            className="hp-action-btn damage-btn"
-            onClick={() => handleTakeDamage(document.getElementById('damage-amount').value)}
-          >
-            Take Damage
-          </button>
-        </div>
-        
-        <div className="hp-action-row">
-          <input
-            type="number"
-            min="1"
-            className="hp-action-input"
-            placeholder="Amount"
-            id="heal-amount"
-          />
-          <button 
-            className="hp-action-btn heal-btn"
-            onClick={() => handleHeal(document.getElementById('heal-amount').value)}
-          >
-            Heal
-          </button>
-        </div>
-        
-        <div className="hp-action-row">
-          <input
-            type="number"
-            min="1"
-            className="hp-action-input"
-            placeholder="Amount"
-            id="temp-hp-amount"
-          />
-          <button 
-            className="hp-action-btn temp-hp-btn"
-            onClick={() => handleAddTempHP(document.getElementById('temp-hp-amount').value)}
-          >
-            Add Temp HP
-          </button>
-        </div>
-        
-        <div className="hp-action-row">
-          <input
-            type="number"
-            min="1"
-            className="hp-action-input"
-            placeholder="Amount"
-            id="nonlethal-amount"
-          />
-          <button 
-            className="hp-action-btn nonlethal-btn"
-            onClick={() => handleNonLethalDamage(document.getElementById('nonlethal-amount').value)}
-          >
-            Non-Lethal
-          </button>
+      <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
+        <h4 className="text-amber-400 font-fantasy font-bold mb-4">Quick Actions</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex gap-2">
+            <input
+              type="number"
+              min="1"
+              className="input-fantasy flex-1"
+              placeholder="Amount"
+              id="damage-amount"
+            />
+            <button 
+              className="bg-red-700/80 hover:bg-red-600/90 text-red-100 px-4 py-2 rounded transition-colors"
+              onClick={() => handleTakeDamage(document.getElementById('damage-amount').value)}
+            >
+              Take Damage
+            </button>
+          </div>
+          
+          <div className="flex gap-2">
+            <input
+              type="number"
+              min="1"
+              className="input-fantasy flex-1"
+              placeholder="Amount"
+              id="heal-amount"
+            />
+            <button 
+              className="bg-green-700/80 hover:bg-green-600/90 text-green-100 px-4 py-2 rounded transition-colors"
+              onClick={() => handleHeal(document.getElementById('heal-amount').value)}
+            >
+              Heal
+            </button>
+          </div>
+          
+          <div className="flex gap-2">
+            <input
+              type="number"
+              min="1"
+              className="input-fantasy flex-1"
+              placeholder="Amount"
+              id="temp-hp-amount"
+            />
+            <button 
+              className="bg-blue-700/80 hover:bg-blue-600/90 text-blue-100 px-4 py-2 rounded transition-colors"
+              onClick={() => handleAddTempHP(document.getElementById('temp-hp-amount').value)}
+            >
+              Add Temp HP
+            </button>
+          </div>
+          
+          <div className="flex gap-2">
+            <input
+              type="number"
+              min="1"
+              className="input-fantasy flex-1"
+              placeholder="Amount"
+              id="nonlethal-amount"
+            />
+            <button 
+              className="bg-yellow-700/80 hover:bg-yellow-600/90 text-yellow-100 px-4 py-2 rounded transition-colors"
+              onClick={() => handleNonLethalDamage(document.getElementById('nonlethal-amount').value)}
+            >
+              Non-Lethal
+            </button>
+          </div>
         </div>
       </div>
     </div>

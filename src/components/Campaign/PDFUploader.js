@@ -41,7 +41,6 @@ const PDFUploader = ({ campaign, currentUser, onUploadComplete, onClose }) => {
       // Step 2: Skip Firebase Storage upload for now (CORS issues in localhost)
       // TODO: Re-enable when Firebase Storage is properly configured
       let downloadURL = null;
-      console.log('Skipping Firebase Storage upload due to CORS issues in localhost environment');
 
       setProgress(80);
       
