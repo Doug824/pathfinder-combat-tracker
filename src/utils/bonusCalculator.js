@@ -59,12 +59,17 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
     // Make sure buff has a bonusType, default to 'untyped' if not
     const bonusType = buff.bonusType || 'untyped';
     
+    // Debug logging for combat abilities
+    if (buff.isActive !== undefined) {
+      console.log('Processing combat ability:', buff.name, 'Active:', buff.isActive, 'Effects:', buff.effects);
+    }
+    
     Object.entries(buff.effects || {}).forEach(([stat, value]) => {
       if (value !== 0 && groupedBonuses[stat]) {
         groupedBonuses[stat][bonusType].push({
           value: value,
           name: buff.name || 'Unknown',
-          source: 'buff'
+          source: buff.isActive !== undefined ? 'combat_ability' : 'buff'
         });
       }
     });
@@ -95,6 +100,7 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
         if (bonusType === 'dodge' || bonusType === 'untyped') {
           // Dodge and untyped bonuses stack
           bonuses.forEach(bonus => {
+            console.log(`Applying ${bonusType} bonus to ${stat}: ${bonus.value} from ${bonus.name} (${bonus.source})`);
             calculatedStats[stat] += bonus.value;
             bonusDetails[stat].push({
               type: bonusType,
@@ -109,6 +115,7 @@ export const calculateFinalStats = (baseStats, buffs = [], gear = []) => {
             max.value > bonus.value ? max : bonus, { value: 0 });
           
           if (highestBonus.value !== 0) {
+            console.log(`Applying highest ${bonusType} bonus to ${stat}: ${highestBonus.value} from ${highestBonus.name} (${highestBonus.source})`);
             calculatedStats[stat] += highestBonus.value;
             bonusDetails[stat].push({
               type: bonusType,
