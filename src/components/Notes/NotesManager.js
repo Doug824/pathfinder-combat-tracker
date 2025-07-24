@@ -6,6 +6,7 @@ import NotesSidebar from './NotesSidebar';
 import NotesListPanel from './NotesListPanel';
 import NotesViewerPanel from './NotesViewerPanel';
 import NoteEditor from './NoteEditor';
+import OrnatePanel, { OrnateButton } from '../OrnatePanel';
 
 const NotesManager = ({ campaign }) => {
   const { currentUser } = useFirebaseAuth();
@@ -156,25 +157,28 @@ const NotesManager = ({ campaign }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16">
-        <div className="w-12 h-12 border-4 border-amber-700/30 border-t-amber-400 rounded-full animate-spin mb-4"></div>
-        <p className="text-amber-300 text-lg font-fantasy">Loading notes...</p>
-      </div>
+      <OrnatePanel variant="default" className="py-16">
+        <div className="flex flex-col items-center justify-center">
+          <div className="w-12 h-12 border-4 border-amber-700/30 border-t-yellow-500 rounded-full animate-spin mb-4"></div>
+          <p className="text-yellow-300 text-lg font-fantasy uppercase tracking-wider">Loading notes...</p>
+        </div>
+      </OrnatePanel>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto p-8">
       {error && (
-        <div className="bg-red-900/60 border-2 border-red-700/50 rounded-lg p-4 mb-6 text-center">
-          <p className="text-red-300 mb-2">{error}</p>
-          <button 
+        <OrnatePanel variant="dark" className="mb-6 text-center">
+          <p className="text-red-400 mb-4">{error}</p>
+          <OrnateButton
             onClick={() => setError(null)}
-            className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-4 py-2 rounded-lg font-fantasy font-semibold transition-all duration-300"
+            variant="primary"
+            icon="✓"
           >
             Dismiss
-          </button>
-        </div>
+          </OrnateButton>
+        </OrnatePanel>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-96">

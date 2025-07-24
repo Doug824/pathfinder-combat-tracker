@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getCampaignIcon, getCharacterIcon, getStoryIcon, getItemIcon, getSessionIcon } from '../../utils/epicIcons';
+import OrnatePanel from '../OrnatePanel';
 import './Notes.css';
 
 const NotesSidebar = ({ 
@@ -118,82 +119,114 @@ const NotesSidebar = ({
       </div>
 
       <div className="mb-6">
-        <div className="sidebar-item-group">
-          <div 
-            className={`sidebar-item ${!selectedCategory ? 'active' : ''}`}
-            onClick={() => onCategorySelect(null, null)}
-          >
-            <span className="sidebar-icon">📝</span>
-            <span className="sidebar-text">All Notes</span>
-            <span className="sidebar-count">({getAllNotesCount()})</span>
+        <div 
+          className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-all duration-300 ${
+            !selectedCategory 
+              ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
+              : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+          }`}
+          onClick={() => onCategorySelect(null, null)}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-lg">📝</span>
+            <span className="font-fantasy uppercase tracking-wider text-sm">All Notes</span>
           </div>
+          <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getAllNotesCount()})</span>
         </div>
       </div>
 
       <div className="mb-6">
-        <div className="sidebar-section-title">By Type</div>
-        <div className="sidebar-item-group">
+        <h4 className="text-sm font-fantasy text-amber-300 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">By Type</h4>
+        <div className="space-y-2">
           <div 
-            className={`sidebar-item ${selectedCategory === 'type' && selectedSubcategory === 'personal' ? 'active' : ''}`}
+            className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
+              selectedCategory === 'type' && selectedSubcategory === 'personal'
+                ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
+                : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+            }`}
             onClick={() => onCategorySelect('type', 'personal')}
           >
-            <span className="sidebar-icon">👤</span>
-            <span className="sidebar-text">Personal</span>
-            <span className="sidebar-count">({getPersonalNotesCount()})</span>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">👤</span>
+              <span className="font-fantasy uppercase tracking-wider text-sm">Personal</span>
+            </div>
+            <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getPersonalNotesCount()})</span>
           </div>
           <div 
-            className={`sidebar-item ${selectedCategory === 'type' && selectedSubcategory === 'shared' ? 'active' : ''}`}
+            className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
+              selectedCategory === 'type' && selectedSubcategory === 'shared'
+                ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
+                : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+            }`}
             onClick={() => onCategorySelect('type', 'shared')}
           >
-            <span className="sidebar-icon">👥</span>
-            <span className="sidebar-text">Shared</span>
-            <span className="sidebar-count">({getSharedNotesCount()})</span>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">👥</span>
+              <span className="font-fantasy uppercase tracking-wider text-sm">Shared</span>
+            </div>
+            <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getSharedNotesCount()})</span>
           </div>
           {userRole === 'dm' && (
             <div 
-              className={`sidebar-item ${selectedCategory === 'type' && selectedSubcategory === 'dm' ? 'active' : ''}`}
+              className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
+                selectedCategory === 'type' && selectedSubcategory === 'dm'
+                  ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
+                  : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+              }`}
               onClick={() => onCategorySelect('type', 'dm')}
             >
-              <span className="sidebar-icon">🎲</span>
-              <span className="sidebar-text">DM Only</span>
-              <span className="sidebar-count">({getDMNotesCount()})</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🎲</span>
+                <span className="font-fantasy uppercase tracking-wider text-sm">DM Only</span>
+              </div>
+              <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getDMNotesCount()})</span>
             </div>
           )}
         </div>
       </div>
 
       <div className="mb-6">
-        <div className="sidebar-section-title">By Category</div>
+        <h4 className="text-sm font-fantasy text-amber-300 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">By Category</h4>
         {Object.entries(categoryStructure).map(([categoryKey, category]) => (
-          <div key={categoryKey} className="sidebar-category">
+          <div key={categoryKey} className="mb-3">
             <div 
-              className={`sidebar-item expandable ${selectedCategory === categoryKey && !selectedSubcategory ? 'active' : ''}`}
+              className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
+                selectedCategory === categoryKey && !selectedSubcategory
+                  ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
+                  : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+              }`}
               onClick={() => onCategorySelect(categoryKey, null)}
             >
-              <button 
-                className="expand-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleCategory(categoryKey);
-                }}
-              >
-                {expandedCategories[categoryKey] ? '▼' : '▶'}
-              </button>
-              <span className="sidebar-icon">{category.icon}</span>
-              <span className="sidebar-text">{category.name}</span>
-              <span className="sidebar-count">({getNotesCount(categoryKey)})</span>
+              <div className="flex items-center gap-2">
+                <button 
+                  className="text-yellow-300 hover:text-yellow-100 text-sm transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleCategory(categoryKey);
+                  }}
+                >
+                  {expandedCategories[categoryKey] ? '▼' : '▶'}
+                </button>
+                <span className="text-lg">{category.icon}</span>
+                <span className="font-fantasy uppercase tracking-wider text-sm">{category.name}</span>
+              </div>
+              <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getNotesCount(categoryKey)})</span>
             </div>
             
             {expandedCategories[categoryKey] && (
-              <div className="sidebar-subcategories">
+              <div className="ml-4 mt-2 space-y-1">
                 {Object.entries(category.subcategories).map(([subKey, subName]) => (
                   <div 
                     key={subKey}
-                    className={`sidebar-item subcategory ${selectedCategory === categoryKey && selectedSubcategory === subKey ? 'active' : ''}`}
+                    className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
+                      selectedCategory === categoryKey && selectedSubcategory === subKey
+                        ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
+                        : 'bg-black/10 border border-amber-700/20 text-amber-200 hover:bg-amber-900/20'
+                    }`}
                     onClick={() => onCategorySelect(categoryKey, subKey)}
                   >
-                    <span className="sidebar-text">{subName}</span>
-                    <span className="sidebar-count">({getNotesCount(categoryKey, subKey)})</span>
+                    <span className="font-fantasy uppercase tracking-wider text-xs">{subName}</span>
+                    <span className="text-xs font-bold bg-amber-700/30 px-2 py-1 rounded">({getNotesCount(categoryKey, subKey)})</span>
                   </div>
                 ))}
               </div>
@@ -201,7 +234,7 @@ const NotesSidebar = ({
           </div>
         ))}
       </div>
-    </div>
+    </OrnatePanel>
   );
 };
 
