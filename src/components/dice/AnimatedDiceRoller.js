@@ -150,7 +150,7 @@ const AnimatedDiceRoller = ({ damageModifier = 0 }) => {
                 <button
                   type="button"
                   onClick={() => removeDiceGroup(group.id)}
-                  className="text-red-400 hover:text-red-300 w-8 h-8 rounded-full hover:bg-red-900/50 transition-all duration-200 flex items-center justify-center mt-6"
+                  className="text-blood-red hover:text-red-600 w-8 h-8 rounded-full hover:bg-blood-red/50 transition-all duration-200 flex items-center justify-center mt-6"
                   aria-label="Remove dice"
                 >
                   −
@@ -197,33 +197,33 @@ const AnimatedDiceRoller = ({ damageModifier = 0 }) => {
           
         {showAverage && (
           <div className="text-center mb-4">
-            <div className="bg-blue-700/30 border border-blue-600/50 rounded-lg p-3">
-              <span className="text-blue-200 font-fantasy font-semibold text-sm">Average: </span>
-              <span className="text-blue-100 font-fantasy font-bold text-lg">{calculateAverageDice().toFixed(1)}</span>
+            <div className="bg-ocean-blue/30 border border-ocean-blue/50 rounded-lg p-3">
+              <span className="text-parchment font-fantasy font-semibold text-sm">Average: </span>
+              <span className="text-parchment-light font-fantasy font-bold text-lg">{calculateAverageDice().toFixed(1)}</span>
             </div>
           </div>
         )}
           
         {diceResult && !showAverage && (
-          <div className={`bg-emerald-900/30 border border-emerald-600/50 rounded-lg p-4 transition-all duration-300 ${
+          <div className={`bg-forest-green/30 border border-forest-green/50 rounded-lg p-4 transition-all duration-300 ${
             isRolling ? 'animate-pulse' : ''
           }`}>
             <div className="text-center mb-3">
-              <span className="text-emerald-300 font-fantasy font-semibold text-sm">Roll Result:</span>
-              <div className="text-emerald-100 font-fantasy font-bold text-3xl">{diceResult.total}</div>
+              <span className="text-fantasy-gold font-fantasy font-semibold text-sm">Roll Result:</span>
+              <div className="text-parchment-light font-fantasy font-bold text-3xl">{diceResult.total}</div>
             </div>
             <div className="space-y-2">
               {diceResult.groupRolls.map((group, groupIndex) => (
-                <div key={groupIndex} className="bg-black/30 rounded border border-emerald-700/30 p-2">
-                  <span className="text-emerald-400 font-fantasy font-semibold text-sm">{group.formula}:</span>
+                <div key={groupIndex} className="bg-black/30 rounded border border-forest-green/30 p-2">
+                  <span className="text-fantasy-gold font-fantasy font-semibold text-sm">{group.formula}:</span>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {group.rolls.map((roll, i) => (
                       <span key={i} className={`inline-flex items-center justify-center w-8 h-8 rounded font-fantasy font-bold text-sm ${
                         roll === parseInt(group.formula.split('d')[1]) 
-                          ? 'bg-emerald-600/80 text-emerald-100 border border-emerald-500' 
+                          ? 'bg-forest-green/80 text-parchment-light border border-forest-green' 
                           : roll === 1 
-                            ? 'bg-red-600/80 text-red-100 border border-red-500'
-                            : 'bg-amber-700/60 text-amber-100 border border-amber-600/50'
+                            ? 'bg-blood-red/80 text-parchment-light border border-blood-red'
+                            : 'bg-fantasy-bronze/60 text-parchment-light border border-fantasy-bronze/50'
                       }`}>
                         {roll}
                       </span>
@@ -246,7 +246,7 @@ const AnimatedDiceRoller = ({ damageModifier = 0 }) => {
         <div className="flex gap-3 justify-center mt-4">
           <button 
             onClick={rollDice} 
-            className={`bg-emerald-700/80 hover:bg-emerald-600/90 text-emerald-100 px-6 py-3 rounded-lg border border-emerald-600/50 font-fantasy font-bold transition-all duration-200 ${
+            className={`bg-forest-green/80 hover:bg-forest-green/90 text-parchment-light px-6 py-3 rounded-lg border border-forest-green/50 font-fantasy font-bold transition-all duration-200 ${
               isRolling ? 'animate-pulse cursor-not-allowed opacity-75' : 'hover:scale-105'
             }`}
             disabled={isRolling}
@@ -259,7 +259,7 @@ const AnimatedDiceRoller = ({ damageModifier = 0 }) => {
               setDiceResult(null);
               setShowAverage(true);
             }}
-            className="bg-blue-700/80 hover:bg-blue-600/90 text-blue-100 px-6 py-3 rounded-lg border border-blue-600/50 font-fantasy font-bold transition-all duration-200 hover:scale-105"
+            className="bg-ocean-blue/80 hover:bg-ocean-blue/90 text-parchment-light px-6 py-3 rounded-lg border border-ocean-blue/50 font-fantasy font-bold transition-all duration-200 hover:scale-105"
           >
             Show Average
           </button>
