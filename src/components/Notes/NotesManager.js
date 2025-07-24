@@ -159,8 +159,8 @@ const NotesManager = ({ campaign }) => {
     return (
       <OrnatePanel variant="default" className="py-16">
         <div className="flex flex-col items-center justify-center">
-          <div className="w-12 h-12 border-4 border-amber-700/30 border-t-yellow-500 rounded-full animate-spin mb-4"></div>
-          <p className="text-yellow-300 text-lg font-fantasy uppercase tracking-wider">Loading notes...</p>
+          <div className="w-12 h-12 border-4 border-fantasy-bronze/30 border-t-fantasy-gold rounded-full animate-spin mb-4"></div>
+          <p className="text-fantasy-gold text-lg font-fantasy uppercase tracking-wider">Loading notes...</p>
         </div>
       </OrnatePanel>
     );
