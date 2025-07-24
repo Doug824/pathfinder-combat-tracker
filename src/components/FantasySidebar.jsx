@@ -7,7 +7,7 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
     { 
       id: 'manager', 
       label: 'Heroes', 
-      icon: '🦸',
+      icon: '👑',
       alwaysShow: true,
       color: 'from-fantasy-bronze to-dark-wood',
       glow: 'shadow-fantasy-glow'
