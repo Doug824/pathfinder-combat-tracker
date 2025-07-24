@@ -39,7 +39,7 @@ const CampaignList = ({
     return (
       <OrnatePanel variant="default" className="text-center py-16">
         <div className="text-8xl mb-6">🎲</div>
-        <h3 className="text-3xl font-fantasy font-bold text-yellow-400 mb-4 uppercase tracking-wider">No Campaigns Yet</h3>
+        <h3 className="text-3xl font-fantasy font-bold text-yellow-300 mb-4 uppercase tracking-wider">No Campaigns Yet</h3>
         <p className="text-amber-200 text-lg">Create your first campaign or join an existing one to get started!</p>
       </OrnatePanel>
     );
@@ -75,19 +75,19 @@ const CampaignList = ({
 
               <div className="mb-6">
                 <div className="text-amber-200 mb-2">
-                  <span className="font-fantasy uppercase tracking-wider text-yellow-400">Description:</span> {selectedCampaign.description || 'No description'}
+                  <span className="font-fantasy uppercase tracking-wider text-yellow-300">Description:</span> {selectedCampaign.description || 'No description'}
                 </div>
                 <div className="text-amber-200 mb-2">
-                  <span className="font-fantasy uppercase tracking-wider text-yellow-400">Members:</span> {selectedCampaign.members.length}
+                  <span className="font-fantasy uppercase tracking-wider text-yellow-300">Members:</span> {selectedCampaign.members.length}
                 </div>
                 <div className="text-amber-200">
-                  <span className="font-fantasy uppercase tracking-wider text-yellow-400">Created:</span> {selectedCampaign.createdAt?.toDate?.()?.toLocaleDateString() || 'Unknown'}
+                  <span className="font-fantasy uppercase tracking-wider text-yellow-300">Created:</span> {selectedCampaign.createdAt?.toDate?.()?.toLocaleDateString() || 'Unknown'}
                 </div>
               </div>
 
               {campaignService.isDM(selectedCampaign, currentUser.uid) && (
                 <OrnatePanel variant="dark" className="mb-6">
-                  <h3 className="text-xl font-fantasy font-bold text-yellow-400 mb-4 uppercase tracking-wider">DM Tools</h3>
+                  <h3 className="text-xl font-fantasy font-bold text-yellow-300 mb-4 uppercase tracking-wider">DM Tools</h3>
                   <div className="mb-4">
                     <label className="block text-amber-200 font-fantasy uppercase tracking-wider mb-2">Invite Code:</label>
                     <div className="flex gap-2">
@@ -117,7 +117,7 @@ const CampaignList = ({
               )}
 
               <div className="mb-6">
-                <h3 className="text-xl font-fantasy font-bold text-yellow-400 mb-4 uppercase tracking-wider">Members</h3>
+                <h3 className="text-xl font-fantasy font-bold text-yellow-300 mb-4 uppercase tracking-wider">Members</h3>
                 <div className="space-y-3">
                   {selectedCampaign.members.map(member => (
                     <div key={member.userId} className="bg-black/60 rounded-md border-2 border-amber-700/50 p-4 flex justify-between items-center">

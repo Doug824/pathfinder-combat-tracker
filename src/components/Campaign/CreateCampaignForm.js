@@ -51,7 +51,7 @@ const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-fantasy font-bold text-yellow-400 mb-2 uppercase tracking-wider">Create New Campaign</h2>
+        <h2 className="text-3xl font-fantasy font-bold text-yellow-300 mb-2 uppercase tracking-wider">Create New Campaign</h2>
         <p className="text-amber-200">Set up a new Pathfinder campaign for your party</p>
       </div>
 
@@ -101,7 +101,7 @@ const CreateCampaignForm = ({ onCreateCampaign, onCancel }) => {
           </div>
 
           <div className="bg-black/60 rounded-md border-2 border-amber-700/50 p-4 mb-6">
-            <h3 className="text-lg font-fantasy font-bold text-yellow-400 mb-3 uppercase tracking-wider">What happens when you create a campaign?</h3>
+            <h3 className="text-lg font-fantasy font-bold text-yellow-300 mb-3 uppercase tracking-wider">What happens when you create a campaign?</h3>
             <ul className="text-amber-200 space-y-2 list-disc list-inside">
               <li>You become the Dungeon Master (DM) of this campaign</li>
               <li>A unique invite code is generated for players to join</li>

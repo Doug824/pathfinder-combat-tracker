@@ -57,7 +57,7 @@ const CampaignCard = ({
   return (
     <OrnatePanel variant="default" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-yellow-500/20">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider">{campaign.name}</h3>
+        <h3 className="text-xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider">{campaign.name}</h3>
         <div className="relative">
           <button 
             className="text-yellow-300 hover:text-yellow-100 text-2xl p-1 rounded transition-colors duration-300"
@@ -133,7 +133,7 @@ const CampaignCard = ({
           <div className="bg-black/60 rounded-md border-2 border-amber-700/50 p-3 mb-4">
             <div className="text-amber-200 text-sm">
               <span className="font-fantasy uppercase tracking-wider">Invite Code:</span> 
-              <code className="bg-black/60 px-2 py-1 rounded font-mono text-yellow-400 ml-2 border border-amber-700/30">
+              <code className="bg-black/60 px-2 py-1 rounded font-mono text-yellow-300 ml-2 border border-amber-700/30">
                 {campaign.inviteCode}
               </code>
             </div>

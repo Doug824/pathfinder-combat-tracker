@@ -1,4 +1,5 @@
 import React from 'react';
+import OrnatePanel, { OrnateButton } from '../OrnatePanel';
 import './Notes.css';
 
 const NotesListPanel = ({ 
@@ -49,60 +50,73 @@ const NotesListPanel = ({
   });
 
   return (
-    <div className="notes-list-panel">
-      <div className="notes-list-header">
-        <div className="search-section">
+    <OrnatePanel variant="default" className="h-full">
+      <div className="mb-4">
+        <div className="mb-3">
           <input
             type="text"
             placeholder="Search notes..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="search-input"
+            className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 placeholder-amber-400 focus:border-yellow-500 focus:outline-none"
           />
         </div>
-        <button className="new-note-btn" onClick={onNewNote}>
-          + New Note
-        </button>
+        <OrnateButton
+          onClick={onNewNote}
+          variant="primary"
+          className="w-full"
+          icon="✨"
+        >
+          New Note
+        </OrnateButton>
       </div>
 
-      <div className="notes-list-content">
+      <div className="space-y-2 max-h-96 overflow-y-auto">
         {filteredNotes.length === 0 ? (
-          <div className="empty-notes">
-            <div className="empty-icon">📝</div>
-            <p>No notes found</p>
-            <button className="create-first-note" onClick={onNewNote}>
+          <div className="text-center py-8">
+            <div className="text-6xl mb-4">📝</div>
+            <p className="text-amber-200 mb-4">No notes found</p>
+            <OrnateButton
+              onClick={onNewNote}
+              variant="secondary"
+              icon="✨"
+            >
               Create your first note
-            </button>
+            </OrnateButton>
           </div>
         ) : (
-          <div className="notes-items">
+          <div className="space-y-2">
             {filteredNotes.map(note => (
               <div 
                 key={note.id}
-                className={`note-list-item ${selectedNote?.id === note.id ? 'selected' : ''}`}
+                className={`p-3 rounded-md cursor-pointer transition-all duration-300 ${
+                  selectedNote?.id === note.id
+                    ? 'bg-amber-900/40 border-2 border-yellow-500/50'
+                    : 'bg-black/20 border-2 border-amber-700/30 hover:bg-amber-900/20'
+                }`}
                 onClick={() => onNoteSelect(note)}
               >
-                <div className="note-item-header">
-                  <h4 className="note-item-title">{note.title}</h4>
-                  <div className="note-item-meta">
-                    <span className="note-type-icon">{getTypeIcon(note.type)}</span>
-                    <span className="note-date">{formatDate(note.updatedAt)}</span>
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-fantasy text-yellow-300 text-sm uppercase tracking-wider truncate">{note.title}</h4>
+                  <div className="flex items-center gap-2 ml-2">
+                    <span className="text-lg">{getTypeIcon(note.type)}</span>
+                    <span className="text-xs text-amber-300 font-fantasy">{formatDate(note.updatedAt)}</span>
                   </div>
                 </div>
                 
-                <p className="note-item-content">
+                <p className="text-amber-200 text-xs leading-relaxed mb-2">
                   {truncateContent(note.content)}
                 </p>
                 
                 {note.tags && note.tags.length > 0 && (
-                  <div className="note-item-tags">
+                  <div className="flex flex-wrap gap-1">
                     {note.tags.slice(0, 3).map(tag => (
-                      <span key={tag} className="note-item-tag">
+                      <span key={tag} className="px-2 py-1 bg-amber-800/30 border border-amber-700/50 rounded text-xs text-amber-200 font-fantasy">
                         {tag}
                       </span>
                     ))}
                     {note.tags.length > 3 && (
-                      <span className="note-item-tag-more">
+                      <span className="px-2 py-1 bg-amber-800/30 border border-amber-700/50 rounded text-xs text-amber-300 font-fantasy">
                         +{note.tags.length - 3}
                       </span>
                     )}
@@ -113,7 +127,7 @@ const NotesListPanel = ({
           </div>
         )}
       </div>
-    </div>
+    </OrnatePanel>
   );
 };
 

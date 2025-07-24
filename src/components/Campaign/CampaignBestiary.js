@@ -193,7 +193,7 @@ const CampaignBestiary = ({ campaign }) => {
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-4xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Bestiary</h2>
+          <h2 className="text-4xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Bestiary</h2>
           <p className="text-amber-200 text-lg">{creatures.length} creatures in your collection</p>
         </div>
         
@@ -297,7 +297,7 @@ const CampaignBestiary = ({ campaign }) => {
         {filteredCreatures.length === 0 ? (
           <OrnatePanel variant="default" className="text-center py-16">
             <div className="text-8xl mb-6">🐉</div>
-            <h3 className="text-3xl font-fantasy font-bold text-yellow-400 mb-4 uppercase tracking-wider">No creatures found</h3>
+            <h3 className="text-3xl font-fantasy font-bold text-yellow-300 mb-4 uppercase tracking-wider">No creatures found</h3>
             <p className="text-amber-200 text-lg">
               {creatures.length === 0 
                 ? isDM 

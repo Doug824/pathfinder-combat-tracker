@@ -58,7 +58,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
             {getTypeIcon(creature.type)}
           </div>
           <div>
-            <h3 className="text-xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider">{creature.name}</h3>
+            <h3 className="text-xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider">{creature.name}</h3>
             <div className="flex gap-2 text-sm">
               {creature.size && (
                 <span 
@@ -124,19 +124,19 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
         {creature.armor_class && (
           <div className="bg-black/60 rounded-md border-2 border-amber-700/50 p-2 text-center">
             <span className="block text-xs text-amber-200 font-fantasy uppercase tracking-wider">AC</span>
-            <span className="text-lg font-bold text-yellow-400">{creature.armor_class}</span>
+            <span className="text-lg font-bold text-yellow-300">{creature.armor_class}</span>
           </div>
         )}
         {creature.hit_points && (
           <div className="bg-black/60 rounded-md border-2 border-amber-700/50 p-2 text-center">
             <span className="block text-xs text-amber-200 font-fantasy uppercase tracking-wider">HP</span>
-            <span className="text-lg font-bold text-yellow-400">{creature.hit_points}</span>
+            <span className="text-lg font-bold text-yellow-300">{creature.hit_points}</span>
           </div>
         )}
         {creature.speed && (
           <div className="bg-black/60 rounded-md border-2 border-amber-700/50 p-2 text-center">
             <span className="block text-xs text-amber-200 font-fantasy uppercase tracking-wider">Speed</span>
-            <span className="text-lg font-bold text-yellow-400">{creature.speed}</span>
+            <span className="text-lg font-bold text-yellow-300">{creature.speed}</span>
           </div>
         )}
       </div>
@@ -168,7 +168,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
       {(creature.abilities?.length > 0 || creature.actions?.length > 0) && (
         <div className="border-t border-amber-700/30 pt-4">
           <button 
-            className="w-full text-center text-amber-200 hover:text-yellow-400 font-fantasy uppercase tracking-wider text-sm transition-colors duration-300"
+            className="w-full text-center text-amber-200 hover:text-yellow-300 font-fantasy uppercase tracking-wider text-sm transition-colors duration-300"
             onClick={() => setExpanded(!expanded)}
           >
             {expanded ? '▼' : '▶'} {expanded ? 'Hide' : 'Show'} Details
@@ -178,7 +178,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
             <div className="mt-4 space-y-4">
               {creature.abilities && creature.abilities.length > 0 && (
                 <div>
-                  <h4 className="text-yellow-400 font-fantasy uppercase tracking-wider text-sm mb-2">Abilities</h4>
+                  <h4 className="text-yellow-300 font-fantasy uppercase tracking-wider text-sm mb-2">Abilities</h4>
                   {creature.abilities.map((ability, index) => (
                     <div key={index} className="mb-2">
                       <strong className="text-amber-200">{ability.name}:</strong>
@@ -190,7 +190,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
               
               {creature.actions && creature.actions.length > 0 && (
                 <div>
-                  <h4 className="text-yellow-400 font-fantasy uppercase tracking-wider text-sm mb-2">Actions</h4>
+                  <h4 className="text-yellow-300 font-fantasy uppercase tracking-wider text-sm mb-2">Actions</h4>
                   {creature.actions.map((action, index) => (
                     <div key={index} className="mb-2">
                       <strong className="text-amber-200">{action.name}:</strong>

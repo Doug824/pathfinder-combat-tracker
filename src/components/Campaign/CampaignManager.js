@@ -120,7 +120,7 @@ const CampaignManager = ({ characters, onCreateCharacter }) => {
   return (
     <div className="max-w-7xl mx-auto p-8">
       <div className="text-center mb-8">
-        <h1 className="text-5xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Management</h1>
+        <h1 className="text-5xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Management</h1>
         <p className="text-amber-200 text-lg">Create, join, and manage your Pathfinder campaigns</p>
       </div>
 
@@ -173,7 +173,7 @@ const CampaignManager = ({ characters, onCreateCharacter }) => {
               >
                 Back to Campaigns
               </OrnateButton>
-              <h3 className="text-2xl font-fantasy font-bold text-yellow-400 uppercase tracking-wider">{selectedCampaign.name}</h3>
+              <h3 className="text-2xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider">{selectedCampaign.name}</h3>
             </div>
             
             <div className="flex justify-center gap-2">
