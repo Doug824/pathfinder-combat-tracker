@@ -85,12 +85,12 @@ const CombatAbilityItem = ({
     return (
       <div className={`bg-black/40 backdrop-blur-md rounded-lg border p-4 hover:bg-black/60 transition-all duration-200 ${
         ability.isActive 
-          ? 'border-emerald-600/50 bg-emerald-900/20' 
+          ? 'border-forest-green/50 bg-forest-green/20' 
           : 'border-amber-700/30'
       }`}>
         <div className="flex justify-between items-center mb-3">
           <h3 className={`text-lg font-fantasy font-bold ${
-            ability.isActive ? 'text-emerald-300' : 'text-amber-300'
+            ability.isActive ? 'text-fantasy-gold' : 'text-parchment-dark'
           }`}>{ability.name}</h3>
           <div className="flex gap-2">
             <button 
@@ -103,7 +103,7 @@ const CombatAbilityItem = ({
             </button>
             <button 
               type="button" 
-              className="text-red-400 hover:text-red-300 w-7 h-7 rounded-full hover:bg-red-900/50 transition-all duration-200 flex items-center justify-center"
+              className="text-blood-red hover:text-red-600 w-7 h-7 rounded-full hover:bg-blood-red/50 transition-all duration-200 flex items-center justify-center"
               onClick={() => onRemove(ability.id)}
               title="Remove Ability"
             >
@@ -113,10 +113,10 @@ const CombatAbilityItem = ({
         </div>
         
         <div className="flex flex-wrap gap-2 mb-3">
-          <span className="bg-blue-700/30 border border-blue-600/50 rounded px-2 py-1 text-blue-200 text-xs font-fantasy">
+          <span className="bg-ocean-blue/30 border border-ocean-blue/50 rounded px-2 py-1 text-parchment text-xs font-fantasy">
             {ability.type.charAt(0).toUpperCase() + ability.type.slice(1)} Action
           </span>
-          <span className="bg-purple-700/30 border border-purple-600/50 rounded px-2 py-1 text-purple-200 text-xs font-fantasy">
+          <span className="bg-mystic-purple/30 border border-mystic-purple/50 rounded px-2 py-1 text-parchment text-xs font-fantasy">
             {ability.bonusType.charAt(0).toUpperCase() + ability.bonusType.slice(1)}
           </span>
         </div>
@@ -133,8 +133,8 @@ const CombatAbilityItem = ({
             .map(([stat, value]) => (
               <span key={stat} className={`px-2 py-1 rounded text-xs font-fantasy font-semibold ${
                 value > 0 
-                  ? 'bg-emerald-700/40 border border-emerald-600/50 text-emerald-200' 
-                  : 'bg-red-700/40 border border-red-600/50 text-red-200'
+                  ? 'bg-forest-green/40 border border-forest-green/50 text-parchment' 
+                  : 'bg-blood-red/40 border border-blood-red/50 text-parchment'
               }`}>
                 {stat.charAt(0).toUpperCase() + stat.slice(1)}: {formatModifier(value)}
               </span>
@@ -193,14 +193,14 @@ const CombatAbilityItem = ({
                 type="checkbox"
                 checked={ability.isActive}
                 onChange={() => onToggle(ability.id)}
-                className="w-5 h-5 text-emerald-600 bg-black/60 border-amber-700 rounded focus:ring-emerald-500"
+                className="w-5 h-5 text-forest-green bg-black/60 border-fantasy-bronze rounded focus:ring-forest-green"
               />
               <span className="text-amber-200 font-fantasy font-semibold">Active</span>
             </label>
             
             <div className={`px-3 py-1 rounded-full text-sm font-fantasy font-semibold transition-all duration-200 ${
               ability.isActive 
-                ? 'bg-emerald-700/60 text-emerald-200 border border-emerald-600/50' 
+                ? 'bg-forest-green/60 text-parchment border border-forest-green/50' 
                 : 'bg-gray-700/60 text-gray-300 border border-gray-600/50'
             }`}>
               {ability.isActive ? 'Active' : 'Inactive'}

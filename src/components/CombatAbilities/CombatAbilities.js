@@ -852,7 +852,7 @@ const CombatAbilities = ({
         <button 
           type="button"
           onClick={handleAddAbility}
-          className="w-full bg-emerald-700/80 hover:bg-emerald-600/90 text-emerald-100 px-6 py-3 rounded-lg border border-emerald-600/50 font-fantasy font-bold transition-all duration-200 shadow-lg hover:shadow-emerald-500/25 mt-6"
+          className="w-full bg-forest-green/80 hover:bg-forest-green/90 text-parchment-light px-6 py-3 rounded-lg border border-forest-green/50 font-fantasy font-bold transition-all duration-200 shadow-lg hover:shadow-nature-green mt-6"
         >
           Add Ability
         </button>
