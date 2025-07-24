@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CharacterList from './CharacterList';
 import CharacterForm from './CharacterForm';
+import CharacterCreationWizard from '../CharacterCreation/CharacterCreationWizard';
 import { FantasyStatBadge } from '../FantasyStatBlock';
 
 const FantasyCharacterManager = ({ 
@@ -12,11 +13,12 @@ const FantasyCharacterManager = ({
   onDeleteCharacter 
 }) => {
   const [showForm, setShowForm] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
   const [editingCharacter, setEditingCharacter] = useState(null);
   
   const handleNewCharacter = () => {
     setEditingCharacter(null);
-    setShowForm(true);
+    setShowWizard(true);
   };
   
   const handleEditCharacter = (characterId) => {
@@ -35,12 +37,30 @@ const FantasyCharacterManager = ({
     }
     setShowForm(false);
   };
+
+  const handleWizardComplete = (characterData) => {
+    onCreateCharacter(characterData);
+    setShowWizard(false);
+  };
   
   const handleCancelForm = () => {
     setShowForm(false);
     setEditingCharacter(null);
   };
+
+  const handleCancelWizard = () => {
+    setShowWizard(false);
+  };
   
+  if (showWizard) {
+    return (
+      <CharacterCreationWizard
+        onComplete={handleWizardComplete}
+        onCancel={handleCancelWizard}
+      />
+    );
+  }
+
   if (showForm) {
     return (
       <div className="parchment-card p-6 max-w-4xl mx-auto">
