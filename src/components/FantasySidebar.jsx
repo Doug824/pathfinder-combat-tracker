@@ -8,34 +8,34 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
     { 
       id: 'manager', 
       label: 'Heroes', 
-      icon: '⚔️',
+      icon: '🦸',
       alwaysShow: true,
-      color: 'from-amber-700 to-amber-900',
-      glow: 'shadow-yellow-500/50'
+      color: 'from-fantasy-bronze to-dark-wood',
+      glow: 'shadow-fantasy-glow'
     },
     { 
       id: 'campaigns', 
       label: 'Quests', 
       icon: '🗺️',
       alwaysShow: true,
-      color: 'from-amber-800 to-amber-900',
-      glow: 'shadow-yellow-600/50'
+      color: 'from-dark-wood to-ink',
+      glow: 'shadow-fantasy-glow'
     },
     { 
       id: 'setup', 
       label: 'Forge', 
       icon: '🛡️',
       requiresCharacter: true,
-      color: 'from-amber-700 to-amber-800',
-      glow: 'shadow-yellow-500/50'
+      color: 'from-fantasy-bronze to-fantasy-bronze',
+      glow: 'shadow-fantasy-glow'
     },
     { 
       id: 'combat', 
       label: 'Battle', 
       icon: '⚔️',
       requiresCharacter: true,
-      color: 'from-red-800 to-red-900',
-      glow: 'shadow-red-500/50'
+      color: 'from-blood-red to-dark-wood',
+      glow: 'shadow-fire-red'
     }
   ];
 
@@ -53,16 +53,16 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
     <aside className={`
       ${isCollapsed ? 'w-20' : 'w-64'} 
       ${isMobile ? 'fixed bottom-0 left-0 right-0 h-auto w-full z-50' : 'fixed left-0 top-0 h-screen'}
-      bg-gradient-to-b from-black/80 to-amber-950/90 
+      bg-gradient-to-b from-black/80 to-dark-wood/90 
       backdrop-blur-md 
-      border-r-2 border-amber-700/50
+      border-r-2 border-fantasy-bronze/50
       transition-all duration-300 ease-in-out
       flex flex-col
       shadow-2xl
     `}>
       {/* Header */}
       {!isMobile && (
-        <div className="p-4 border-b-2 border-amber-700/50 bg-gradient-to-b from-black/60 to-transparent">
+        <div className="p-4 border-b-2 border-fantasy-bronze/50 bg-gradient-to-b from-black/60 to-transparent">
           {!isCollapsed ? (
             <div className="space-y-3">
               {/* Logo and Title */}
@@ -72,7 +72,7 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
                   <h2 className="font-fantasy text-lg font-bold text-ornate-gold leading-tight">
                     Hero's Ledger
                   </h2>
-                  <p className="text-amber-400 text-xs leading-tight">
+                  <p className="text-parchment-dark text-xs leading-tight">
                     {activeCharacter ? `Playing: ${activeCharacter.name}` : 'No active character'}
                   </p>
                 </div>
@@ -80,12 +80,12 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
               
               {/* User Info */}
               <div className="flex items-center justify-between text-xs">
-                <div className="text-yellow-300">
+                <div className="text-fantasy-gold">
                   <div className="font-semibold">
                     {currentUser?.displayName || currentUser?.email}
                   </div>
                   {userRole && (
-                    <div className="text-amber-400">({userRole})</div>
+                    <div className="text-parchment-dark">({userRole})</div>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -99,7 +99,7 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
           ) : (
             <button
               onClick={() => setIsCollapsed(false)}
-              className="w-full flex justify-center text-ornate-gold hover:text-yellow-300 transition-colors"
+              className="w-full flex justify-center text-ornate-gold hover:text-fantasy-gold transition-colors"
             >
               <span className="text-2xl">📖</span>
             </button>
@@ -109,7 +109,7 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
           {!isCollapsed && (
             <button
               onClick={() => setIsCollapsed(true)}
-              className="absolute top-2 right-2 text-amber-600 hover:text-amber-400 text-sm"
+              className="absolute top-2 right-2 text-fantasy-bronze hover:text-fantasy-gold text-sm"
             >
               ←
             </button>
@@ -119,9 +119,9 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
 
       {/* Mobile user info */}
       {isMobile && (
-        <div className="p-2 bg-black/60 border-b border-amber-700/50">
+        <div className="p-2 bg-black/60 border-b border-fantasy-bronze/50">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-yellow-300 font-semibold">
+            <span className="text-fantasy-gold font-semibold">
               {currentUser?.displayName || currentUser?.email}
             </span>
             <div className="flex gap-2">
@@ -164,8 +164,8 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
                     transform hover:scale-105
                     border-2
                     ${isActive 
-                      ? `bg-gradient-to-r ${page.color} text-yellow-300 shadow-lg border-amber-600` 
-                      : 'bg-black/40 text-amber-200 hover:text-yellow-300 hover:bg-amber-900/30 border-transparent'
+                      ? `bg-gradient-to-r ${page.color} text-fantasy-gold shadow-lg border-fantasy-bronze` 
+                      : 'bg-black/40 text-parchment-dark hover:text-fantasy-gold hover:bg-dark-wood/30 border-transparent'
                     }
                     ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                     ${isMobile ? 'text-sm' : ''}
@@ -174,10 +174,10 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
                   {/* Ornate corner decorations for active items */}
                   {isActive && (
                     <>
-                      <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-yellow-400 rounded-tl-sm" />
-                      <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-yellow-400 rounded-tr-sm" />
-                      <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-yellow-400 rounded-bl-sm" />
-                      <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-yellow-400 rounded-br-sm" />
+                      <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-fantasy-gold rounded-tl-sm" />
+                      <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-fantasy-gold rounded-tr-sm" />
+                      <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-fantasy-gold rounded-bl-sm" />
+                      <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-fantasy-gold rounded-br-sm" />
                     </>
                   )}
                   
@@ -218,14 +218,14 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
 
       {/* Character Info */}
       {activeCharacter && !isMobile && (
-        <div className={`p-4 border-t-2 border-amber-700/50 bg-gradient-to-t from-black/60 to-transparent ${isCollapsed ? 'text-center' : ''}`}>
-          <div className="text-yellow-400 text-sm">
+        <div className={`p-4 border-t-2 border-fantasy-bronze/50 bg-gradient-to-t from-black/60 to-transparent ${isCollapsed ? 'text-center' : ''}`}>
+          <div className="text-fantasy-gold text-sm">
             {isCollapsed ? (
               <span className="text-2xl">👤</span>
             ) : (
               <>
                 <p className="font-fantasy font-bold uppercase">{activeCharacter.name}</p>
-                <p className="text-xs text-amber-200">
+                <p className="text-xs text-parchment-dark">
                   Level {activeCharacter.level} {activeCharacter.class}
                 </p>
               </>
