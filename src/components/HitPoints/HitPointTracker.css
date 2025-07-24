@@ -64,7 +64,7 @@
   left: 0;
   width: 100%;
   height: var(--health-percent, 100%);
-  background-color: var(--error-color, #C0392B);
+  background-color: var(--error-color, #8B0000);
   border-radius: 0 0 8px 0;
   z-index: 2;
   transition: height 0.5s ease;
@@ -76,7 +76,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: var(--error-color, #C0392B);
+  background-color: var(--error-color, #8B0000);
   border-radius: 50%;
 }
 

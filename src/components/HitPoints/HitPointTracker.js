@@ -112,10 +112,10 @@ const HitPointTracker = ({
   const getHealthStatus = () => {
     const percentage = calculateHealthPercentage();
     if (percentage > 75) return { status: 'healthy', color: 'var(--success-color)' };
-    if (percentage > 50) return { status: 'injured', color: '#FFA500' }; // Orange
-    if (percentage > 25) return { status: 'bloodied', color: '#FF6347' }; // Tomato
+    if (percentage > 50) return { status: 'injured', color: '#D4AF37' }; // fantasy-gold
+    if (percentage > 25) return { status: 'bloodied', color: '#8B0000' }; // blood-red
     if (percentage > 0) return { status: 'critical', color: 'var(--error-color)' };
-    return { status: 'unconscious', color: '#800000' }; // Dark red
+    return { status: 'unconscious', color: '#3E2723' }; // dark-wood
   };
 
   // Handle changes to hit point values
@@ -298,13 +298,13 @@ const HitPointTracker = ({
   const isNonLethalUnconscious = !isUnconscious && hitPoints.nonLethalDamage >= hitPoints.currentHP;
 
   return (
-    <div className={`bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6 ${className}`}>
-      <h3 className="text-amber-400 font-fantasy font-bold text-xl mb-4">Hit Points</h3>
+    <div className={`bg-black/60 backdrop-blur-md rounded-lg border-2 border-fantasy-bronze/50 p-6 ${className}`}>
+      <h3 className="text-fantasy-gold font-fantasy font-bold text-xl mb-4">Hit Points</h3>
       
-      <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4 mb-6">
+      <div className="bg-black/40 rounded-lg border border-fantasy-bronze/30 p-4 mb-6">
         <div className="flex items-center gap-4">
           <div 
-            className="w-20 h-20 rounded-full border-4 border-amber-600 flex items-center justify-center relative overflow-hidden"
+            className="w-20 h-20 rounded-full border-4 border-fantasy-bronze flex items-center justify-center relative overflow-hidden"
             title={`${calculateHealthPercentage().toFixed(0)}% health remaining`}
           >
             <div 
@@ -318,11 +318,11 @@ const HitPointTracker = ({
           
           <div className="flex-1">
             <div className="flex items-baseline gap-2 text-2xl font-bold mb-2">
-              <span className="text-amber-100" style={{ color: healthStatus.color }}>
+              <span className="text-parchment-light" style={{ color: healthStatus.color }}>
                 {hitPoints.currentHP}
               </span>
-              <span className="text-amber-300">/</span>
-              <span className="text-amber-100">{hitPoints.maxHP}</span>
+              <span className="text-fantasy-gold">/</span>
+              <span className="text-parchment-light">{hitPoints.maxHP}</span>
               {hitPoints.tempHP > 0 && (
                 <span className="text-blue-400 text-lg">(+{hitPoints.tempHP})</span>
               )}
@@ -330,13 +330,13 @@ const HitPointTracker = ({
           
             {/* Show true max HP if negative levels are present */}
             {hitPoints.negLevels > 0 && (
-              <div className="text-amber-300 text-sm">
+              <div className="text-fantasy-gold text-sm">
                 True Max HP: {hitPoints.trueMaxHP}
               </div>
             )}
             
             {hitPoints.nonLethalDamage > 0 && (
-              <div className="text-yellow-400 text-sm">
+              <div className="text-fantasy-gold text-sm">
                 Non-lethal: {hitPoints.nonLethalDamage}
               </div>
             )}
@@ -364,8 +364,8 @@ const HitPointTracker = ({
             )}
             
             {isNonLethalUnconscious && (
-              <div className="bg-yellow-900/60 border border-yellow-600 rounded px-3 py-1 mt-2">
-                <span className="text-yellow-200 font-bold text-sm">
+              <div className="bg-dark-wood/60 border border-fantasy-gold rounded px-3 py-1 mt-2">
+                <span className="text-parchment-light font-bold text-sm">
                   UNCONSCIOUS (Non-lethal)
                 </span>
               </div>
@@ -374,12 +374,12 @@ const HitPointTracker = ({
         </div>
       </div>
       
-      <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4 mb-6">
-        <h4 className="text-amber-400 font-fantasy font-bold mb-4">Hit Point Details</h4>
+      <div className="bg-black/40 rounded-lg border border-fantasy-bronze/30 p-4 mb-6">
+        <h4 className="text-fantasy-gold font-fantasy font-bold mb-4">Hit Point Details</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Add True Max HP field that's always visible */}
           <div>
-            <label className="block text-amber-300 text-sm font-medium mb-2">True Max HP</label>
+            <label className="block text-fantasy-gold text-sm font-medium mb-2">True Max HP</label>
             <NumericInput
               value={hitPoints.trueMaxHP}
               onChange={(value) => handleHPChange('trueMaxHP', value)}
@@ -388,7 +388,7 @@ const HitPointTracker = ({
           </div>
           
           <div>
-            <label className="block text-amber-300 text-sm font-medium mb-2">Effective Max HP</label>
+            <label className="block text-fantasy-gold text-sm font-medium mb-2">Effective Max HP</label>
             <NumericInput
               value={hitPoints.maxHP}
               onChange={(value) => handleHPChange('maxHP', value)}
@@ -397,7 +397,7 @@ const HitPointTracker = ({
           </div>
           
           <div>
-            <label className="block text-amber-300 text-sm font-medium mb-2">Current HP</label>
+            <label className="block text-fantasy-gold text-sm font-medium mb-2">Current HP</label>
             <NumericInput
               value={hitPoints.currentHP}
               onChange={(value) => handleHPChange('currentHP', value)}
@@ -407,7 +407,7 @@ const HitPointTracker = ({
           </div>
           
           <div>
-            <label className="block text-amber-300 text-sm font-medium mb-2">Temp HP</label>
+            <label className="block text-fantasy-gold text-sm font-medium mb-2">Temp HP</label>
             <NumericInput
               value={hitPoints.tempHP}
               onChange={(value) => handleHPChange('tempHP', value)}
@@ -416,7 +416,7 @@ const HitPointTracker = ({
           </div>
           
           <div>
-            <label className="block text-amber-300 text-sm font-medium mb-2">Non-Lethal</label>
+            <label className="block text-fantasy-gold text-sm font-medium mb-2">Non-Lethal</label>
             <NumericInput
               value={hitPoints.nonLethalDamage}
               onChange={(value) => handleHPChange('nonLethalDamage', value)}
@@ -425,7 +425,7 @@ const HitPointTracker = ({
           </div>
           
           <div>
-            <label className="block text-amber-300 text-sm font-medium mb-2">Neg. Levels</label>
+            <label className="block text-fantasy-gold text-sm font-medium mb-2">Neg. Levels</label>
             <NumericInput
               value={hitPoints.negLevels}
               onChange={(value) => handleHPChange('negLevels', value)}
@@ -436,8 +436,8 @@ const HitPointTracker = ({
         </div>
       </div>
       
-      <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
-        <h4 className="text-amber-400 font-fantasy font-bold mb-4">Quick Actions</h4>
+      <div className="bg-black/40 rounded-lg border border-fantasy-bronze/30 p-4">
+        <h4 className="text-fantasy-gold font-fantasy font-bold mb-4">Quick Actions</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex gap-2">
             <input
@@ -496,7 +496,7 @@ const HitPointTracker = ({
               id="nonlethal-amount"
             />
             <button 
-              className="bg-yellow-700/80 hover:bg-yellow-600/90 text-yellow-100 px-4 py-2 rounded transition-colors"
+              className="bg-fantasy-bronze/80 hover:bg-fantasy-gold/90 text-parchment-light px-4 py-2 rounded transition-colors"
               onClick={() => handleNonLethalDamage(document.getElementById('nonlethal-amount').value)}
             >
               Non-Lethal
