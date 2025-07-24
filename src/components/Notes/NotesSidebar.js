@@ -113,7 +113,7 @@ const NotesSidebar = ({
   };
 
   return (
-    <div className="notes-sidebar">
+    <OrnatePanel className="notes-sidebar">
       <div className="sidebar-header">
         <h3>Campaign Notes</h3>
       </div>
@@ -122,8 +122,8 @@ const NotesSidebar = ({
         <div 
           className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-all duration-300 ${
             !selectedCategory 
-              ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
-              : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+              ? 'bg-dark-wood/40 border-2 border-fantasy-gold/50 text-fantasy-gold' 
+              : 'bg-black/20 border-2 border-fantasy-bronze/30 text-parchment-dark hover:bg-dark-wood/20'
           }`}
           onClick={() => onCategorySelect(null, null)}
         >
@@ -131,18 +131,18 @@ const NotesSidebar = ({
             <span className="text-lg">📝</span>
             <span className="font-fantasy uppercase tracking-wider text-sm">All Notes</span>
           </div>
-          <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getAllNotesCount()})</span>
+          <span className="text-xs font-bold bg-fantasy-bronze/50 px-2 py-1 rounded">({getAllNotesCount()})</span>
         </div>
       </div>
 
       <div className="mb-6">
-        <h4 className="text-sm font-fantasy text-amber-300 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">By Type</h4>
+        <h4 className="text-sm font-fantasy text-fantasy-gold uppercase tracking-wider mb-3 border-b border-fantasy-bronze/30 pb-2">By Type</h4>
         <div className="space-y-2">
           <div 
             className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
               selectedCategory === 'type' && selectedSubcategory === 'personal'
-                ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
-                : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+                ? 'bg-dark-wood/40 border-2 border-fantasy-gold/50 text-fantasy-gold' 
+                : 'bg-black/20 border-2 border-fantasy-bronze/30 text-parchment-dark hover:bg-dark-wood/20'
             }`}
             onClick={() => onCategorySelect('type', 'personal')}
           >
@@ -150,13 +150,13 @@ const NotesSidebar = ({
               <span className="text-lg">👤</span>
               <span className="font-fantasy uppercase tracking-wider text-sm">Personal</span>
             </div>
-            <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getPersonalNotesCount()})</span>
+            <span className="text-xs font-bold bg-fantasy-bronze/50 px-2 py-1 rounded">({getPersonalNotesCount()})</span>
           </div>
           <div 
             className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
               selectedCategory === 'type' && selectedSubcategory === 'shared'
-                ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
-                : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+                ? 'bg-dark-wood/40 border-2 border-fantasy-gold/50 text-fantasy-gold' 
+                : 'bg-black/20 border-2 border-fantasy-bronze/30 text-parchment-dark hover:bg-dark-wood/20'
             }`}
             onClick={() => onCategorySelect('type', 'shared')}
           >
@@ -164,14 +164,14 @@ const NotesSidebar = ({
               <span className="text-lg">👥</span>
               <span className="font-fantasy uppercase tracking-wider text-sm">Shared</span>
             </div>
-            <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getSharedNotesCount()})</span>
+            <span className="text-xs font-bold bg-fantasy-bronze/50 px-2 py-1 rounded">({getSharedNotesCount()})</span>
           </div>
           {userRole === 'dm' && (
             <div 
               className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
                 selectedCategory === 'type' && selectedSubcategory === 'dm'
-                  ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
-                  : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+                  ? 'bg-dark-wood/40 border-2 border-fantasy-gold/50 text-fantasy-gold' 
+                  : 'bg-black/20 border-2 border-fantasy-bronze/30 text-parchment-dark hover:bg-dark-wood/20'
               }`}
               onClick={() => onCategorySelect('type', 'dm')}
             >
@@ -179,27 +179,27 @@ const NotesSidebar = ({
                 <span className="text-lg">🎲</span>
                 <span className="font-fantasy uppercase tracking-wider text-sm">DM Only</span>
               </div>
-              <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getDMNotesCount()})</span>
+              <span className="text-xs font-bold bg-fantasy-bronze/50 px-2 py-1 rounded">({getDMNotesCount()})</span>
             </div>
           )}
         </div>
       </div>
 
       <div className="mb-6">
-        <h4 className="text-sm font-fantasy text-amber-300 uppercase tracking-wider mb-3 border-b border-amber-700/30 pb-2">By Category</h4>
+        <h4 className="text-sm font-fantasy text-fantasy-gold uppercase tracking-wider mb-3 border-b border-fantasy-bronze/30 pb-2">By Category</h4>
         {Object.entries(categoryStructure).map(([categoryKey, category]) => (
           <div key={categoryKey} className="mb-3">
             <div 
               className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
                 selectedCategory === categoryKey && !selectedSubcategory
-                  ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
-                  : 'bg-black/20 border-2 border-amber-700/30 text-amber-200 hover:bg-amber-900/20'
+                  ? 'bg-dark-wood/40 border-2 border-fantasy-gold/50 text-fantasy-gold' 
+                  : 'bg-black/20 border-2 border-fantasy-bronze/30 text-parchment-dark hover:bg-dark-wood/20'
               }`}
               onClick={() => onCategorySelect(categoryKey, null)}
             >
               <div className="flex items-center gap-2">
                 <button 
-                  className="text-yellow-300 hover:text-yellow-100 text-sm transition-colors"
+                  className="text-fantasy-gold hover:text-ornate-gold text-sm transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleCategory(categoryKey);
@@ -210,7 +210,7 @@ const NotesSidebar = ({
                 <span className="text-lg">{category.icon}</span>
                 <span className="font-fantasy uppercase tracking-wider text-sm">{category.name}</span>
               </div>
-              <span className="text-xs font-bold bg-amber-700/50 px-2 py-1 rounded">({getNotesCount(categoryKey)})</span>
+              <span className="text-xs font-bold bg-fantasy-bronze/50 px-2 py-1 rounded">({getNotesCount(categoryKey)})</span>
             </div>
             
             {expandedCategories[categoryKey] && (
@@ -220,13 +220,13 @@ const NotesSidebar = ({
                     key={subKey}
                     className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-300 ${
                       selectedCategory === categoryKey && selectedSubcategory === subKey
-                        ? 'bg-amber-900/40 border-2 border-yellow-500/50 text-yellow-300' 
-                        : 'bg-black/10 border border-amber-700/20 text-amber-200 hover:bg-amber-900/20'
+                        ? 'bg-dark-wood/40 border-2 border-fantasy-gold/50 text-fantasy-gold' 
+                        : 'bg-black/10 border border-fantasy-bronze/20 text-parchment-dark hover:bg-dark-wood/20'
                     }`}
                     onClick={() => onCategorySelect(categoryKey, subKey)}
                   >
                     <span className="font-fantasy uppercase tracking-wider text-xs">{subName}</span>
-                    <span className="text-xs font-bold bg-amber-700/30 px-2 py-1 rounded">({getNotesCount(categoryKey, subKey)})</span>
+                    <span className="text-xs font-bold bg-fantasy-bronze/30 px-2 py-1 rounded">({getNotesCount(categoryKey, subKey)})</span>
                   </div>
                 ))}
               </div>
