@@ -165,8 +165,8 @@ const CampaignBestiary = ({ campaign }) => {
     return (
       <OrnatePanel variant="default" className="py-16">
         <div className="flex flex-col items-center justify-center">
-          <div className="w-12 h-12 border-4 border-amber-700/30 border-t-yellow-400 rounded-full animate-spin mb-4"></div>
-          <p className="text-yellow-300 text-lg font-fantasy uppercase tracking-wider">Loading bestiary...</p>
+          <div className="w-12 h-12 border-4 border-fantasy-bronze/30 border-t-fantasy-gold rounded-full animate-spin mb-4"></div>
+          <p className="text-fantasy-gold text-lg font-fantasy uppercase tracking-wider">Loading bestiary...</p>
         </div>
       </OrnatePanel>
     );
@@ -193,8 +193,8 @@ const CampaignBestiary = ({ campaign }) => {
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-4xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Bestiary</h2>
-          <p className="text-amber-200 text-lg">{creatures.length} creatures in your collection</p>
+          <h2 className="text-4xl font-fantasy font-bold text-fantasy-gold uppercase tracking-wider mb-2 drop-shadow-lg">Campaign Bestiary</h2>
+          <p className="text-parchment-dark text-lg">{creatures.length} creatures in your collection</p>
         </div>
         
         {isDM && (
@@ -228,22 +228,22 @@ const CampaignBestiary = ({ campaign }) => {
       <OrnatePanel variant="default" className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
           <div>
-            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Search</label>
+            <label className="block text-parchment-dark font-fantasy uppercase tracking-wider text-sm mb-2">Search</label>
             <input
               type="text"
               placeholder="Search creatures..."
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
+              className="w-full bg-black/60 border-2 border-fantasy-bronze/50 rounded px-4 py-2 text-fantasy-gold focus:border-fantasy-gold focus:outline-none"
             />
           </div>
           
           <div>
-            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Type</label>
+            <label className="block text-parchment-dark font-fantasy uppercase tracking-wider text-sm mb-2">Type</label>
             <select
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
+              className="w-full bg-black/60 border-2 border-fantasy-bronze/50 rounded px-4 py-2 text-fantasy-gold focus:border-fantasy-gold focus:outline-none"
             >
               <option value="">All Types</option>
               {getUniqueTypes().map(type => (
@@ -253,11 +253,11 @@ const CampaignBestiary = ({ campaign }) => {
           </div>
           
           <div>
-            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Challenge Rating</label>
+            <label className="block text-parchment-dark font-fantasy uppercase tracking-wider text-sm mb-2">Challenge Rating</label>
             <select
               value={filters.cr}
               onChange={(e) => handleFilterChange('cr', e.target.value)}
-              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
+              className="w-full bg-black/60 border-2 border-fantasy-bronze/50 rounded px-4 py-2 text-fantasy-gold focus:border-fantasy-gold focus:outline-none"
             >
               <option value="">All CRs</option>
               {getUniqueCRs().map(cr => (
@@ -267,11 +267,11 @@ const CampaignBestiary = ({ campaign }) => {
           </div>
           
           <div>
-            <label className="block text-amber-200 font-fantasy uppercase tracking-wider text-sm mb-2">Tags</label>
+            <label className="block text-parchment-dark font-fantasy uppercase tracking-wider text-sm mb-2">Tags</label>
             <select
               value={filters.tags}
               onChange={(e) => handleFilterChange('tags', e.target.value)}
-              className="w-full bg-black/60 border-2 border-amber-700/50 rounded px-4 py-2 text-yellow-300 focus:border-yellow-500 focus:outline-none"
+              className="w-full bg-black/60 border-2 border-fantasy-bronze/50 rounded px-4 py-2 text-fantasy-gold focus:border-fantasy-gold focus:outline-none"
             >
               <option value="">All Tags</option>
               {getUniqueTags().map(tag => (
@@ -297,8 +297,8 @@ const CampaignBestiary = ({ campaign }) => {
         {filteredCreatures.length === 0 ? (
           <OrnatePanel variant="default" className="text-center py-16">
             <div className="text-8xl mb-6">🐉</div>
-            <h3 className="text-3xl font-fantasy font-bold text-yellow-300 mb-4 uppercase tracking-wider">No creatures found</h3>
-            <p className="text-amber-200 text-lg">
+            <h3 className="text-3xl font-fantasy font-bold text-fantasy-gold mb-4 uppercase tracking-wider">No creatures found</h3>
+            <p className="text-parchment-dark text-lg">
               {creatures.length === 0 
                 ? isDM 
                   ? "Upload a PDF or manually add creatures to build your bestiary"

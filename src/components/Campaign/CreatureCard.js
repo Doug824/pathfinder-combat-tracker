@@ -58,7 +58,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
             {getTypeIcon(creature.type)}
           </div>
           <div>
-            <h3 className="text-xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider">{creature.name}</h3>
+            <h3 className="text-xl font-fantasy font-bold text-fantasy-gold uppercase tracking-wider">{creature.name}</h3>
             <div className="flex gap-2 text-sm">
               {creature.size && (
                 <span 
@@ -69,7 +69,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
                 </span>
               )}
               {creature.type && (
-                <span className="text-amber-200 font-fantasy">
+                <span className="text-parchment-dark font-fantasy">
                   {creature.type}
                 </span>
               )}
@@ -90,7 +90,7 @@ const CreatureCard = ({ creature, userRole, onEdit, onDelete }) => {
           {(canEdit || canDelete) && (
             <div className="relative">
               <button 
-                className="text-yellow-300 hover:text-yellow-100 text-2xl p-1 rounded transition-colors duration-300"
+                className="text-fantasy-gold hover:text-ornate-gold text-2xl p-1 rounded transition-colors duration-300"
                 onClick={() => setShowActions(!showActions)}
               >
                 ⋮

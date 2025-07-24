@@ -55,20 +55,20 @@ const CampaignCard = ({
   };
 
   return (
-    <OrnatePanel variant="default" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-yellow-500/20">
+    <OrnatePanel variant="default" className="transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-fantasy-gold/20">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-fantasy font-bold text-yellow-300 uppercase tracking-wider">{campaign.name}</h3>
+        <h3 className="text-xl font-fantasy font-bold text-fantasy-gold uppercase tracking-wider">{campaign.name}</h3>
         <div className="relative">
           <button 
-            className="text-yellow-300 hover:text-yellow-100 text-2xl p-1 rounded transition-colors duration-300"
+            className="text-fantasy-gold hover:text-ornate-gold text-2xl p-1 rounded transition-colors duration-300"
             onClick={() => setShowActions(!showActions)}
           >
             ⋮
           </button>
           {showActions && (
-            <div className="absolute right-0 top-8 bg-gradient-to-b from-amber-900/95 to-amber-950/95 border-2 border-amber-700/50 rounded-lg shadow-lg z-10 min-w-40">
+            <div className="absolute right-0 top-8 bg-gradient-to-b from-dark-wood/95 to-ink/95 border-2 border-fantasy-bronze/50 rounded-lg shadow-lg z-10 min-w-40">
               <button 
-                className="w-full text-left px-4 py-2 text-yellow-200 hover:bg-amber-700/30 rounded-t-lg transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
+                className="w-full text-left px-4 py-2 text-parchment hover:bg-fantasy-bronze/30 rounded-t-lg transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
                 onClick={() => onSelect(campaign)}
               >
                 View Details
@@ -76,7 +76,7 @@ const CampaignCard = ({
               {isDM && (
                 <>
                   <button 
-                    className="w-full text-left px-4 py-2 text-yellow-200 hover:bg-amber-700/30 transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
+                    className="w-full text-left px-4 py-2 text-parchment hover:bg-fantasy-bronze/30 transition-colors duration-300 font-fantasy uppercase tracking-wider text-sm"
                     onClick={() => {}}
                   >
                     Edit Campaign
@@ -104,12 +104,12 @@ const CampaignCard = ({
       </div>
 
       <div className="mb-4">
-        <p className="text-amber-200 mb-4 line-clamp-2">
+        <p className="text-parchment-dark mb-4 line-clamp-2">
           {campaign.description || 'No description provided'}
         </p>
 
         <div className="flex justify-between items-center mb-4">
-          <span className={`px-3 py-1 rounded-md text-xs font-fantasy uppercase tracking-wider font-bold text-yellow-100 border ${
+          <span className={`px-3 py-1 rounded-md text-xs font-fantasy uppercase tracking-wider font-bold text-parchment-light border ${
             userRole === 'dm' 
               ? 'bg-gradient-to-b from-purple-600/50 to-purple-800/50 border-purple-500/50' 
               : 'bg-gradient-to-b from-blue-600/50 to-blue-800/50 border-blue-500/50'
@@ -117,7 +117,7 @@ const CampaignCard = ({
             {userRole?.toUpperCase()}
           </span>
           
-          <div className="text-right text-sm text-amber-200">
+          <div className="text-right text-sm text-parchment-dark">
             <div className="flex items-center gap-1">
               <span>👥</span>
               <span className="font-fantasy">{campaign.members.length} member{campaign.members.length !== 1 ? 's' : ''}</span>
@@ -130,10 +130,10 @@ const CampaignCard = ({
         </div>
 
         {isDM && (
-          <div className="bg-black/60 rounded-md border-2 border-amber-700/50 p-3 mb-4">
-            <div className="text-amber-200 text-sm">
+          <div className="bg-black/60 rounded-md border-2 border-fantasy-bronze/50 p-3 mb-4">
+            <div className="text-parchment-dark text-sm">
               <span className="font-fantasy uppercase tracking-wider">Invite Code:</span> 
-              <code className="bg-black/60 px-2 py-1 rounded font-mono text-yellow-300 ml-2 border border-amber-700/30">
+              <code className="bg-black/60 px-2 py-1 rounded font-mono text-fantasy-gold ml-2 border border-fantasy-bronze/30">
                 {campaign.inviteCode}
               </code>
             </div>
