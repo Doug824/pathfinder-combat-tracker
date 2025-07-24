@@ -8,7 +8,7 @@ const OrnatePanel = ({
   showCorners = true 
 }) => {
   const variants = {
-    default: 'bg-gradient-to-b from-amber-900/80 to-amber-950/90',
+    default: 'bg-gradient-to-b from-dark-wood/80 to-ink/90',
     dark: 'bg-gradient-to-b from-gray-900/90 to-black/95',
     parchment: 'bg-gradient-to-b from-amber-100/90 to-amber-50/90',
   };
@@ -16,37 +16,37 @@ const OrnatePanel = ({
   return (
     <div className={`relative ${className}`}>
       {/* Ornate border wrapper */}
-      <div className="relative p-1 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 rounded-lg">
+      <div className="relative p-1 bg-gradient-to-r from-fantasy-bronze via-fantasy-gold to-fantasy-bronze rounded-lg">
         {/* Inner border */}
-        <div className="relative p-0.5 bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800 rounded-lg">
+        <div className="relative p-0.5 bg-gradient-to-r from-dark-wood via-fantasy-bronze to-dark-wood rounded-lg">
           {/* Main content panel */}
           <div className={`relative ${variants[variant]} rounded-lg overflow-hidden`}>
             {/* Corner decorations */}
             {showCorners && (
               <>
                 <div className="absolute top-0 left-0 w-8 h-8">
-                  <div className="absolute top-1 left-1 w-6 h-6 border-t-2 border-l-2 border-yellow-500/70 rounded-tl-sm" />
-                  <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-yellow-400/50" />
+                  <div className="absolute top-1 left-1 w-6 h-6 border-t-2 border-l-2 border-fantasy-gold/70 rounded-tl-sm" />
+                  <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-old-gold/50" />
                 </div>
                 <div className="absolute top-0 right-0 w-8 h-8">
-                  <div className="absolute top-1 right-1 w-6 h-6 border-t-2 border-r-2 border-yellow-500/70 rounded-tr-sm" />
-                  <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-yellow-400/50" />
+                  <div className="absolute top-1 right-1 w-6 h-6 border-t-2 border-r-2 border-fantasy-gold/70 rounded-tr-sm" />
+                  <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-old-gold/50" />
                 </div>
                 <div className="absolute bottom-0 left-0 w-8 h-8">
-                  <div className="absolute bottom-1 left-1 w-6 h-6 border-b-2 border-l-2 border-yellow-500/70 rounded-bl-sm" />
-                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-yellow-400/50" />
+                  <div className="absolute bottom-1 left-1 w-6 h-6 border-b-2 border-l-2 border-fantasy-gold/70 rounded-bl-sm" />
+                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-old-gold/50" />
                 </div>
                 <div className="absolute bottom-0 right-0 w-8 h-8">
-                  <div className="absolute bottom-1 right-1 w-6 h-6 border-b-2 border-r-2 border-yellow-500/70 rounded-br-sm" />
-                  <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-yellow-400/50" />
+                  <div className="absolute bottom-1 right-1 w-6 h-6 border-b-2 border-r-2 border-fantasy-gold/70 rounded-br-sm" />
+                  <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-old-gold/50" />
                 </div>
               </>
             )}
 
             {/* Title bar if provided */}
             {title && (
-              <div className="border-b border-amber-700/50 bg-black/20 px-6 py-3">
-                <h3 className="text-center font-fantasy text-xl font-bold text-yellow-400 uppercase tracking-wider">
+              <div className="border-b border-fantasy-bronze/50 bg-black/20 px-6 py-3">
+                <h3 className="text-center font-fantasy text-xl font-bold text-fantasy-gold uppercase tracking-wider">
                   {title}
                 </h3>
               </div>
