@@ -2,12 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { calculateFinalStats } from '../../utils/bonusCalculator';
 import { getSizeModifier, getSizeACModifier, getSizeDisplayName } from '../../utils/sizeUtils';
+import NumericInput from '../common/NumericInput';
 
 const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, combatAbilities = [] }) => {
   const [finalStats, setFinalStats] = useState({...baseStats});
   const [bonusDetails, setBonusDetails] = useState({});
+  const [acOverride, setAcOverride] = useState(null);
+  const [showACBreakdown, setShowACBreakdown] = useState(false);
   const [derived, setDerived] = useState({
     ac: 10,
+    touchAC: 10,
+    flatFootedAC: 10,
     fortitudeSave: 0,
     reflexSave: 0,
     willSave: 0,
@@ -150,9 +155,24 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
       'maneuver'
     );
     
+    // Calculate AC values
+    const baseAC = 10 + dexMod + acBonus + sizeACModifier;
+    const actualAC = acOverride !== null ? acOverride : baseAC;
+    
+    // Calculate Touch AC (no armor or natural armor)
+    const armorBonus = bonusDetails.ac?.filter(b => b.type === 'armor').reduce((sum, bonus) => sum + bonus.value, 0) || 0;
+    const shieldBonus = bonusDetails.ac?.filter(b => b.type === 'shield').reduce((sum, bonus) => sum + bonus.value, 0) || 0;
+    const naturalArmorBonus = finalStats.naturalArmor || 0;
+    const touchAC = 10 + dexMod + sizeACModifier + (acBonus - armorBonus - shieldBonus - naturalArmorBonus);
+    
+    // Calculate Flat-footed AC (no dex bonus)
+    const flatFootedAC = 10 + acBonus + sizeACModifier;
+
     // Calculate derived stats
     setDerived({
-      ac: 10 + dexMod + acBonus + sizeACModifier,
+      ac: actualAC,
+      touchAC: touchAC,
+      flatFootedAC: flatFootedAC,
       fortitudeSave: fortSave,
       reflexSave: refSave,
       willSave: willSave,
@@ -165,7 +185,7 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
       sizeModifier,
       sizeACModifier
     });
-  }, [baseStats, buffs, gear, character, combatAbilities]);
+  }, [baseStats, buffs, gear, character, combatAbilities, acOverride]);
 
   return (
     <div className="bg-black/60 backdrop-blur-md rounded-lg border-2 border-amber-700/50 p-6">
@@ -296,27 +316,77 @@ const CombatStatsCalculator = ({ baseStats, buffs, gear = [], character = {}, co
             <div className="mb-3">
               <div className="flex justify-between items-center mb-1">
                 <span className="text-amber-300 font-medium">Armor Class:</span>
-                <span className="text-amber-100 text-xl font-bold">{derived.ac}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-100 text-xl font-bold">{derived.ac}</span>
+                  {acOverride !== null && (
+                    <span className="text-red-400 text-sm">(Override)</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-2 text-amber-200 text-sm mb-2">
+                <span>Touch: {derived.touchAC}</span>
+                <span>•</span>
+                <span>Flat-footed: {derived.flatFootedAC}</span>
               </div>
             </div>
-            <div className="text-amber-200 text-sm">
-              <div className="mb-2">Base: 10 + DEX modifier: {getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)}</div>
-              {derived.sizeACModifier !== 0 && (
-                <div className="mb-1"> + Size modifier: {derived.sizeACModifier >= 0 ? '+' : ''}{derived.sizeACModifier}</div>
-              )}
-              {finalStats.naturalArmor > 0 && (
-                <div className="mb-1"> + Natural Armor: +{finalStats.naturalArmor}</div>
-              )}
-              {bonusDetails.ac && bonusDetails.ac.length > 0 && (
-                <div className="space-y-1 mt-2">
-                  {bonusDetails.ac.map((bonus, idx) => (
-                    <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
-                      {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
-                    </div>
-                  ))}
-                </div>
-              )}
+            
+            {/* AC Override Input */}
+            <div className="mb-3">
+              <label className="block text-amber-300 text-sm font-medium mb-1">Manual Override:</label>
+              <div className="flex gap-2 items-center">
+                <NumericInput
+                  value={acOverride || ''}
+                  onChange={(value) => setAcOverride(value === '' ? null : parseInt(value))}
+                  className="flex-1 text-sm"
+                  placeholder="Auto"
+                  min={1}
+                  max={99}
+                />
+                {acOverride !== null && (
+                  <button
+                    onClick={() => setAcOverride(null)}
+                    className="text-red-400 hover:text-red-300 text-sm px-2 py-1 bg-red-900/20 rounded border border-red-700/30"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* Expandable AC Breakdown */}
+            <button
+              onClick={() => setShowACBreakdown(!showACBreakdown)}
+              className="w-full text-amber-300 hover:text-amber-200 text-sm mb-2 flex items-center justify-center gap-1"
+            >
+              {showACBreakdown ? '▼' : '▶'} AC Breakdown
+            </button>
+            
+            {showACBreakdown && (
+              <div className="text-amber-200 text-sm bg-black/20 rounded p-3">
+                <div className="mb-2">Base: 10 + DEX modifier: {getModifier(finalStats.dexterity) >= 0 ? '+' : ''}{getModifier(finalStats.dexterity)}</div>
+                {derived.sizeACModifier !== 0 && (
+                  <div className="mb-1"> + Size modifier: {derived.sizeACModifier >= 0 ? '+' : ''}{derived.sizeACModifier}</div>
+                )}
+                {finalStats.naturalArmor > 0 && (
+                  <div className="mb-1"> + Natural Armor: +{finalStats.naturalArmor}</div>
+                )}
+                {bonusDetails.ac && bonusDetails.ac.length > 0 && (
+                  <div className="space-y-1 mt-2">
+                    {bonusDetails.ac.map((bonus, idx) => (
+                      <div key={idx} className="text-xs bg-black/20 rounded px-2 py-1">
+                        {bonus.name} ({bonus.source}): {bonus.value > 0 ? '+' : ''}{bonus.value} {bonus.type}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="mt-3 pt-2 border-t border-amber-700/30">
+                  <div className="text-xs text-amber-300">
+                    <div>Touch AC = Base (10) + DEX + Size + Deflection + Dodge bonuses</div>
+                    <div>Flat-footed AC = Total AC - DEX modifier</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="bg-black/40 rounded-lg border border-amber-700/30 p-4">
