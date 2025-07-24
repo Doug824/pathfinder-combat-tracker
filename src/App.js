@@ -349,8 +349,6 @@ function AppContent() {
         currentUser={currentUser}
         userRole={userRole}
         onLogout={handleLogout}
-        darkMode={darkMode}
-        onThemeToggle={handleThemeToggle}
         logoIcon={logoIcon}
       />
       

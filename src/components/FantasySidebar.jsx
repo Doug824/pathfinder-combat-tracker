@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import ThemeToggle from './common/ThemeToggle';
 
-const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile, currentUser, userRole, onLogout, darkMode, onThemeToggle, logoIcon }) => {
+const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile, currentUser, userRole, onLogout, logoIcon }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const pages = [
@@ -89,7 +88,6 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <ThemeToggle darkMode={darkMode} onToggle={onThemeToggle} />
                   <button onClick={onLogout} className="text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400/50 rounded">
                     Logout
                   </button>
@@ -125,7 +123,6 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
               {currentUser?.displayName || currentUser?.email}
             </span>
             <div className="flex gap-2">
-              <ThemeToggle darkMode={darkMode} onToggle={onThemeToggle} />
               <button onClick={onLogout} className="text-red-400 text-xs">
                 Logout
               </button>

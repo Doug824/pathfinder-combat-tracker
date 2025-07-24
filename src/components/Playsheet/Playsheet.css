@@ -260,6 +260,10 @@
 /* Mini HP Tracker for Playsheet */
 .mini-hp-tracker {
   margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Make quick actions more compact in playsheet */
@@ -270,35 +274,77 @@
 /* Compact quick actions for playsheet */
 .mini-hp-tracker .hp-quick-actions {
   margin-top: 10px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .mini-hp-tracker .hp-quick-actions .grid {
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .mini-hp-tracker .hp-quick-actions .flex {
   flex-direction: column;
   gap: 4px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .mini-hp-tracker .hp-quick-actions input {
-  font-size: 0.875rem;
-  padding: 4px 8px;
+  font-size: 0.8rem;
+  padding: 3px 6px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .mini-hp-tracker .hp-quick-actions button {
-  font-size: 0.875rem;
-  padding: 4px 8px;
+  font-size: 0.8rem;
+  padding: 3px 6px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 480px) {
+  .mini-hp-tracker .hp-quick-actions .flex {
+    flex-direction: row;
+    gap: 4px;
+  }
+  
+  .mini-hp-tracker .hp-quick-actions input {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .mini-hp-tracker .hp-quick-actions button {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* Very small mobile screens */
+@media (max-width: 320px) {
+  .mini-hp-tracker .hp-quick-actions input {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+  }
+
+  .mini-hp-tracker .hp-quick-actions button {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+  }
 }
 
 @media (min-width: 768px) {
   .mini-hp-tracker .hp-quick-actions .grid {
     grid-template-columns: 1fr 1fr;
-  }
-  
-  .mini-hp-tracker .hp-quick-actions .flex {
-    flex-direction: row;
     gap: 8px;
   }
 }
@@ -313,6 +359,10 @@
   flex-direction: row;
   align-items: center;
   padding: 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .mini-hp-tracker .hp-heart {
@@ -485,6 +535,7 @@
     overflow: visible !important; /* Force visible overflow */
     width: 100% !important; /* Ensure full width */
     padding-bottom: 120px !important; /* Add extra bottom padding */
+    margin: 0 !important;
   }
   
   /* Make sure sections don't get cut off */
