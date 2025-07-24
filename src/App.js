@@ -188,12 +188,14 @@ function AppContent() {
     loadTheme();
   }, [currentUser]);
   
-  // Apply theme class to body
+  // Apply theme class to document element for Tailwind dark mode
   useEffect(() => {
     if (darkMode) {
-      document.body.classList.add('dark-mode');
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark-mode'); // Keep for CSS variables
     } else {
-      document.body.classList.remove('dark-mode');
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark-mode'); // Keep for CSS variables
     }
   }, [darkMode]);
 

@@ -262,9 +262,45 @@
   margin-bottom: 20px;
 }
 
-.mini-hp-tracker .hp-quick-actions,
+/* Make quick actions more compact in playsheet */
 .mini-hp-tracker .hp-edit-container {
   display: none;
+}
+
+/* Compact quick actions for playsheet */
+.mini-hp-tracker .hp-quick-actions {
+  margin-top: 10px;
+}
+
+.mini-hp-tracker .hp-quick-actions .grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.mini-hp-tracker .hp-quick-actions .flex {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mini-hp-tracker .hp-quick-actions input {
+  font-size: 0.875rem;
+  padding: 4px 8px;
+}
+
+.mini-hp-tracker .hp-quick-actions button {
+  font-size: 0.875rem;
+  padding: 4px 8px;
+}
+
+@media (min-width: 768px) {
+  .mini-hp-tracker .hp-quick-actions .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .mini-hp-tracker .hp-quick-actions .flex {
+    flex-direction: row;
+    gap: 8px;
+  }
 }
 
 .mini-hp-tracker .hp-header {

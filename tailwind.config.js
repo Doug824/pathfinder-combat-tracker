@@ -4,9 +4,11 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     "./public/index.html"
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        // Dark mode colors (default)
         'fantasy-gold': '#D4AF37',
         'fantasy-bronze': '#B87333',
         'fantasy-silver': '#C0C0C0',
@@ -23,6 +25,13 @@ module.exports = {
         'ornate-gold': '#FFD700',
         'old-gold': '#CFB53B',
         'antique-brass': '#CD9575',
+        // Light mode variants
+        'light-bg': '#FBF8F3',
+        'light-bg-secondary': '#F5F0E8',
+        'light-text': '#2D1B0E',
+        'light-text-secondary': '#5D4037',
+        'light-border': '#D4C5B0',
+        'light-accent': '#1A237E',
       },
       fontFamily: {
         'fantasy': ['Cinzel', 'Georgia', 'serif'],

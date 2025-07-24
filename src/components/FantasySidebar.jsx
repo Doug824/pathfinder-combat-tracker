@@ -53,7 +53,7 @@ const FantasySidebar = ({ currentPage, setCurrentPage, activeCharacter, isMobile
     <aside className={`
       ${isCollapsed ? 'w-20' : 'w-64'} 
       ${isMobile ? 'fixed bottom-0 left-0 right-0 h-auto w-full z-50' : 'fixed left-0 top-0 h-screen'}
-      bg-gradient-to-b from-black/80 to-dark-wood/90 
+      bg-gradient-to-b from-light-bg-secondary to-light-bg dark:from-black/80 dark:to-dark-wood/90 
       backdrop-blur-md 
       border-r-2 border-fantasy-bronze/50
       transition-all duration-300 ease-in-out
