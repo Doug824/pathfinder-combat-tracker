@@ -2,10 +2,10 @@
 .hero-landing {
   min-height: 100vh;
   background: 
-    linear-gradient(135deg, rgba(20, 25, 60, 0.7) 0%, rgba(40, 30, 25, 0.6) 50%, rgba(20, 25, 60, 0.7) 100%),
-    radial-gradient(circle at 20% 20%, rgba(139, 101, 8, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(20, 25, 60, 0.2) 0%, transparent 50%),
-    linear-gradient(45deg, #0F0F1A 0%, #1A1A2A 50%, #2A2A3A 100%);
+    linear-gradient(135deg, rgba(28, 28, 28, 0.95) 0%, rgba(62, 35, 35, 0.8) 50%, rgba(28, 28, 28, 0.95) 100%),
+    radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(112, 66, 20, 0.15) 0%, transparent 50%),
+    linear-gradient(45deg, #1C1C1C 0%, #2D1B0E 50%, #3E2723 100%);
   overflow-x: hidden;
   position: relative;
 }
@@ -18,11 +18,11 @@
   right: 0;
   bottom: 0;
   background-image: 
-    linear-gradient(45deg, transparent 48%, rgba(139, 101, 8, 0.02) 50%, transparent 52%),
-    linear-gradient(-45deg, transparent 48%, rgba(20, 25, 60, 0.03) 50%, transparent 52%);
+    linear-gradient(45deg, transparent 48%, rgba(212, 175, 55, 0.03) 50%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(112, 66, 20, 0.04) 50%, transparent 52%);
   background-size: 120px 120px;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 /* Hero Section */
@@ -46,14 +46,15 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--gradient-primary);
-  color: white;
+  background: linear-gradient(135deg, #704214 0%, #8B5A2B 100%);
+  color: #F9F5E3;
   padding: 0.5rem 1rem;
   border-radius: 50px;
+  border: 1px solid #D4AF37;
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 15px rgba(26, 35, 126, 0.3);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
 .badge-icon {
@@ -62,17 +63,17 @@
 }
 
 .hero-title {
-  font-family: 'Cinzel Decorative', serif;
+  font-family: 'Cinzel', serif;
   font-size: 3.5rem;
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  color: #FFFFFF;
+  color: #F9F5E3;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #FFD700 0%, #FFF8DC 100%);
+  background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -82,7 +83,7 @@
 .hero-description {
   font-size: 1.25rem;
   line-height: 1.7;
-  color: #E8E3D3;
+  color: #E3CDA4;
   margin-bottom: 2.5rem;
   max-width: 90%;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
@@ -121,8 +122,8 @@
 
 .demo-button {
   background: transparent;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  color: #D4AF37;
+  border: 2px solid #D4AF37;
   padding: 1rem 2rem;
   border-radius: 8px;
   font-size: 1.1rem;
@@ -136,10 +137,10 @@
 }
 
 .demo-button:hover {
-  background: var(--primary-color);
-  color: white;
+  background: #D4AF37;
+  color: #1C1C1C;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(26, 35, 126, 0.3);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
 }
 
 .button-icon {
@@ -191,11 +192,11 @@
 
 .hero-card {
   position: absolute;
-  background: rgba(26, 26, 36, 0.95);
-  border: 2px solid rgba(255, 215, 0, 0.3);
+  background: rgba(28, 28, 28, 0.95);
+  border: 2px solid rgba(212, 175, 55, 0.4);
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
   transition: all 0.3s ease;
   width: 320px;
   backdrop-filter: blur(10px);
@@ -204,7 +205,7 @@
 .hero-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 60px rgba(0, 0, 0, 0.8);
-  border-color: rgba(255, 215, 0, 0.6);
+  border-color: rgba(212, 175, 55, 0.7);
 }
 
 .creature-card-demo {
@@ -944,4 +945,43 @@
   .tab-title {
     font-size: 1rem;
   }
+}
+
+/* Fantasy Button Styles for Landing Page */
+.epic-button, .btn-primary {
+  background: linear-gradient(135deg, #704214 0%, #8B5A2B 100%);
+  color: #F9F5E3;
+  border: 2px solid #D4AF37;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: 'Cinzel', serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.epic-button:hover, .btn-primary:hover {
+  background: linear-gradient(135deg, #8B5A2B 0%, #A0651F 100%);
+  border-color: #FFD700;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+}
+
+.epic-button:active, .btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Animation keyframes */
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }

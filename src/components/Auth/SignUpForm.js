@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useFirebaseAuth } from '../../contexts/FirebaseAuthContext';
 import logoIcon from '../../assets/HerosLedgerLogo.png';
+import PWAInstallPrompt from '../PWA/PWAInstallPrompt';
 import './Auth.css';
 
 const SignUpForm = ({ onToggleMode }) => {
@@ -65,6 +66,9 @@ const SignUpForm = ({ onToggleMode }) => {
         <h2 className="text-3xl font-fantasy font-bold text-ornate-gold mb-2">Join the Guild</h2>
         <p className="text-amber-200/70">Create your account to begin your adventure</p>
       </div>
+
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
 
       {error && (
         <div className="bg-red-900/50 border border-red-600/50 text-red-200 p-3 rounded-lg mb-6 text-center">
