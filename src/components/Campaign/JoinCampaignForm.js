@@ -63,11 +63,7 @@ const JoinCampaignForm = ({ onJoinCampaign, onCancel, characters, onCreateCharac
   };
 
   const handleCreateNewCharacter = () => {
-    // Store campaign info and redirect to character creation
-    sessionStorage.setItem('pendingCampaignJoin', JSON.stringify({
-      inviteCode,
-      campaign: previewCampaign
-    }));
+    // TODO: Implement automatic campaign joining after character creation
     onCreateCharacter();
   };
 
