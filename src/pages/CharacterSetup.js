@@ -29,6 +29,8 @@ const CharacterSetup = ({
   // State for new gear item form
   const [newGearItem, setNewGearItem] = useState({
     name: '',
+    description: '',
+    specialAbilities: '',
     slot: 'head',
     bonusType: 'enhancement',
     effects: { 
@@ -173,6 +175,8 @@ const CharacterSetup = ({
     // Reset form
     setNewGearItem({
       name: '',
+      description: '',
+      specialAbilities: '',
       slot: 'head',
       bonusType: 'enhancement',
       effects: { 
@@ -186,7 +190,8 @@ const CharacterSetup = ({
         fortitude: 0,
         reflex: 0,
         will: 0,
-        ac: 0
+        ac: 0,
+        naturalArmor: 0
       }
     });
   };
@@ -486,6 +491,31 @@ const CharacterSetup = ({
                 onChange={(e) => handleGearChange('name', e.target.value)}
                 className="input-fantasy w-full"
               />
+            </div>
+
+            <div className="space-y-2 mb-6">
+              <label className="block text-amber-300 font-fantasy font-semibold">Description</label>
+              <textarea 
+                value={newGearItem.description}
+                onChange={(e) => handleGearChange('description', e.target.value)}
+                className="input-fantasy w-full resize-vertical"
+                rows="2"
+                placeholder="Brief description of the item..."
+              />
+            </div>
+
+            <div className="space-y-2 mb-6">
+              <label className="block text-amber-300 font-fantasy font-semibold">Special Abilities</label>
+              <textarea 
+                value={newGearItem.specialAbilities}
+                onChange={(e) => handleGearChange('specialAbilities', e.target.value)}
+                className="input-fantasy w-full resize-vertical"
+                rows="3"
+                placeholder="Describe any special abilities, conditional bonuses, or complex effects that can't be represented with numeric bonuses..."
+              />
+              <div className="text-amber-200 text-xs mt-1">
+                <strong>Examples:</strong> "Grants immunity to fear effects", "Allows casting Fireball 3/day", "Provides concealment in dim light"
+              </div>
             </div>
           
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">

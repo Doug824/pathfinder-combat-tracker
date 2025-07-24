@@ -81,6 +81,22 @@ const GearItem = ({
               </span>
             ))}
         </div>
+        
+        {/* Item Description */}
+        {item.description && (
+          <div className="gear-description">
+            <div className="text-amber-300 text-sm font-fantasy font-semibold mb-1">Description:</div>
+            <div className="text-amber-200 text-sm">{item.description}</div>
+          </div>
+        )}
+        
+        {/* Special Abilities */}
+        {item.specialAbilities && (
+          <div className="gear-special-abilities">
+            <div className="text-amber-300 text-sm font-fantasy font-semibold mb-1">Special Abilities:</div>
+            <div className="text-amber-200 text-sm whitespace-pre-wrap">{item.specialAbilities}</div>
+          </div>
+        )}
       </div>
     );
   }
@@ -119,6 +135,32 @@ const GearItem = ({
               value={editedItem.name}
               onChange={(e) => handleChange('name', e.target.value)}
               className="form-control"
+            />
+          </div>
+        </div>
+        
+        <div className="form-row">
+          <div className="form-group">
+            <label>Description</label>
+            <textarea 
+              value={editedItem.description || ''}
+              onChange={(e) => handleChange('description', e.target.value)}
+              className="input-fantasy w-full resize-vertical"
+              rows="2"
+              placeholder="Brief description of the item..."
+            />
+          </div>
+        </div>
+        
+        <div className="form-row">
+          <div className="form-group">
+            <label>Special Abilities</label>
+            <textarea 
+              value={editedItem.specialAbilities || ''}
+              onChange={(e) => handleChange('specialAbilities', e.target.value)}
+              className="input-fantasy w-full resize-vertical"
+              rows="3"
+              placeholder="Describe any special abilities, conditional bonuses, or complex effects that can't be represented with numeric bonuses..."
             />
           </div>
         </div>
