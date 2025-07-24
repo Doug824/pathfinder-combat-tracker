@@ -192,7 +192,7 @@ const CombatAbilityItem = ({
               <input
                 type="checkbox"
                 checked={ability.isActive}
-                onChange={() => onToggle(ability.id)}
+                onChange={(e) => onToggle(ability.id, e.target.checked)}
                 className="w-5 h-5 text-forest-green bg-black/60 border-fantasy-bronze rounded focus:ring-forest-green"
               />
               <span className="text-amber-200 font-fantasy font-semibold">Active</span>
