@@ -128,7 +128,9 @@ Integrate external databases and add smart automation to reduce manual data entr
 - Long Rest functionality  
 - Cancel button for buff dialog (quick win)
 
-**Next Session Priority:** Medium-priority features or PDF OCR implementation
+**URGENT - Start Next Session:** Debug character creation wizard not appearing (still shows old form)
+
+**Next Session Priority:** Fix wizard integration, then PDF OCR implementation
 
 ---
 

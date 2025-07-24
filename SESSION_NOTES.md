@@ -1,5 +1,14 @@
 # Development Session Notes
 
+## 🚨 URGENT: Start Next Session With This
+
+**Character Creation Wizard Not Working** - The new wizard was implemented but isn't appearing when clicking "Forge New Hero". Still showing old character creation form. Need to debug the integration in FantasyCharacterManager.js before proceeding with PDF OCR implementation.
+
+**Quick check needed:**
+- Verify `showWizard` state is being set correctly
+- Check if CharacterCreationWizard component is importing properly  
+- Ensure wizard renders instead of old CharacterForm
+
 ## Current Session Summary (January 2025)
 
 ### 🎯 Major Accomplishments
