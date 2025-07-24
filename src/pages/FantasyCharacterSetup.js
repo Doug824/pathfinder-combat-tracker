@@ -22,7 +22,7 @@ const FantasyCharacterSetup = ({
   };
 
   const handleStatChange = (statName, value) => {
-    const newValue = Math.max(1, Math.min(30, value)); // Clamp between 1 and 30
+    const newValue = Math.max(1, Math.min(99, value)); // Clamp between 1 and 99
     const newStats = { ...characterStats, [statName]: newValue };
     setCharacterStats(newStats);
     if (onStatsChange) {

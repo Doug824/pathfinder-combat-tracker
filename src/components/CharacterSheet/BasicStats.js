@@ -83,7 +83,7 @@ const BasicStats = ({ onStatsChange, initialStats }) => {
                 value={stats[stat]}
                 onChange={(value) => handleStatChange(stat, value)}
                 min={3}
-                max={30}
+                max={99}
                 className="input-fantasy flex-1"
               />
               <span className="text-amber-100 font-fantasy text-sm font-semibold min-w-[50px]">
